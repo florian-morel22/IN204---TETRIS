@@ -13,13 +13,13 @@ void Grid::initialize_grid(unsigned int c, unsigned int l){
     grid = new unsigned int* [ nb_columns ];
     //Gérer si grid = NULL
     for (unsigned int i=0; i < nb_columns; i++)
-        grid[i] = new unsigned int [nb_columns];
+        grid[i] = new unsigned int [nb_lines]; //!!
 
     //Allocation dynamique de la grille
     grid_drawn = new sf::RectangleShape* [ nb_columns ];
     //Gérer si grid = NULL
     for (unsigned int i=0; i < nb_columns; i++)
-        grid_drawn[i] = new sf::RectangleShape [nb_columns];
+        grid_drawn[i] = new sf::RectangleShape [nb_lines];//!!
 
 
     for (unsigned int i=0; i<nb_columns; i++){
