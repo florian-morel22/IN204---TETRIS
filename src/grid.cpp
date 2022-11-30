@@ -26,8 +26,8 @@ void Grid::initialize_grid(unsigned int c, unsigned int l){
         for (unsigned int j=0; j<nb_lines; j++){
             grid_drawn[i][j].setSize({50,50});
             // Faire en sorte que les carrés soient carrés. Utiliser des proportions
-            float i_ = 55*j;
-            float j_ = 55*i;
+            float i_ = 55*i;
+            float j_ = 55*j;
             grid_drawn[i][j].setPosition({i_,j_});
         }
     }
@@ -78,7 +78,7 @@ void Grid::display_block(Block &b)const {
     for(size_t k=0; k<b.get_list_squares().size();k++){
         unsigned int i = b.get_list_squares()[k].x;
         unsigned int j = b.get_list_squares()[k].y;
-        grid[i%nb_columns][j] = b.get_value(); 
+        grid[i][j] = b.get_value(); 
     }
 }
 
