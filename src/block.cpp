@@ -98,5 +98,5 @@ void Block_bar::rotate(){
 }
 
 void Block_cube::rotate(){
-    printf("Block_cube testtttt");
+    printf("Block_cube : pas besoin de rotation");
 };
