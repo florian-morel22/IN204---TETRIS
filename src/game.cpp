@@ -35,7 +35,7 @@ void Game::Initialize(){
     bgMenu_.setFillColor(sf::Color::Green);
 
     // Création et initialisation de la grille
-    grid.initialize_grid(20, 10);
+    grid.initialize_grid(10, 20);
     grid.clean_grid();
 
     // Création du frame rate

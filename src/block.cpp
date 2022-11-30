@@ -38,8 +38,13 @@ void Block::go_down(){
 };
 
 void Block::go_right(){
-    _pos.y = _pos.y+1;
+    for (int k = 0; k<list_squares.size(); k++){
+        list_squares[k].y+=1;
+    }
 };
+
 void Block::go_left(){
-    _pos.y = _pos.y-1;
+    for (int k = 0; k<list_squares.size(); k++){
+        list_squares[k].y-=1;
+    }
 };
