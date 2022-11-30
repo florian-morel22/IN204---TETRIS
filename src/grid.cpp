@@ -5,25 +5,25 @@
 #include "../inc/grid.hpp"
 
 
-void Grid::initialize_grid(unsigned int l, unsigned int c){
+void Grid::initialize_grid(unsigned int c, unsigned int l){
     nb_lines = l;
     nb_columns = c;
     
     //Allocation dynamique de la grille
-    grid = new unsigned int* [ nb_lines ];
+    grid = new unsigned int* [ nb_columns ];
     //Gérer si grid = NULL
-    for (unsigned int i=0; i < nb_lines; i++)
+    for (unsigned int i=0; i < nb_columns; i++)
         grid[i] = new unsigned int [nb_columns];
 
     //Allocation dynamique de la grille
-    grid_drawn = new sf::RectangleShape* [ nb_lines ];
+    grid_drawn = new sf::RectangleShape* [ nb_columns ];
     //Gérer si grid = NULL
-    for (unsigned int i=0; i < nb_lines; i++)
+    for (unsigned int i=0; i < nb_columns; i++)
         grid_drawn[i] = new sf::RectangleShape [nb_columns];
 
 
-    for (unsigned int i=0; i<nb_lines; i++){
-        for (unsigned int j=0; j<nb_columns; j++){
+    for (unsigned int i=0; i<nb_columns; i++){
+        for (unsigned int j=0; j<nb_lines; j++){
             grid_drawn[i][j].setSize({50,50});
             // Faire en sorte que les carrés soient carrés. Utiliser des proportions
             float i_ = 55*j;
@@ -35,8 +35,8 @@ void Grid::initialize_grid(unsigned int l, unsigned int c){
 
 void Grid::clean_grid(){
     //Reinitialisation de la grille avec des 0
-    for (unsigned int i=0; i < nb_lines; i++)
-        for (unsigned int j=0; j < nb_columns; j++)
+    for (unsigned int i=0; i < nb_columns; i++)
+        for (unsigned int j=0; j < nb_lines; j++)
             grid[i][j] = 0;
 }
 
@@ -51,12 +51,12 @@ unsigned int Grid::get_case_value(unsigned int i, unsigned int j)const{
 };
 
 sf::Vector2u Grid::get_size()const{
-    return {nb_lines, nb_columns};
+    return {nb_columns, nb_lines};
 };
 
 
 void Grid::Free_grid(){
-    for (unsigned int i=0; i < nb_lines; i++)
+    for (unsigned int i=0; i < nb_columns; i++)
         delete[] grid[i];
     delete[] grid;
     printf("Grille libérée\n");
@@ -64,8 +64,8 @@ void Grid::Free_grid(){
 
 
 void Grid::display_grid()const{
-    for (unsigned int i=0; i < nb_lines; i++) {
-        for (unsigned int j=0; j < nb_columns; j++){
+    for (unsigned int i=0; i < nb_columns; i++) {
+        for (unsigned int j=0; j < nb_lines; j++){
             printf("%d ", grid[i][j]);
         }
         printf("\n");
@@ -78,14 +78,13 @@ void Grid::display_block(Block &b)const {
     for(size_t k=0; k<b.get_list_squares().size();k++){
         unsigned int i = b.get_list_squares()[k].x;
         unsigned int j = b.get_list_squares()[k].y;
-        sf::Vector2u pos = b.get_pos();
-        grid[(pos.x+i)%nb_lines][pos.y+j] = b.get_value(); 
+        grid[i%nb_columns][j] = b.get_value(); 
     }
 }
 
 void Grid::draw_grid(){
-    for (unsigned int i=0; i<nb_lines; i++){
-        for (unsigned int j=0; j<nb_columns; j++){
+    for (unsigned int i=0; i<nb_columns; i++){
+        for (unsigned int j=0; j<nb_lines; j++){
             if(grid[i][j]>0)
                 grid_drawn[i][j].setFillColor(sf::Color::White);
             else

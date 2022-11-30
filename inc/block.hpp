@@ -17,10 +17,6 @@ class Block
         //Donne la couleur dans la grille
         unsigned int value;
 
-        //dimension du grand carre
-        unsigned int height;
-        unsigned int width;
-
         unsigned int rotate_value = 0;
 
         //position de chaque carre par rapport à _pos
@@ -31,9 +27,7 @@ class Block
 
         sf::Vector2u get_pos() const;
         void set_pos(unsigned i,unsigned j);
-        
-        unsigned int get_height()const;
-        unsigned int get_width()const;
+
         unsigned int get_value()const;
         std::vector<sf::Vector2u> get_list_squares()const;
 
