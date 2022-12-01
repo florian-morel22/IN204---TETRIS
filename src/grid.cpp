@@ -15,7 +15,7 @@ void Grid::initialize_grid(unsigned int c, unsigned int l){
     for (unsigned int i=0; i < nb_columns; i++)
         grid[i] = new unsigned int [nb_lines]; //!!
 
-    //Allocation dynamique de la grille
+    //Allocation dynamique de la grille_drawn
     grid_drawn = new sf::RectangleShape* [ nb_columns ];
     //Gérer si grid = NULL
     for (unsigned int i=0; i < nb_columns; i++)

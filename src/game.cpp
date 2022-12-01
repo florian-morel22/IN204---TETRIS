@@ -43,7 +43,7 @@ void Game::Initialize(){
     list_Blocks.push_back(block_test);*/
 
 
-    current_block = new Block_L(5,0);
+    current_block = new Block_S(5,0);
     grid.display_block(*current_block);
     grid.display_grid();
 

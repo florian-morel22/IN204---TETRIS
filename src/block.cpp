@@ -32,19 +32,19 @@ std::vector<sf::Vector2u> Block::get_list_squares()const{
 
 
 void Block::go_down(){
-    for (int k = 0; k<list_squares.size(); k++){
+    for (unsigned int k = 0; k<list_squares.size(); k++){
         list_squares[k].y+=1;
     }
 };
 
 void Block::go_right(){
-    for (int k = 0; k<list_squares.size(); k++){
+    for (unsigned int k = 0; k<list_squares.size(); k++){
         list_squares[k].x+=1;
     }
 };
 
 void Block::go_left(){
-    for (int k = 0; k<list_squares.size(); k++){
+    for (unsigned int k = 0; k<list_squares.size(); k++){
         list_squares[k].x-=1;
     }
 };

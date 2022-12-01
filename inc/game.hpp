@@ -11,6 +11,10 @@
 #include "../inc/block.hpp"
 #include "block_I.hpp"
 #include "block_L.hpp"
+#include "block_J.hpp"
+#include "block_O.hpp"
+#include "block_S.hpp"
+#include "block_Z.hpp"
 
 const int WIN_WIDTH = 800;
 const int WIN_HEIGHT = 600;
