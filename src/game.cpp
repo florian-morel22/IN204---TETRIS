@@ -52,14 +52,13 @@ void Game::Initialize(){
 
 void Game::Shutdown(){
     grid.Free_grid();
-    delete[] current_block; // => core dumped ?????????????????????
+    //delete[] current_block; // => core dumped ?????????????????????
     window.close();
     printf("Fermeture\n");
 }
 
 
 void Game::Frame(){
-
 
     //Gestion de des events utilisateurs
     sf::Event event;
@@ -129,28 +128,13 @@ void InputHandler(sf::Event event, Game &game, Block &current_block, Grid &grid/
         if (event.key.code == sf::Keyboard::Right){
             current_block.go_right();
             game.get_grid().clean_grid();
-            current_block.display_block(grid);/*
-            sf::Vector2u p = current_block.get_pos();
-            if(p.y + current_block.get_width()<game.get_grid().get_size().y){
-                current_block.go_right();
-                game.get_grid().clean_grid();
-                game.get_grid().display_block(current_block);
-                game.get_grid().display_grid();
-            }
-        */}
+            current_block.display_block(grid);
+        }
         if (event.key.code == sf::Keyboard::Left){
             current_block.go_left();
             game.get_grid().clean_grid();
             current_block.display_block(grid);
-            /*
-            sf::Vector2u p = current_block.get_pos();
-            if(p.y>0){
-                current_block.go_left();
-                game.get_grid().clean_grid();
-                game.get_grid().display_block(current_block);
-                game.get_grid().display_grid();
-            }
-        */}
+}
         if (event.key.code == sf::Keyboard::Up){
             current_block.rotate();
             game.get_grid().clean_grid();
