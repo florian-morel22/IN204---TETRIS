@@ -1,7 +1,7 @@
 #ifndef GRID_HPP
 # define GRID_HPP
 
-#include "../inc/block.hpp"
+
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
@@ -23,7 +23,7 @@ class Grid
         void clean_grid();
 
         void display_grid()const;
-        void display_block(Block&)const;
+        
 
         sf::RectangleShape case1;
         void draw_grid();

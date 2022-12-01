@@ -7,7 +7,7 @@
 
 Block_L::Block_L(unsigned i,unsigned j):Block( i, j)
 {
-    value = 1;
+    value = 3;
 
     rotate_value = 0;
 

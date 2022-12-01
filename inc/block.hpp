@@ -7,6 +7,10 @@
 #include <SFML/System.hpp> 
 #include <SFML/System/Vector2.hpp>
 
+#include "grid.hpp"
+#include "utils.hpp"
+
+
 class Block 
 {
     protected: //Les classes qui en heritent en ont besoin
@@ -31,7 +35,9 @@ class Block
         unsigned int get_value()const;
         std::vector<sf::Vector2u> get_list_squares()const;
 
-        void go_down();
+        void display_block(Grid&);
+
+        void go_down(Grid&);
         void go_right();
         void go_left();
 

@@ -1,8 +1,10 @@
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
+#include <cstdint>
 #include <cstdio>
 
 #include "../inc/grid.hpp"
+#include "game.hpp"
 
 
 void Grid::initialize_grid(unsigned int c, unsigned int l){
@@ -24,10 +26,10 @@ void Grid::initialize_grid(unsigned int c, unsigned int l){
 
     for (unsigned int i=0; i<nb_columns; i++){
         for (unsigned int j=0; j<nb_lines; j++){
-            grid_drawn[i][j].setSize({50,50});
+            grid_drawn[i][j].setSize({30/(0.7*WIN_WIDTH)*WIN_HEIGHT,30});
             // Faire en sorte que les carrés soient carrés. Utiliser des proportions
-            float i_ = 55*i;
-            float j_ = 55*j;
+            float i_ = 40/(0.7*WIN_WIDTH)*WIN_HEIGHT*i;
+            float j_ = 40*j;
             grid_drawn[i][j].setPosition({i_,j_});
         }
     }
@@ -74,21 +76,23 @@ void Grid::display_grid()const{
 };
 
 
-void Grid::display_block(Block &b)const {
-    for(size_t k=0; k<b.get_list_squares().size();k++){
-        unsigned int i = b.get_list_squares()[k].x;
-        unsigned int j = b.get_list_squares()[k].y;
-        grid[i][j] = b.get_value(); 
-    }
-}
-
 void Grid::draw_grid(){
     for (unsigned int i=0; i<nb_columns; i++){
         for (unsigned int j=0; j<nb_lines; j++){
-            if(grid[i][j]>0)
-                grid_drawn[i][j].setFillColor(sf::Color::White);
-            else
-                grid_drawn[i][j].setFillColor(sf::Color::Black);
+            if(grid[i][j]==0)
+                grid_drawn[i][j].setFillColor(sf::Color{255,255,255});
+            if(grid[i][j]==1)
+                grid_drawn[i][j].setFillColor(sf::Color{180,167,214});
+            if(grid[i][j]==2)
+                grid_drawn[i][j].setFillColor(sf::Color{180,167,214});
+            if(grid[i][j]==3)
+                grid_drawn[i][j].setFillColor(sf::Color{213,166,189});
+            if(grid[i][j]==4)
+                grid_drawn[i][j].setFillColor(sf::Color{182,215,168});
+            if(grid[i][j]==5)
+                grid_drawn[i][j].setFillColor(sf::Color{249,203,156});
+            if(grid[i][j]==6)
+                grid_drawn[i][j].setFillColor(sf::Color{234,153,153});
         }
     }
 }
@@ -96,4 +100,3 @@ void Grid::draw_grid(){
 sf::RectangleShape Grid::get_case_value_drawn(unsigned int i, unsigned int j)const{
     return grid_drawn[i][j];
 }
-

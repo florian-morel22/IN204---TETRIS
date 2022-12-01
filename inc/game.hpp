@@ -7,8 +7,8 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 
-#include "../inc/grid.hpp"
-#include "../inc/block.hpp"
+#include "grid.hpp"
+#include "block.hpp"
 #include "block_I.hpp"
 #include "block_L.hpp"
 #include "block_J.hpp"
@@ -17,7 +17,7 @@
 #include "block_Z.hpp"
 
 const int WIN_WIDTH = 800;
-const int WIN_HEIGHT = 600;
+const int WIN_HEIGHT = 800;
 
 class Game
 {
@@ -56,6 +56,6 @@ class Game
 
 };
 
-void InputHandler(sf::Event, Game &, Block &);
+void InputHandler(sf::Event, Game &, Block &, Grid &);
         
 #endif // ! GAME_HPP

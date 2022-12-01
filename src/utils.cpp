@@ -12,3 +12,10 @@ void transpose(std::vector<sf::Vector2u> &v){
     }
 }
 
+
+bool find_vector(std::vector<sf::Vector2u> list_vectors, sf::Vector2u vector){
+    for(size_t k=0; k<list_vectors.size(); k++)
+        if (list_vectors[k].x == vector.x && list_vectors[k].y == vector.y) 
+            return true;
+    return false;
+}

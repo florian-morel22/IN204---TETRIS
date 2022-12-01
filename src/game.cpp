@@ -27,7 +27,8 @@ void Game::Initialize(){
     menu_view.setViewport(sf::FloatRect(0.7f, 0.f, 0.3f, 1.f));
 
     bgGrid_.setSize(grid_view.getSize());
-    bgGrid_.setFillColor(sf::Color::Red);
+    printf("size : %f\n", grid_view.getSize().y);
+    bgGrid_.setFillColor(sf::Color(238,238,238));
     bgMenu_.setSize(menu_view.getSize());
     bgMenu_.setFillColor(sf::Color::Green);
 
@@ -43,8 +44,8 @@ void Game::Initialize(){
     list_Blocks.push_back(block_test);*/
 
 
-    current_block = new Block_S(5,0);
-    grid.display_block(*current_block);
+    current_block = new Block_I(5,0);
+    current_block->display_block(grid);
     grid.display_grid();
 
 }
@@ -64,16 +65,16 @@ void Game::Frame(){
     sf::Event event;
         while (window.pollEvent(event))
         {
-            InputHandler(event, *this, *current_block);
+            InputHandler(event, *this, *current_block, grid);
         }
 
     //On affiche tout !
     
     if(clock.getElapsedTime().asMilliseconds()>(1000/fps_grid)){
         
-        current_block->go_down();
+        current_block->go_down(grid);
         grid.clean_grid();
-        grid.display_block(*current_block);
+        current_block->display_block(grid);
         grid.display_grid();
         
         clock.restart();
@@ -118,7 +119,7 @@ Grid Game::get_grid()const{
 }
 
 
-void InputHandler(sf::Event event, Game &game, Block &current_block/*, sf::RenderWindow& window*/){
+void InputHandler(sf::Event event, Game &game, Block &current_block, Grid &grid/*, sf::RenderWindow& window*/){
     
     if (event.type == sf::Event::Closed)
             game.set_running(false);            
@@ -128,7 +129,7 @@ void InputHandler(sf::Event event, Game &game, Block &current_block/*, sf::Rende
         if (event.key.code == sf::Keyboard::Right){
             current_block.go_right();
             game.get_grid().clean_grid();
-            game.get_grid().display_block(current_block);/*
+            current_block.display_block(grid);/*
             sf::Vector2u p = current_block.get_pos();
             if(p.y + current_block.get_width()<game.get_grid().get_size().y){
                 current_block.go_right();
@@ -140,7 +141,8 @@ void InputHandler(sf::Event event, Game &game, Block &current_block/*, sf::Rende
         if (event.key.code == sf::Keyboard::Left){
             current_block.go_left();
             game.get_grid().clean_grid();
-            game.get_grid().display_block(current_block);/*
+            current_block.display_block(grid);
+            /*
             sf::Vector2u p = current_block.get_pos();
             if(p.y>0){
                 current_block.go_left();
@@ -152,7 +154,7 @@ void InputHandler(sf::Event event, Game &game, Block &current_block/*, sf::Rende
         if (event.key.code == sf::Keyboard::Up){
             current_block.rotate();
             game.get_grid().clean_grid();
-            game.get_grid().display_block(current_block);
+            current_block.display_block(grid);
         }
     }
 
