@@ -19,6 +19,8 @@ class Grid
         unsigned int **grid;
         sf::RectangleShape **grid_drawn;
 
+        std::vector<sf::Color> list_color_block;
+
     public:
         void initialize_grid(unsigned int l, unsigned int c);
         void clean_grid();
@@ -35,6 +37,9 @@ class Grid
         sf::RectangleShape get_case_value_drawn(unsigned int i, unsigned int j)const;
         
         sf::Vector2u get_size()const;
+
+        void set_color_block(unsigned int k, sf::Color c);
+        sf::Color get_color_block(unsigned int k)const;
 
         
         void Free_grid();

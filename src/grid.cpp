@@ -33,6 +33,15 @@ void Grid::initialize_grid(unsigned int c, unsigned int l){
             grid_drawn[i][j].setPosition({i_,j_});
         }
     }
+
+    set_color_block(0, sf::Color{255,255,255});
+    set_color_block(1, sf::Color{180,167,214});
+    set_color_block(2, sf::Color{180,167,214});
+    set_color_block(3, sf::Color{213,166,189});
+    set_color_block(4, sf::Color{182,215,168});
+    set_color_block(5, sf::Color{249,203,156});
+    set_color_block(6, sf::Color{234,153,153});
+    
 };
 
 void Grid::clean_grid(){
@@ -79,23 +88,18 @@ void Grid::display_grid()const{
 void Grid::draw_grid(){
     for (unsigned int i=0; i<nb_columns; i++){
         for (unsigned int j=0; j<nb_lines; j++){
-            if(grid[i][j]==0)
-                grid_drawn[i][j].setFillColor(sf::Color{255,255,255});
-            if(grid[i][j]==1)
-                grid_drawn[i][j].setFillColor(sf::Color{180,167,214});
-            if(grid[i][j]==2)
-                grid_drawn[i][j].setFillColor(sf::Color{180,167,214});
-            if(grid[i][j]==3)
-                grid_drawn[i][j].setFillColor(sf::Color{213,166,189});
-            if(grid[i][j]==4)
-                grid_drawn[i][j].setFillColor(sf::Color{182,215,168});
-            if(grid[i][j]==5)
-                grid_drawn[i][j].setFillColor(sf::Color{249,203,156});
-            if(grid[i][j]==6)
-                grid_drawn[i][j].setFillColor(sf::Color{234,153,153});
+                grid_drawn[i][j].setFillColor(get_color_block(grid[i][j]));
         }
     }
 }
+
+void Grid::set_color_block(unsigned int i, sf::Color c){
+    list_color_block[i] = c;
+}
+
+sf::Color Grid::get_color_block(unsigned int k)const{
+    return list_color_block[k];
+};
 
 sf::RectangleShape Grid::get_case_value_drawn(unsigned int i, unsigned int j)const{
     return grid_drawn[i][j];
