@@ -34,7 +34,6 @@ void Game::Initialize(){
 
     // Création et initialisation de la grille
     grid.initialize_grid(10, 20);
-    grid.clean_grid();
 
     // Création du frame rate
     fps_grid = 1;
@@ -44,7 +43,7 @@ void Game::Initialize(){
     list_Blocks.push_back(block_test);*/
 
 
-    current_block = new Block_I(5,0);
+    current_block = new Block_L(5,3);
     current_block->display_block(grid);
     grid.display_grid();
 
@@ -53,6 +52,7 @@ void Game::Initialize(){
 
 void Game::Shutdown(){
     grid.Free_grid();
+    delete[] current_block; // => core dumped ?????????????????????
     window.close();
     printf("Fermeture\n");
 }

@@ -24,6 +24,7 @@ class Grid
     public:
         void initialize_grid(unsigned int l, unsigned int c);
         void clean_grid();
+        void clean_grid_with_borders(); // clean TOUTE la grille avec des 1 (appeler clean grid juste apres pour ajouter les 0 au milieu)
 
         void display_grid()const;
         
