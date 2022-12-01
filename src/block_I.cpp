@@ -12,13 +12,12 @@ Block_I::Block_I(unsigned i,unsigned j):Block( i, j)
     rotate_value = 0;
 
     list_squares.push_back({i,j});
-    list_squares.push_back({i+1,j});
-    list_squares.push_back({i+2,j});
-    list_squares.push_back({i+3,j});
+    list_squares.push_back({i,j+1});
+    list_squares.push_back({i,j+2});
+    list_squares.push_back({i,j+3});
 }
 
 void Block_I::rotate(){
-    printf("Block_bar testtttt");
     if (rotate_value == 0){
 
         unsigned int i = list_squares[0].x;
@@ -37,11 +36,37 @@ void Block_I::rotate(){
         unsigned int i = list_squares[0].x;
         unsigned int j = list_squares[0].y;
         list_squares.clear();
-        list_squares.push_back({i+2,j+1});
-        list_squares.push_back({i+2,j});
-        list_squares.push_back({i+2,j-1});
+        list_squares.push_back({i-2,j+1});
+        list_squares.push_back({i-2,j});
+        list_squares.push_back({i-2,j-1});
+        list_squares.push_back({i-2,j-2});
+       
+        rotate_value++;
+    }
+
+    else if (rotate_value == 2){
+
+        unsigned int i = list_squares[0].x;
+        unsigned int j = list_squares[0].y;
+        list_squares.clear();
+        list_squares.push_back({i-1,j-2});
+        list_squares.push_back({i,j-2});
+        list_squares.push_back({i+1,j-2});
         list_squares.push_back({i+2,j-2});
        
         rotate_value++;
+    }
+
+    else if (rotate_value ==3) {
+
+        unsigned int i = list_squares[0].x;
+        unsigned int j = list_squares[0].y;
+        list_squares.clear();
+        list_squares.push_back({i+2,j-1});
+        list_squares.push_back({i+2,j});
+        list_squares.push_back({i+2,j+1});
+        list_squares.push_back({i+2,j+2});
+
+        rotate_value=0;
     }
 }
