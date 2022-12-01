@@ -3,7 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 
-#include "../inc/block_O.hpp"
+#include "../../inc/types_block/block_O.hpp"
 
 Block_O::Block_O(unsigned i,unsigned j)
 {

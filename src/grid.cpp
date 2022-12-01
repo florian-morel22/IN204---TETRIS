@@ -4,7 +4,7 @@
 #include <cstdio>
 
 #include "../inc/grid.hpp"
-#include "game.hpp"
+#include "../inc/game.hpp"
 
 
 void Grid::initialize_grid(unsigned int c, unsigned int l){

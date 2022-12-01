@@ -3,7 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 
-#include "../inc/block_Z.hpp"
+#include "../../inc/types_block/block_Z.hpp"
 
 Block_Z::Block_Z(unsigned i,unsigned j)
 {

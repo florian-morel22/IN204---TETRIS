@@ -3,30 +3,30 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 
-#include "../inc/block_L.hpp"
+#include "../../inc/types_block/block_I.hpp"
 
-Block_L::Block_L(unsigned i,unsigned j)
+Block_I::Block_I(unsigned i,unsigned j)
 {
-    value = 3;
+    value = 1;
 
     rotate_value = 0;
 
     list_squares.push_back({i,j});
-    list_squares.push_back({i+1,j});
-    list_squares.push_back({i+2,j});
     list_squares.push_back({i,j+1});
+    list_squares.push_back({i,j+2});
+    list_squares.push_back({i,j+3});
 }
 
-void Block_L::rotate(){
+void Block_I::rotate(){
     if (rotate_value == 0){
 
         unsigned int i = list_squares[0].x;
         unsigned int j = list_squares[0].y;
         list_squares.clear();
-        list_squares.push_back({i,j-1});
-        list_squares.push_back({i+1,j-1});
-        list_squares.push_back({i+1,j});
-        list_squares.push_back({i+1,j+1});
+        list_squares.push_back({i+1,j+2});
+        list_squares.push_back({i,j+2});
+        list_squares.push_back({i-1,j+2});
+        list_squares.push_back({i-2,j+2});
        
         rotate_value++;
     }
@@ -36,10 +36,10 @@ void Block_L::rotate(){
         unsigned int i = list_squares[0].x;
         unsigned int j = list_squares[0].y;
         list_squares.clear();
-        list_squares.push_back({i+2,j});
-        list_squares.push_back({i,j+1});
-        list_squares.push_back({i+1,j+1});
-        list_squares.push_back({i+2,j+1});
+        list_squares.push_back({i-2,j+1});
+        list_squares.push_back({i-2,j});
+        list_squares.push_back({i-2,j-1});
+        list_squares.push_back({i-2,j-2});
        
         rotate_value++;
     }
@@ -49,10 +49,10 @@ void Block_L::rotate(){
         unsigned int i = list_squares[0].x;
         unsigned int j = list_squares[0].y;
         list_squares.clear();
-        list_squares.push_back({i-1,j});
-        list_squares.push_back({i-1,j+1});
-        list_squares.push_back({i-1,j+2});
-        list_squares.push_back({i,j+2});
+        list_squares.push_back({i-1,j-2});
+        list_squares.push_back({i,j-2});
+        list_squares.push_back({i+1,j-2});
+        list_squares.push_back({i+2,j-2});
        
         rotate_value++;
     }
@@ -62,13 +62,11 @@ void Block_L::rotate(){
         unsigned int i = list_squares[0].x;
         unsigned int j = list_squares[0].y;
         list_squares.clear();
-        list_squares.push_back({i-1,j+1});
-        list_squares.push_back({i,j+1});
-        list_squares.push_back({i+1,j+1});
-        list_squares.push_back({i-1,j+2});
+        list_squares.push_back({i+2,j-1});
+        list_squares.push_back({i+2,j});
+        list_squares.push_back({i+2,j+1});
+        list_squares.push_back({i+2,j+2});
 
         rotate_value=0;
-
     }
-
 }

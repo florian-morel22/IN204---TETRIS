@@ -3,7 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 
-#include "../inc/block_J.hpp"
+#include "../../inc/types_block/block_J.hpp"
 
 Block_J::Block_J(unsigned i,unsigned j)
 {
