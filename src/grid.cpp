@@ -33,14 +33,14 @@ void Grid::initialize_grid(unsigned int c, unsigned int l){
             grid_drawn[i][j].setPosition({i_,j_});
         }
     }
-
-    set_color_block(0, sf::Color{255,255,255});
-    set_color_block(1, sf::Color{180,167,214});
-    set_color_block(2, sf::Color{180,167,214});
-    set_color_block(3, sf::Color{213,166,189});
-    set_color_block(4, sf::Color{182,215,168});
-    set_color_block(5, sf::Color{249,203,156});
-    set_color_block(6, sf::Color{234,153,153});
+                    
+    list_color_block.push_back({255,255,255});
+    list_color_block.push_back({180,167,214});
+    list_color_block.push_back({180,167,214});
+    list_color_block.push_back({213,166,189});
+    list_color_block.push_back({182,215,168});
+    list_color_block.push_back({249,203,156});
+    list_color_block.push_back({234,153,153});
     
 };
 
