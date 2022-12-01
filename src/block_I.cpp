@@ -11,8 +11,6 @@ Block_I::Block_I(unsigned i,unsigned j):Block( i, j)
 
     rotate_value = 0;
 
-    
-
     list_squares.push_back({i,j});
     list_squares.push_back({i+1,j});
     list_squares.push_back({i+2,j});

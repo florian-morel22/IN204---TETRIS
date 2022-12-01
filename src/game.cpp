@@ -8,9 +8,6 @@
 #include <vector>
 
 #include "../inc/game.hpp"
-#include "block_I.hpp"
-
-
 
 
 void Game::Run(){
@@ -46,7 +43,7 @@ void Game::Initialize(){
     list_Blocks.push_back(block_test);*/
 
 
-    current_block = new Block_I(5,0);
+    current_block = new Block_L(5,0);
     grid.display_block(*current_block);
     grid.display_grid();
 
@@ -128,7 +125,10 @@ void InputHandler(sf::Event event, Game &game, Block &current_block/*, sf::Rende
     if (event.type == sf::Event::KeyPressed){
         if (event.key.code == sf::Keyboard::Down)
             game.set_fps_grid(10);
-        if (event.key.code == sf::Keyboard::Right){/*
+        if (event.key.code == sf::Keyboard::Right){
+            current_block.go_right();
+            game.get_grid().clean_grid();
+            game.get_grid().display_block(current_block);/*
             sf::Vector2u p = current_block.get_pos();
             if(p.y + current_block.get_width()<game.get_grid().get_size().y){
                 current_block.go_right();
@@ -137,7 +137,10 @@ void InputHandler(sf::Event event, Game &game, Block &current_block/*, sf::Rende
                 game.get_grid().display_grid();
             }
         */}
-        if (event.key.code == sf::Keyboard::Left){/*
+        if (event.key.code == sf::Keyboard::Left){
+            current_block.go_left();
+            game.get_grid().clean_grid();
+            game.get_grid().display_block(current_block);/*
             sf::Vector2u p = current_block.get_pos();
             if(p.y>0){
                 current_block.go_left();
@@ -150,7 +153,6 @@ void InputHandler(sf::Event event, Game &game, Block &current_block/*, sf::Rende
             current_block.rotate();
             game.get_grid().clean_grid();
             game.get_grid().display_block(current_block);
-            game.get_grid().display_grid();
         }
     }
 

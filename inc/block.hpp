@@ -39,24 +39,4 @@ class Block
 
 };
 
-class Block_cube : public Block
-{
-    private:
-        
-    public:
-        Block_cube(unsigned int i, unsigned int j);
-        void rotate();
-
-};
-
-class Block_bar : public Block
-{
-    private:
-        
-    public:
-        Block_bar(unsigned int i, unsigned int j);
-        void rotate();
-
-};
-
 #endif //!BLOCK_HPP

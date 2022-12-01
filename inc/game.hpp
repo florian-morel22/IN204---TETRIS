@@ -9,6 +9,8 @@
 
 #include "../inc/grid.hpp"
 #include "../inc/block.hpp"
+#include "block_I.hpp"
+#include "block_L.hpp"
 
 const int WIN_WIDTH = 800;
 const int WIN_HEIGHT = 600;
