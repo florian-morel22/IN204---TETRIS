@@ -5,7 +5,7 @@
 
 #include "../inc/block_J.hpp"
 
-Block_J::Block_J(unsigned i,unsigned j):Block( i, j)
+Block_J::Block_J(unsigned i,unsigned j)
 {
     value = 2;
 

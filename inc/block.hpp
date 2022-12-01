@@ -27,7 +27,6 @@ class Block
         std::vector<sf::Vector2u> list_squares;
     
     public:
-        Block(unsigned int i,unsigned int j);
 
         sf::Vector2u get_pos() const;
         void set_pos(unsigned i,unsigned j);

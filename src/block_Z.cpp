@@ -5,7 +5,7 @@
 
 #include "../inc/block_Z.hpp"
 
-Block_Z::Block_Z(unsigned i,unsigned j):Block( i, j)
+Block_Z::Block_Z(unsigned i,unsigned j)
 {
     value = 6;
 

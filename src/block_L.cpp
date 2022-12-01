@@ -5,7 +5,7 @@
 
 #include "../inc/block_L.hpp"
 
-Block_L::Block_L(unsigned i,unsigned j):Block( i, j)
+Block_L::Block_L(unsigned i,unsigned j)
 {
     value = 3;
 

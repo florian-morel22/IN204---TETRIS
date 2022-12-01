@@ -5,7 +5,7 @@
 
 #include "../inc/block_O.hpp"
 
-Block_O::Block_O(unsigned i,unsigned j):Block( i, j)
+Block_O::Block_O(unsigned i,unsigned j)
 {
     value = 4;
 

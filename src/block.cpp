@@ -6,12 +6,6 @@
 #include "../inc/block.hpp"
 
 
-Block::Block(unsigned int i,unsigned int j)
-{
-    _pos.x = i;
-    _pos.y = j;
-};
-
 
 sf::Vector2u Block::get_pos()const{
     return _pos;
