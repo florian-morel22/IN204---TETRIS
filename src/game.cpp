@@ -9,8 +9,8 @@
 #include <vector>
 
 #include "../inc/game.hpp"
-#include "grid.hpp"
-#include "types_block/block_I.hpp"
+#include "../inc/grid.hpp"
+#include "../inc/types_block/block_I.hpp"
 
 
 void Game::Run(){

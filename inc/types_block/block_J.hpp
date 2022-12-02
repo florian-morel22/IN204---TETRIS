@@ -7,7 +7,7 @@
 #include <SFML/System.hpp> 
 #include <SFML/System/Vector2.hpp>
 
-#include "block.hpp"
+#include "../block.hpp"
 
 class Block_J : public Block
 {

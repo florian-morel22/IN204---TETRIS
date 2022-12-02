@@ -7,7 +7,7 @@
 #include <SFML/System.hpp> 
 #include <SFML/System/Vector2.hpp>
 
-#include "block.hpp"
+#include "../block.hpp"
 
 class Block_L : public Block
 {
@@ -15,7 +15,7 @@ class Block_L : public Block
         
     public:
         Block_L(unsigned int i, unsigned int j);
-        void rotate();
+        void rotate(Grid&);
 
 };
 
