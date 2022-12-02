@@ -29,6 +29,8 @@ class Game
         Grid get_grid()const;
         Block get_current_Block()const;
 
+        void generate_new_block();
+
     private:
 
         bool _running = true;

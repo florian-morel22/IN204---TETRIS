@@ -2,12 +2,15 @@
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Window/Event.hpp>
 #include <SFML/Window/Keyboard.hpp>
+#include <cstddef>
 #include <cstdio>
 #include <SFML/Window.hpp>
 #include <SFML/System.hpp>
 #include <vector>
 
 #include "../inc/game.hpp"
+#include "grid.hpp"
+#include "types_block/block_I.hpp"
 
 
 void Game::Run(){
@@ -27,7 +30,6 @@ void Game::Initialize(){
     menu_view.setViewport(sf::FloatRect(0.7f, 0.f, 0.3f, 1.f));
 
     bgGrid_.setSize(grid_view.getSize());
-    printf("size : %f\n", grid_view.getSize().y);
     bgGrid_.setFillColor(sf::Color(238,238,238));
     bgMenu_.setSize(menu_view.getSize());
     bgMenu_.setFillColor(sf::Color::Green);
@@ -71,8 +73,12 @@ void Game::Frame(){
     
     if(clock.getElapsedTime().asMilliseconds()>(1000/fps_grid)){
         
-        current_block->go_down(grid);
-        grid.clean_grid();
+        
+        current_block->hide_block(grid);
+
+        if(!current_block->go_down(grid))
+            generate_new_block();
+
         current_block->display_block(grid);
         grid.display_grid();
         
@@ -118,26 +124,53 @@ Grid Game::get_grid()const{
 }
 
 
+void Game::generate_new_block(){
+
+    //On incorpore le block à la grid avant d'en creer un nouveau.
+    for(size_t k=0; k<current_block->get_list_squares().size(); k++){
+        unsigned int i_ = current_block->get_list_squares()[k].x;
+        unsigned int j_ = current_block->get_list_squares()[k].y;
+        grid.set_case_value(i_, j_, current_block->get_value());
+    }
+
+    int value_new_block = 1+(std::rand()%7);
+    if (value_new_block==1)
+        current_block = new Block_I(4, 2);
+    else if (value_new_block==2)
+        current_block = new Block_J(4, 2);
+    else if (value_new_block==3)
+        current_block = new Block_L(4, 2);
+    else if (value_new_block==4)
+        current_block = new Block_O(4, 2);
+    else if (value_new_block==5)
+        current_block = new Block_S(4, 2);
+    else
+        current_block = new Block_Z(4, 2);
+}
+
+
+
+
 void InputHandler(sf::Event event, Game &game, Block &current_block, Grid &grid/*, sf::RenderWindow& window*/){
     
     if (event.type == sf::Event::Closed)
             game.set_running(false);            
     if (event.type == sf::Event::KeyPressed){
         if (event.key.code == sf::Keyboard::Down)
-            game.set_fps_grid(10);
+            game.set_fps_grid(20);
         if (event.key.code == sf::Keyboard::Right){
+            current_block.hide_block(grid);
             current_block.go_right(grid);
-            game.get_grid().clean_grid();
             current_block.display_block(grid);
         }
         if (event.key.code == sf::Keyboard::Left){
+            current_block.hide_block(grid);
             current_block.go_left(grid);
-            game.get_grid().clean_grid();
             current_block.display_block(grid);
 }
         if (event.key.code == sf::Keyboard::Up){
+            current_block.hide_block(grid);
             current_block.rotate();
-            game.get_grid().clean_grid();
             current_block.display_block(grid);
         }
     }

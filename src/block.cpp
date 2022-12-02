@@ -28,13 +28,20 @@ void Block::display_block(Grid &G){
     for(size_t k=0; k<list_squares.size();k++){
         unsigned int i = list_squares[k].x;
         unsigned int j = list_squares[k].y;
-        printf("i : %d, j : %d\n", i, j);
         G.set_case_value(i, j, value);
     }
 }
 
+void Block::hide_block(Grid &G){
+    for(size_t k=0; k<list_squares.size();k++){
+        unsigned int i = list_squares[k].x;
+        unsigned int j = list_squares[k].y;
+        G.set_case_value(i, j, 0);
+    }
+}
 
-void Block::go_down(Grid &G){
+
+bool Block::go_down(Grid &G){
 
     bool is_go_down = true;
 
@@ -54,6 +61,8 @@ void Block::go_down(Grid &G){
         }
     }
     else printf("kéblo ! Generer un nouveau block !\n");
+
+    return is_go_down;
 };
 
 

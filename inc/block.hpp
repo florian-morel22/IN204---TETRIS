@@ -35,8 +35,9 @@ class Block
         std::vector<sf::Vector2u> get_list_squares()const;
 
         void display_block(Grid&);
+        void hide_block(Grid&);
 
-        void go_down(Grid&);
+        bool go_down(Grid&);
         void go_right(Grid&);
         void go_left(Grid&);
 
