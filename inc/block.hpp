@@ -37,8 +37,8 @@ class Block
         void display_block(Grid&);
 
         void go_down(Grid&);
-        void go_right();
-        void go_left();
+        void go_right(Grid&);
+        void go_left(Grid&);
 
         virtual void rotate(){printf("Block testttt\n");};
 

@@ -53,19 +53,51 @@ void Block::go_down(Grid &G){
             list_squares[k].y+=1;
         }
     }
+    else printf("kéblo ! Generer un nouveau block !\n");
+};
+
+
+
+void Block::go_right(Grid &G){
+    
+    bool is_go_right = true;
+
+    //Est ce qu'on est bloque par la droite ?
+    for (unsigned int k = 0; k<list_squares.size(); k++){
+        unsigned int i_ = list_squares[k].x;
+        unsigned int j_ = list_squares[k].y;
+        if(G.get_case_value(i_+1, j_)!=0 && !find_vector(list_squares, {i_+1,j_}) ){
+            is_go_right= false;
+        }
+    }
+
+    //Si on est pas bloque, on peut aller a droite
+    if(is_go_right){
+        for (unsigned int k = 0; k<list_squares.size(); k++){
+            list_squares[k].x+=1;
+        }
+    }
     else printf("kéblo !\n");
 };
 
+void Block::go_left(Grid& G){
 
+    bool is_go_left = true;
 
-void Block::go_right(){
+    //Est ce qu'on est bloque par la gauche ?
     for (unsigned int k = 0; k<list_squares.size(); k++){
-        list_squares[k].x+=1;
+        unsigned int i_ = list_squares[k].x;
+        unsigned int j_ = list_squares[k].y;
+        if(G.get_case_value(i_-1, j_)!=0 && !find_vector(list_squares, {i_-1,j_}) ){
+            is_go_left= false;
+        }
     }
-};
 
-void Block::go_left(){
-    for (unsigned int k = 0; k<list_squares.size(); k++){
-        list_squares[k].x-=1;
+    //Si on est pas bloque, on peut aller a gauche
+    if(is_go_left){
+        for (unsigned int k = 0; k<list_squares.size(); k++){
+            list_squares[k].x+=-1;
+        }
     }
+    else printf("kéblo !\n");
 };

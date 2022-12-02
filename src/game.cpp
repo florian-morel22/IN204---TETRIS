@@ -126,12 +126,12 @@ void InputHandler(sf::Event event, Game &game, Block &current_block, Grid &grid/
         if (event.key.code == sf::Keyboard::Down)
             game.set_fps_grid(10);
         if (event.key.code == sf::Keyboard::Right){
-            current_block.go_right();
+            current_block.go_right(grid);
             game.get_grid().clean_grid();
             current_block.display_block(grid);
         }
         if (event.key.code == sf::Keyboard::Left){
-            current_block.go_left();
+            current_block.go_left(grid);
             game.get_grid().clean_grid();
             current_block.display_block(grid);
 }
