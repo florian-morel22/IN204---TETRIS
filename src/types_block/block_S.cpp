@@ -17,7 +17,7 @@ Block_S::Block_S(unsigned i,unsigned j)
     list_squares.push_back({i+2,j});
 }
 
-void Block_S::rotate(){
+void Block_S::rotate(Grid &g){
     if (rotate_value == 0){
 
         unsigned int i = list_squares[0].x;

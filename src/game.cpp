@@ -10,7 +10,6 @@
 
 #include "../inc/game.hpp"
 #include "../inc/grid.hpp"
-#include "../inc/types_block/block_I.hpp"
 
 
 void Game::Run(){
@@ -115,10 +114,6 @@ void Game::set_fps_grid(float new_fps_grid){
     fps_grid = new_fps_grid;
 }
 
-Block Game::get_current_Block()const{
-    return *current_block;
-}
-
 Grid Game::get_grid()const{
     return grid;
 }
@@ -170,7 +165,7 @@ void InputHandler(sf::Event event, Game &game, Block &current_block, Grid &grid/
 }
         if (event.key.code == sf::Keyboard::Up){
             current_block.hide_block(grid);
-            current_block.rotate();
+            current_block.rotate(grid);
             current_block.display_block(grid);
         }
     }

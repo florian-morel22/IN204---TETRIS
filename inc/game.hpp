@@ -27,7 +27,6 @@ class Game
         void set_fps_grid(float new_fps_grid);
       
         Grid get_grid()const;
-        Block get_current_Block()const;
 
         void generate_new_block();
 
@@ -42,9 +41,6 @@ class Game
         sf::RectangleShape bgMenu_;
 
         Grid grid;
-
-        //A suppr
-        //std::vector<Block> list_Blocks;
 
         Block *current_block;
 

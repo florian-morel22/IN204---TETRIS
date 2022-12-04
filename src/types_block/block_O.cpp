@@ -17,4 +17,6 @@ Block_O::Block_O(unsigned i,unsigned j)
     list_squares.push_back({i,j+1});
 }
 
-void Block_O::rotate(){};
+void Block_O::rotate(Grid& g){
+    printf("rien");
+};

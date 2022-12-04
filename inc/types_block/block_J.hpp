@@ -15,7 +15,7 @@ class Block_J : public Block
         
     public:
         Block_J(unsigned int i, unsigned int j);
-        void rotate();
+        void rotate(Grid&);
 
 };
 
