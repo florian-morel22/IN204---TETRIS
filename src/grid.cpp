@@ -2,6 +2,7 @@
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <cstdint>
 #include <cstdio>
+#include <exception>
 
 #include "../inc/grid.hpp"
 #include "../inc/game.hpp"
@@ -13,18 +14,25 @@ void Grid::initialize_grid(unsigned int c, unsigned int l){
 
     printf("%d, %d\n", nb_lines, nb_columns);
     
+
     //Allocation dynamique de la grille
-    grid = new unsigned int* [nb_columns+4];
-    //Gérer si grid = NULL
-    for (unsigned int i=0; i < nb_columns+4; i++)
-        grid[i] = new unsigned int [nb_lines+4]; //!!
+    //grid = new unsigned int* [nb_columns+4];
+    grid = NULL;
+    if (grid==NULL) throw std::runtime_error("Allocation de mémoire pour la grille");
+    for (unsigned int i=0; i < nb_columns+4; i++){
+        grid[i] = new unsigned int [nb_lines+4]; 
+        if (grid[i]==NULL) throw std::runtime_error("Allocation de mémoire pour la grille");
+    }
 
 
     //Allocation dynamique de la grille_drawn
     grid_drawn = new sf::RectangleShape* [nb_columns];
-    //Gérer si grid = NULL
-    for (unsigned int i=0; i < nb_columns; i++)
-        grid_drawn[i] = new sf::RectangleShape [nb_lines];//!!
+    if (grid==NULL) throw std::runtime_error("Allocation de mémoire pour la grille");
+    for (unsigned int i=0; i < nb_columns; i++){
+        grid_drawn[i] = new sf::RectangleShape [nb_lines];
+        if (grid[i]==NULL) throw std::runtime_error("Allocation de mémoire pour la grille");
+    }
+        
 
 
     for (unsigned int i=0; i<nb_columns; i++){
@@ -83,8 +91,11 @@ sf::Vector2u Grid::get_size()const{
 
 
 void Grid::Free_grid(){
-    for (unsigned int i=0; i < nb_columns+4; i++)
+    if (grid==NULL) throw (std::runtime_error("Liberation grille"));
+    for (unsigned int i=0; i < nb_columns+4; i++){
+        if (grid[i]==NULL) throw (std::runtime_error("Liberation grille"));
         delete[] grid[i];
+    }
     delete[] grid;
     printf("Grille libérée\n");
 };

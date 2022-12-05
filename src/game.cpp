@@ -6,6 +6,7 @@
 #include <cstdio>
 #include <SFML/Window.hpp>
 #include <SFML/System.hpp>
+#include <exception>
 #include <vector>
 
 #include "../inc/game.hpp"
@@ -34,7 +35,14 @@ void Game::Initialize(){
     bgMenu_.setFillColor(sf::Color::Green);
 
     // Création et initialisation de la grille
-    grid.initialize_grid(10, 20);
+    try{
+        grid.initialize_grid(10, 20);
+    }
+    catch(std::exception const& e){
+        printf("erreur : %s\n", e.what());
+        _running=false;
+        return;
+    }
 
     // Création du frame rate
     fps_grid = 1;
@@ -52,7 +60,13 @@ void Game::Initialize(){
 
 
 void Game::Shutdown(){
-    grid.Free_grid();
+    try{
+        grid.Free_grid();
+    }
+    catch(std::exception &e){
+        //printf("erreur : %s\n", e.what());
+        printf("erreur : %s\n", e.what());
+    }
     //delete[] current_block; // => core dumped ?????????????????????
     window.close();
     printf("Fermeture\n");
