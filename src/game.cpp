@@ -47,11 +47,6 @@ void Game::Initialize(){
     // Création du frame rate
     fps_grid = 1;
 
-    //Creation d'un block (A SUPPR)
-    /*Block_bar block_test(0, 1);
-    list_Blocks.push_back(block_test);*/
-
-
     current_block = new Block_L(5,3);
     current_block->display_block(grid);
     grid.display_grid();
