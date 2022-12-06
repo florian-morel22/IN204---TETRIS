@@ -143,22 +143,31 @@ void Game::generate_new_block()
         grid.set_case_value(i_, j_, current_block->get_value());
     }
 
+    //enum Block {I, J, L, O, S, Z, T};
     int value_new_block = 1+(std::rand()%8);
-    
-    if (value_new_block==1)
-        current_block = new Block_I(4, 2);
-    else if (value_new_block == 2)
-        current_block = new Block_J(4, 2);
-    else if (value_new_block == 3)
-        current_block = new Block_L(4, 2);
-    else if (value_new_block == 4)
-        current_block = new Block_O(4, 2);
-    else if (value_new_block == 5)
-        current_block = new Block_S(4, 2);
-    else if (value_new_block == 6)
-        current_block = new Block_Z(4, 2);
-    else
-        current_block = new Block_T(4, 2);
+
+    switch (value_new_block){
+        case 1:
+            current_block = new Block_I(4, 2);
+            break;
+        case 2:
+            current_block = new Block_J(4, 2);
+            break;
+        case 3:
+            current_block = new Block_L(4, 2);
+            break;
+        case 4:
+            current_block = new Block_O(4, 2);
+            break;
+        case 5:
+            current_block = new Block_S(4, 2);
+            break;
+        case 6:
+            current_block = new Block_Z(4, 2);
+            break;
+        default:
+            current_block = new Block_T(4, 2);
+    }
 }
 
 void InputHandler(sf::Event event, Game &game, Block &current_block, Grid &grid /*, sf::RenderWindow& window*/)
