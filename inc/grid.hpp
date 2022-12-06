@@ -8,6 +8,7 @@
 #include <SFML/System.hpp>
 #include <SFML/Graphics.hpp>
 #include <vector>
+#include "utils.hpp"
 
 
 class Grid
@@ -37,6 +38,8 @@ class Grid
 
         sf::RectangleShape get_case_value_drawn(unsigned int i, unsigned int j)const;
         
+        bool free_case(unsigned int i, unsigned int j, std::vector<sf::Vector2u> list_squares);
+
         sf::Vector2u get_size()const;
         unsigned int** get_grid_num()const;
         sf::RectangleShape** get_grid_drawn()const;
@@ -60,7 +63,8 @@ class Grid
 
             delete[] _grid;
             printf("Grille libérée\n");
-        };        
+        };
+
 };
 
 

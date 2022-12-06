@@ -21,10 +21,10 @@ Block_L::Block_L(unsigned i,unsigned j)
 void Block_L::rotate(Grid &G){
     if (rotate_value == 0){
         
-        unsigned int i = list_squares[0].x;
-        unsigned int j = list_squares[0].y;
-        if(G.get_case_value(i, j-1)!=0 && !find_vector(list_squares, {i,j-1}) && G.get_case_value(i+1, j-1)!=0 && !find_vector(list_squares, {i+1,j-1}) &&
-           G.get_case_value(i+1, j)!=0 && !find_vector(list_squares, {i+1,j}) && G.get_case_value(i+1, j+1)!=0 && !find_vector(list_squares, {i+1,j+1}) ){
+        unsigned int i = list_squares[1].x;
+        unsigned int j = list_squares[1].y;
+        if(G.free_case(i,j-1, list_squares) && G.free_case(i,j, list_squares) &&
+           G.free_case(i,j+1, list_squares) && G.free_case(i+1,j+1, list_squares) ){
             list_squares.clear();
             list_squares.push_back({i,j-1});
             list_squares.push_back({i,j});
@@ -36,45 +36,45 @@ void Block_L::rotate(Grid &G){
 
     else if (rotate_value == 1){
 
-        unsigned int i = list_squares[0].x;
-        unsigned int j = list_squares[0].y;
-        if(G.get_case_value(i+2, j)!=0 && !find_vector(list_squares, {i+2,j}) && G.get_case_value(i, j+1)!=0 && !find_vector(list_squares, {i,j+1}) &&
-           G.get_case_value(i+1, j+1)!=0 && !find_vector(list_squares, {i+1,j+1}) && G.get_case_value(i+2, j+1)!=0 && !find_vector(list_squares, {i+2,j+1}) ){
+        unsigned int i = list_squares[1].x;
+        unsigned int j = list_squares[1].y;
+        if(G.free_case(i+1,j, list_squares) && G.free_case(i,j, list_squares) &&
+           G.free_case(i-1,j, list_squares) && G.free_case(i-1,j+1, list_squares) ){
             list_squares.clear();
-            list_squares.push_back({i+2,j});
-            list_squares.push_back({i,j+1});
-            list_squares.push_back({i+1,j+1});
-            list_squares.push_back({i+2,j+1});
+            list_squares.push_back({i+1,j});
+            list_squares.push_back({i,j});
+            list_squares.push_back({i-1,j});
+            list_squares.push_back({i-1,j+1});
             rotate_value++;
         }
     }
 
     else if (rotate_value == 2){
 
-        unsigned int i = list_squares[0].x;
-        unsigned int j = list_squares[0].y;
-        if(G.get_case_value(i-1, j)!=0 && !find_vector(list_squares, {i-1,j}) && G.get_case_value(i-1, j+1)!=0 && !find_vector(list_squares, {i-1,j+1}) &&
-           G.get_case_value(i+1, j+1)!=0 && !find_vector(list_squares, {i+1,j+1}) && G.get_case_value(i-1, j+2)!=0 && !find_vector(list_squares, {i-1,j+2}) ){
+        unsigned int i = list_squares[1].x;
+        unsigned int j = list_squares[1].y;
+        if(G.free_case(i,j+1, list_squares) && G.free_case(i,j, list_squares) &&
+           G.free_case(i,j-1, list_squares) && G.free_case(i-1,j-1, list_squares) ){
             list_squares.clear();
-            list_squares.push_back({i-1,j});
-            list_squares.push_back({i-1,j+1});
-            list_squares.push_back({i-1,j+2});
-            list_squares.push_back({i,j+2});
+            list_squares.push_back({i,j+1});
+            list_squares.push_back({i,j});
+            list_squares.push_back({i,j-1});
+            list_squares.push_back({i-1,j-1});
             rotate_value++;
         }
     }
 
     else if (rotate_value ==3) {
 
-        unsigned int i = list_squares[0].x;
-        unsigned int j = list_squares[0].y;
-        if(G.get_case_value(i-1, j+1)!=0 && !find_vector(list_squares, {i-1,j+1}) && G.get_case_value(i, j+1)!=0 && !find_vector(list_squares, {i,j+1}) &&
-           G.get_case_value(i+1, j+1)!=0 && !find_vector(list_squares, {i+1,j+1}) && G.get_case_value(i-1, j+2)!=0 && !find_vector(list_squares, {i-1,j+2}) ){
+        unsigned int i = list_squares[1].x;
+        unsigned int j = list_squares[1].y;
+        if(G.free_case(i-1,j, list_squares) && G.free_case(i,j, list_squares) &&
+           G.free_case(i+1,j, list_squares) && G.free_case(i+1,j-1, list_squares) ){
             list_squares.clear();
-            list_squares.push_back({i-1,j+1});
-            list_squares.push_back({i,j+1});
-            list_squares.push_back({i+1,j+1});
-            list_squares.push_back({i-1,j+2});
+            list_squares.push_back({i-1,j});
+            list_squares.push_back({i,j});
+            list_squares.push_back({i+1,j});
+            list_squares.push_back({i+1,j-1});
             rotate_value=0;
         }
     }

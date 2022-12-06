@@ -50,7 +50,7 @@ void Grid::initialize_grid(unsigned int c, unsigned int l){
                     
     list_color_block.push_back({255,255,255}); // Couleur des cases vides
     list_color_block.push_back({180,167,214}); // Couleur du block I
-    list_color_block.push_back({180,167,214}); // ...
+    list_color_block.push_back({180,167,189}); // ...
     list_color_block.push_back({213,166,189}); // ..
     list_color_block.push_back({182,215,168}); // .
     list_color_block.push_back({249,203,156});
@@ -144,3 +144,10 @@ unsigned int** Grid::get_grid_num()const{
 sf::RectangleShape** Grid::get_grid_drawn()const{
     return grid_drawn;
 };
+
+bool Grid::free_case(unsigned int i, unsigned int j, std::vector<sf::Vector2u> list_squares){
+    if (get_case_value(i, j)==0 || find_vector(list_squares, {i,j}))
+        return true;
+    else 
+        return false;
+}
