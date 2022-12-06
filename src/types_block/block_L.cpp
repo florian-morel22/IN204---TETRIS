@@ -12,10 +12,10 @@ Block_L::Block_L(unsigned i,unsigned j)
 
     rotate_value = 0;
 
+    list_squares.push_back({i-1,j});
     list_squares.push_back({i,j});
     list_squares.push_back({i+1,j});
-    list_squares.push_back({i+2,j});
-    list_squares.push_back({i,j+1});
+    list_squares.push_back({i+1,j-1});
 }
 
 void Block_L::rotate(Grid &G){
@@ -27,8 +27,8 @@ void Block_L::rotate(Grid &G){
            G.get_case_value(i+1, j)!=0 && !find_vector(list_squares, {i+1,j}) && G.get_case_value(i+1, j+1)!=0 && !find_vector(list_squares, {i+1,j+1}) ){
             list_squares.clear();
             list_squares.push_back({i,j-1});
-            list_squares.push_back({i+1,j-1});
-            list_squares.push_back({i+1,j});
+            list_squares.push_back({i,j});
+            list_squares.push_back({i,j+1});
             list_squares.push_back({i+1,j+1});
             rotate_value++;
         }
