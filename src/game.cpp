@@ -52,7 +52,7 @@ void Game::Initialize()
     //permet de créer des nombres aléatoires par la suite
     std::srand((unsigned) time(NULL));
 
-    current_block = new Block_L(5,3);
+    current_block = new Block_T(5,3);
     current_block->display_block(grid);
     grid.display_grid();
 }
