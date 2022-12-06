@@ -17,57 +17,66 @@ Block_J::Block_J(unsigned i,unsigned j)
     list_squares.push_back({i+1,j});
 }
 
-void Block_J::rotate(Grid &g){
+void Block_J::rotate(Grid &G){
     if (rotate_value == 0){
 
         unsigned int i = list_squares[2].x;
         unsigned int j = list_squares[2].y;
-        list_squares.clear();
-        list_squares.push_back({i+1,j-1});
-        list_squares.push_back({i,j-1});
-        list_squares.push_back({i,j});
-        list_squares.push_back({i,j+1});
-       
-        rotate_value++;
+        if(G.free_case(i+1,j-1, list_squares) && G.free_case(i,j-1, list_squares) &&
+           G.free_case(i,j, list_squares) && G.free_case(i,j+1, list_squares) ){
+                list_squares.clear();
+                list_squares.push_back({i+1,j-1});
+                list_squares.push_back({i,j-1});
+                list_squares.push_back({i,j});
+                list_squares.push_back({i,j+1});
+                rotate_value++;
+        }    
+        
     }
 
     else if (rotate_value == 1){
 
         unsigned int i = list_squares[2].x;
         unsigned int j = list_squares[2].y;
-        list_squares.clear();
-        list_squares.push_back({i+1,j+1});
-        list_squares.push_back({i+1,j});
-        list_squares.push_back({i,j});
-        list_squares.push_back({i-1,j});
-       
-        rotate_value++;
+        if(G.free_case(i+1,j+1, list_squares) && G.free_case(i+1,j, list_squares) &&
+           G.free_case(i,j, list_squares) && G.free_case(i-1,j, list_squares) ){
+                list_squares.clear();
+                list_squares.push_back({i+1,j+1});
+                list_squares.push_back({i+1,j});
+                list_squares.push_back({i,j});
+                list_squares.push_back({i-1,j});
+                rotate_value++;
+        }
     }
 
     else if (rotate_value == 2){
 
         unsigned int i = list_squares[2].x;
         unsigned int j = list_squares[2].y;
-        list_squares.clear();
-        list_squares.push_back({i-1,j+1});
-        list_squares.push_back({i,j+1});
-        list_squares.push_back({i,j});
-        list_squares.push_back({i,j-1});
-       
-        rotate_value++;
+        if(G.free_case(i-1,j+1, list_squares) && G.free_case(i,j+1, list_squares) &&
+           G.free_case(i,j, list_squares) && G.free_case(i,j-1, list_squares) ){
+                list_squares.clear();
+                list_squares.push_back({i-1,j+1});
+                list_squares.push_back({i,j+1});
+                list_squares.push_back({i,j});
+                list_squares.push_back({i,j-1});
+                rotate_value++;
+        }
     }
 
     else if (rotate_value ==3) {
 
         unsigned int i = list_squares[2].x;
         unsigned int j = list_squares[2].y;
-        list_squares.clear();
-        list_squares.push_back({i-1,j-1});
-        list_squares.push_back({i-1,j});
-        list_squares.push_back({i,j});
-        list_squares.push_back({i+1,j});
-
-        rotate_value=0;
+        if(G.free_case(i-1,j-1, list_squares) && G.free_case(i-1,j, list_squares) &&
+           G.free_case(i,j, list_squares) && G.free_case(i+1,j, list_squares) ){
+                list_squares.clear();
+                list_squares.push_back({i-1,j-1});
+                list_squares.push_back({i-1,j});
+                list_squares.push_back({i,j});
+                list_squares.push_back({i+1,j});
+                rotate_value=0;
+        }
 
     }
 

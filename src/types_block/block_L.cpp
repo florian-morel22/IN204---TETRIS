@@ -4,7 +4,6 @@
 #include <SFML/System.hpp>
 
 #include "../../inc/types_block/block_L.hpp"
-#include "grid.hpp"
 
 Block_L::Block_L(unsigned i,unsigned j)
 {
