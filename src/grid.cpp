@@ -80,23 +80,27 @@ unsigned int Grid::get_case_value(unsigned int i, unsigned int j) const {
 
 sf::Vector2u Grid::get_size() const { return {nb_columns, nb_lines}; };
 
-/*template<typename type_grid>
+template<typename type_grid>
 void Grid::Free_grid(type_grid _grid, unsigned int _nb_col){
-    if (_grid==NULL) throw (std::runtime_error("Liberation grille"));
+    if (_grid == NULL)
+      throw(std::runtime_error("Liberation grille"));
 
-    for (unsigned int i=0; i < _nb_col ; i++){
-        if (_grid[i]==NULL) {
-            delete[] _grid;
-            printf("Grille libérée\n");
-            throw (std::runtime_error("Liberation grille"));
-        }
-            delete[] _grid[i];
-        printf("colonne %d de la grille libérée\n", i+1);
+    for (unsigned int i = 0; i < _nb_col; i++) {
+      if (_grid[i] == NULL) {
+        delete[] _grid;
+        printf("Grille libérée\n");
+        throw(std::runtime_error("Liberation grille"));
+      }
+      delete[] _grid[i];
+      printf("colonne %d de la grille libérée\n", i + 1);
     }
 
     delete[] _grid;
     printf("Grille libérée\n");
-};*/
+  };
+
+template void Grid::Free_grid<unsigned int**>(unsigned int**, unsigned int);
+template void Grid::Free_grid<sf::RectangleShape**>(sf::RectangleShape**, unsigned int);
 
 void Grid::display_grid() const {
   for (unsigned int i = 0; i < nb_columns + 4; ++i) {

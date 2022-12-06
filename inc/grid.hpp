@@ -49,23 +49,7 @@ public:
   sf::Color get_color_block(unsigned int k) const;
 
   template <typename type_grid>
-  void Free_grid(type_grid _grid, unsigned int _nb_col) {
-    if (_grid == NULL)
-      throw(std::runtime_error("Liberation grille"));
-
-    for (unsigned int i = 0; i < _nb_col; i++) {
-      if (_grid[i] == NULL) {
-        delete[] _grid;
-        printf("Grille libérée\n");
-        throw(std::runtime_error("Liberation grille"));
-      }
-      delete[] _grid[i];
-      printf("colonne %d de la grille libérée\n", i + 1);
-    }
-
-    delete[] _grid;
-    printf("Grille libérée\n");
-  };
+  void Free_grid(type_grid _grid, unsigned int _nb_col);
 };
 
 #endif
