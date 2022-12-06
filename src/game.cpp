@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Window/Event.hpp>
 #include <SFML/Window/Keyboard.hpp>
@@ -10,7 +11,7 @@
 #include <vector>
 
 #include "../inc/game.hpp"
-#include "../inc/grid.hpp"
+
 
 
 void Game::Run(){
@@ -47,10 +48,8 @@ void Game::Initialize(){
     // Création du frame rate
     fps_grid = 1;
 
-    //Creation d'un block (A SUPPR)
-    /*Block_bar block_test(0, 1);
-    list_Blocks.push_back(block_test);*/
-
+    //permet de créer des nombres aléatoires par la suite
+    std::srand((unsigned) time(NULL));
 
     current_block = new Block_L(5,3);
     current_block->display_block(grid);
@@ -61,7 +60,8 @@ void Game::Initialize(){
 
 void Game::Shutdown(){
     try{
-        grid.Free_grid();
+        grid.Free_grid<unsigned int**>(grid.get_grid_num(), grid.get_size().x+4);
+        grid.Free_grid<sf::RectangleShape**>(grid.get_grid_drawn(), grid.get_size().x);
     }
     catch(std::exception &e){
         //printf("erreur : %s\n", e.what());
@@ -143,6 +143,7 @@ void Game::generate_new_block(){
     }
 
     int value_new_block = 1+(std::rand()%7);
+    
     if (value_new_block==1)
         current_block = new Block_I(4, 2);
     else if (value_new_block==2)

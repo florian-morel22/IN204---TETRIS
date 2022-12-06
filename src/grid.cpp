@@ -16,21 +16,20 @@ void Grid::initialize_grid(unsigned int c, unsigned int l){
     
 
     //Allocation dynamique de la grille
-    //grid = new unsigned int* [nb_columns+4];
-    grid = NULL;
-    if (grid==NULL) throw std::runtime_error("Allocation de mémoire pour la grille");
+    grid_num = new unsigned int* [nb_columns+4];
+    if (grid_num==NULL) throw std::runtime_error("Allocation de mémoire pour la grille");
     for (unsigned int i=0; i < nb_columns+4; i++){
-        grid[i] = new unsigned int [nb_lines+4]; 
-        if (grid[i]==NULL) throw std::runtime_error("Allocation de mémoire pour la grille");
+        grid_num[i] = new unsigned int [nb_lines+4]; 
+        if (grid_num[i]==NULL) throw std::runtime_error("Allocation de mémoire pour la grille");
     }
 
 
-    //Allocation dynamique de la grille_drawn
+    //Allocation dynamique de la grille_drawn (Grille graphique)
     grid_drawn = new sf::RectangleShape* [nb_columns];
-    if (grid==NULL) throw std::runtime_error("Allocation de mémoire pour la grille");
+    if (grid_drawn==NULL) throw std::runtime_error("Allocation de mémoire pour la grille_drawn");
     for (unsigned int i=0; i < nb_columns; i++){
         grid_drawn[i] = new sf::RectangleShape [nb_lines];
-        if (grid[i]==NULL) throw std::runtime_error("Allocation de mémoire pour la grille");
+        if (grid_drawn[i]==NULL) throw std::runtime_error("Allocation de mémoire pour la grille_drawn");
     }
         
 
@@ -63,48 +62,54 @@ void Grid::clean_grid(){
     //Reinitialisation de la grille avec des 0
     for (unsigned int i=2; i < nb_columns+2; ++i)
         for (unsigned int j=2; j < nb_lines+2; ++j)
-            grid[i][j] = 0;
+            grid_num[i][j] = 0;
 }
 
 void Grid::clean_grid_with_borders(){
     //Reinitialisation des bords de la grille avec des 0
     for (unsigned int i=0; i < nb_columns+4; i++)
         for (unsigned int j=0; j < nb_lines+4; j++)
-        {   printf("i : %d, j : %d\n", i, j);
-            grid[i][j] = 1;}
-    printf("OK\n");
+            grid_num[i][j] = 1;
+
 }
 
 
 
 void Grid::set_case_value(unsigned int i, unsigned int j, unsigned int newValue){
-    grid[i][j] = newValue;
+    grid_num[i][j] = newValue;
 };
 
 unsigned int Grid::get_case_value(unsigned int i, unsigned int j)const{
-    return grid[i][j];
+    return grid_num[i][j];
 };
 
 sf::Vector2u Grid::get_size()const{
     return {nb_columns, nb_lines};
 };
 
-
-void Grid::Free_grid(){
-    if (grid==NULL) throw (std::runtime_error("Liberation grille"));
-    for (unsigned int i=0; i < nb_columns+4; i++){
-        if (grid[i]==NULL) throw (std::runtime_error("Liberation grille"));
-        delete[] grid[i];
+/*template<typename type_grid>
+void Grid::Free_grid(type_grid _grid, unsigned int _nb_col){
+    if (_grid==NULL) throw (std::runtime_error("Liberation grille"));
+    
+    for (unsigned int i=0; i < _nb_col ; i++){
+        if (_grid[i]==NULL) {
+            delete[] _grid;
+            printf("Grille libérée\n");
+            throw (std::runtime_error("Liberation grille"));
+        }
+            delete[] _grid[i];
+        printf("colonne %d de la grille libérée\n", i+1);
     }
-    delete[] grid;
+
+    delete[] _grid;
     printf("Grille libérée\n");
-};
+};*/
 
 
 void Grid::display_grid()const{
     for (unsigned int i=0; i < nb_columns+4; ++i) {
         for (unsigned int j=0; j < nb_lines+4; ++j){
-            printf("%d ", grid[i][j]);
+            printf("%d ", grid_num[i][j]);
         }
         printf("\n");
     }
@@ -115,7 +120,7 @@ void Grid::display_grid()const{
 void Grid::draw_grid(){
     for (unsigned int i=0; i<nb_columns; ++i){
         for (unsigned int j=0; j<nb_lines; ++j){
-                grid_drawn[i][j].setFillColor(get_color_block(grid[i+2][j+2]));
+                grid_drawn[i][j].setFillColor(get_color_block(grid_num[i+2][j+2]));
         }
     }
 }
@@ -131,3 +136,11 @@ sf::Color Grid::get_color_block(unsigned int k)const{
 sf::RectangleShape Grid::get_case_value_drawn(unsigned int i, unsigned int j)const{
     return grid_drawn[i][j];
 }
+
+unsigned int** Grid::get_grid_num()const{
+    return grid_num;
+};
+
+sf::RectangleShape** Grid::get_grid_drawn()const{
+    return grid_drawn;
+};

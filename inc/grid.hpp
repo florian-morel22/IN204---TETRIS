@@ -16,7 +16,7 @@ class Grid
     private:
         unsigned int nb_lines;
         unsigned int nb_columns;
-        unsigned int **grid;
+        unsigned int **grid_num;
         sf::RectangleShape **grid_drawn;
 
         std::vector<sf::Color> list_color_block;
@@ -38,13 +38,29 @@ class Grid
         sf::RectangleShape get_case_value_drawn(unsigned int i, unsigned int j)const;
         
         sf::Vector2u get_size()const;
+        unsigned int** get_grid_num()const;
+        sf::RectangleShape** get_grid_drawn()const;
 
         void set_color_block(unsigned int k, sf::Color c);
         sf::Color get_color_block(unsigned int k)const;
 
-        
-        void Free_grid();
-        
+        template<typename type_grid>
+        void Free_grid(type_grid _grid, unsigned int _nb_col){
+            if (_grid==NULL) throw (std::runtime_error("Liberation grille"));
+            
+            for (unsigned int i=0; i < _nb_col ; i++){
+                if (_grid[i]==NULL) {
+                    delete[] _grid;
+                    printf("Grille libérée\n");
+                    throw (std::runtime_error("Liberation grille"));
+                }
+                    delete[] _grid[i];
+                printf("colonne %d de la grille libérée\n", i+1);
+            }
+
+            delete[] _grid;
+            printf("Grille libérée\n");
+        };        
 };
 
 
