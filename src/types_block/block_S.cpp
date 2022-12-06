@@ -68,13 +68,13 @@ void Block_S::rotate(Grid &g){
 
         unsigned int i = list_squares[0].x;
         unsigned int j = list_squares[0].y;
-        if (g.free_case(i+2,j, list_squares) && g.free_case(i+1,j, list_squares) &&
-           g.free_case(i+1,j+1, list_squares) && g.free_case(i,j+1, list_squares)){
+        if (g.free_case(i-2,j, list_squares) && g.free_case(i-1,j, list_squares) &&
+           g.free_case(i-1,j-1, list_squares) && g.free_case(i,j-1, list_squares)){
         list_squares.clear();
-        list_squares.push_back({i+2,j});
-        list_squares.push_back({i+1,j});
-        list_squares.push_back({i+1,j+1});
-        list_squares.push_back({i,j+1});
+        list_squares.push_back({i-2,j});
+        list_squares.push_back({i-1,j});
+        list_squares.push_back({i-1,j-1});
+        list_squares.push_back({i,j-1});
 
         rotate_value=0;
         }
