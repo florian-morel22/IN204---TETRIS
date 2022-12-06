@@ -53,6 +53,7 @@ void Grid::initialize_grid(unsigned int c, unsigned int l) {
   list_color_block.push_back({182, 215, 168}); // .
   list_color_block.push_back({249, 203, 156});
   list_color_block.push_back({234, 153, 153});
+  list_color_block.push_back({38, 202, 107});
 };
 
 void Grid::clean_grid() {

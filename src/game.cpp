@@ -8,6 +8,7 @@
 
 
 #include "../inc/game.hpp"
+#include "types_block/block_T.hpp"
 
 
 
@@ -142,7 +143,7 @@ void Game::generate_new_block()
         grid.set_case_value(i_, j_, current_block->get_value());
     }
 
-    int value_new_block = 1+(std::rand()%7);
+    int value_new_block = 1+(std::rand()%8);
     
     if (value_new_block==1)
         current_block = new Block_I(4, 2);
@@ -154,8 +155,10 @@ void Game::generate_new_block()
         current_block = new Block_O(4, 2);
     else if (value_new_block == 5)
         current_block = new Block_S(4, 2);
-    else
+    else if (value_new_block == 6)
         current_block = new Block_Z(4, 2);
+    else
+        current_block = new Block_T(4, 2);
 }
 
 void InputHandler(sf::Event event, Game &game, Block &current_block, Grid &grid /*, sf::RenderWindow& window*/)
