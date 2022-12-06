@@ -1,14 +1,11 @@
-#include <SFML/Graphics.hpp>
-#include <SFML/Graphics/RectangleShape.hpp>
-#include <SFML/System/Vector2.hpp>
-#include <SFML/Window/Event.hpp>
-#include <SFML/Window/Keyboard.hpp>
 #include <cstddef>
 #include <cstdio>
-#include <SFML/Window.hpp>
-#include <SFML/System.hpp>
 #include <exception>
 #include <vector>
+
+#include <SFML/Window.hpp>
+#include <SFML/System.hpp>
+
 
 #include "../inc/game.hpp"
 
