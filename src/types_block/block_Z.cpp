@@ -22,6 +22,8 @@ void Block_Z::rotate(Grid &g){
 
         unsigned int i = list_squares[0].x;
         unsigned int j = list_squares[0].y;
+        if (g.free_case(i+2,j, list_squares) && g.free_case(i+2,j+1, list_squares) &&
+           g.free_case(i+1,j+1, list_squares) && g.free_case(i+1,j+2, list_squares)){
         list_squares.clear();
         list_squares.push_back({i+2,j});
         list_squares.push_back({i+2,j+1});
@@ -29,12 +31,15 @@ void Block_Z::rotate(Grid &g){
         list_squares.push_back({i+1,j+2});
        
         rotate_value++;
+        }
     }
 
     else if (rotate_value == 1){
 
         unsigned int i = list_squares[0].x;
         unsigned int j = list_squares[0].y;
+        if (g.free_case(i,j+2, list_squares) && g.free_case(i-1,j+2, list_squares) &&
+           g.free_case(i-1,j+1, list_squares) && g.free_case(i-2,j+1, list_squares)){
         list_squares.clear();
         list_squares.push_back({i,j+2});
         list_squares.push_back({i-1,j+2});
@@ -42,25 +47,31 @@ void Block_Z::rotate(Grid &g){
         list_squares.push_back({i-2,j+1});
        
         rotate_value++;
+        }
     }
 
     else if (rotate_value == 2){
 
         unsigned int i = list_squares[0].x;
         unsigned int j = list_squares[0].y;
+        if (g.free_case(i+2,j, list_squares) && g.free_case(i+1,j, list_squares) &&
+           g.free_case(i+1,j+1, list_squares) && g.free_case(i,j+1, list_squares)){
         list_squares.clear();
-        list_squares.push_back({i-2,j});
-        list_squares.push_back({i-2,j-1});
-        list_squares.push_back({i-1,j-1});
-        list_squares.push_back({i-1,j-2});
+        list_squares.push_back({i+2,j});
+        list_squares.push_back({i+1,j});
+        list_squares.push_back({i+1,j+1});
+        list_squares.push_back({i,j+1});
        
         rotate_value++;
+        }
     }
 
     else if (rotate_value ==3) {
 
         unsigned int i = list_squares[0].x;
         unsigned int j = list_squares[0].y;
+        if (g.free_case(i,j-2, list_squares) && g.free_case(i+1,j-2, list_squares) &&
+           g.free_case(i+1,j-1, list_squares) && g.free_case(i+2,j-1, list_squares)){
         list_squares.clear();
         list_squares.push_back({i,j-2});
         list_squares.push_back({i+1,j-2});
@@ -68,7 +79,7 @@ void Block_Z::rotate(Grid &g){
         list_squares.push_back({i+2,j-1});
 
         rotate_value=0;
-
+        }
     }
 
 }
