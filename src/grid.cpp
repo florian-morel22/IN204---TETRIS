@@ -1,5 +1,6 @@
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
+#include <SFML/System/Vector2.hpp>
 #include <cstdint>
 #include <cstdio>
 #include <exception>
@@ -7,7 +8,22 @@
 #include "../inc/game.hpp"
 #include "../inc/grid.hpp"
 
-void Grid::initialize_grid(unsigned int c, unsigned int l) {
+void Grid::initialize_grid(unsigned int c, unsigned int l, sf::Vector2f grid_view_size) {
+
+  float ratio = 1/(0.7 * WIN_WIDTH)*WIN_HEIGHT;
+  float d = 35;
+  float sp = 10;
+
+  sf::Vector2f dim_squares {d*ratio, d};
+  sf::Vector2f space_btw_squares {sp*ratio,sp};
+  sf::Vector2f pos_first_square {
+    (grid_view_size.x - c*dim_squares.x - (c-1)*space_btw_squares.x)/2,
+    (grid_view_size.y - l*dim_squares.y - (l-1)*space_btw_squares.y)/2
+    };
+  
+  printf("grid_view_size.x : %f\n", grid_view_size.x);
+
+
   nb_lines = l;
   nb_columns = c;
 
@@ -35,13 +51,14 @@ void Grid::initialize_grid(unsigned int c, unsigned int l) {
 
   for (unsigned int i = 0; i < nb_columns; i++) {
     for (unsigned int j = 0; j < nb_lines; j++) {
-      grid_drawn[i][j].setSize({30 / (0.7 * WIN_WIDTH) * WIN_HEIGHT, 30});
       // Faire en sorte que les carrés soient carrés. Utiliser des proportions
-      float i_ = 40 / (0.7 * WIN_WIDTH) * WIN_HEIGHT * i;
-      float j_ = 40 * j;
+      grid_drawn[i][j].setSize(dim_squares);
+      float i_ = (dim_squares.x+space_btw_squares.x)*i + pos_first_square.x;
+      float j_ = (dim_squares.y+space_btw_squares.y)*j + pos_first_square.y;
       grid_drawn[i][j].setPosition({i_, j_});
     }
   }
+
 
   clean_grid_with_borders();
   clean_grid();

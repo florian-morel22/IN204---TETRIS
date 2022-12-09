@@ -36,7 +36,7 @@ void Game::Initialize()
 
     // Création et initialisation de la grille
     try{
-        grid.initialize_grid(10, 20);
+        grid.initialize_grid(10, 20, grid_view.getSize());
     }
     catch(std::exception const& e){
         printf("erreur : %s\n", e.what());
@@ -82,13 +82,13 @@ void Game::Frame()
 
     // On affiche tout !
 
-    if (clock.getElapsedTime().asMilliseconds() > (1000 / fps_grid))
+    if(clock.getElapsedTime().asMilliseconds() > (1000 / fps_grid))
     {
 
         current_block->hide_block(grid);
 
-        if (!current_block->go_down(grid))
-            generate_new_block();
+        if(!current_block->go_down(grid))
+            if(!generate_new_block())printf("Perdu !!\n");
 
         current_block->display_block(grid);
         grid.display_grid();
@@ -132,7 +132,7 @@ Grid Game::get_grid() const
     return grid;
 }
 
-void Game::generate_new_block()
+bool Game::generate_new_block()
 {
 
     // On incorpore le block à la grid avant d'en creer un nouveau.
@@ -148,26 +148,34 @@ void Game::generate_new_block()
 
     switch (value_new_block){
         case 1:
-            current_block = new Block_I(4, 2);
+            current_block = new Block_I(6, 2);
             break;
         case 2:
-            current_block = new Block_J(4, 2);
+            current_block = new Block_J(6, 3);
             break;
         case 3:
-            current_block = new Block_L(4, 2);
+            current_block = new Block_L(6, 3);
             break;
         case 4:
-            current_block = new Block_O(4, 2);
+            current_block = new Block_O(6, 2);
             break;
         case 5:
-            current_block = new Block_S(4, 2);
+            current_block = new Block_S(5, 2);
             break;
         case 6:
-            current_block = new Block_Z(4, 2);
+            current_block = new Block_Z(5, 2);
             break;
         default:
-            current_block = new Block_T(4, 2);
+            current_block = new Block_T(6, 3);
     }
+    
+    for(size_t k=0;k<current_block->get_list_squares().size();k++)
+    {
+        int i_ = current_block->get_list_squares()[k].x;
+        int j_ = current_block->get_list_squares()[k].y;
+        if(grid.get_case_value(i_, j_)!=0) return false;
+    }
+    return true;
 }
 
 void InputHandler(sf::Event event, Game &game, Block &current_block, Grid &grid /*, sf::RenderWindow& window*/)

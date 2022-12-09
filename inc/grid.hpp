@@ -1,6 +1,7 @@
 #ifndef GRID_HPP
 #define GRID_HPP
 
+#include <SFML/System/Vector2.hpp>
 #include <vector>
 
 #include <SFML/Graphics.hpp>
@@ -22,7 +23,7 @@ private:
   std::vector<sf::Color> list_color_block;
 
 public:
-  void initialize_grid(unsigned int l, unsigned int c);
+  void initialize_grid(unsigned int l, unsigned int c, sf::Vector2f grid_view_size);
   void clean_grid();
   void clean_grid_with_borders();
   // clean TOUTE la grille avec des 1 (appeler clean

@@ -17,8 +17,8 @@
 #include "./types_block/block_Z.hpp"
 #include "./types_block/block_T.hpp"
 
-const int WIN_WIDTH = 800;
-const int WIN_HEIGHT = 800;
+const int WIN_WIDTH = 1500;
+const int WIN_HEIGHT = 1000;
 
 class Game
 {
@@ -29,7 +29,7 @@ class Game
       
         Grid get_grid()const;
 
-        void generate_new_block();
+        bool generate_new_block();
 
     private:
 
