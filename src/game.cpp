@@ -1,3 +1,4 @@
+#include <SFML/System/Vector2.hpp>
 #include <cstddef>
 #include <cstdio>
 #include <exception>
@@ -28,11 +29,16 @@ void Game::Initialize()
     // Création de 2 vues côtes a côte : a gauche la grille, a droite le menu
     grid_view.setViewport(sf::FloatRect(0.f, 0.f, 0.7f, 1.f));
     menu_view.setViewport(sf::FloatRect(0.7f, 0.f, 0.3f, 1.f));
+    pop_up_view.setViewport(sf::FloatRect(0.2f, 0.3f, 0.6f, 0.4f));
+    printf("getsize : %f, %f\n", grid_view.getSize().x, grid_view.getSize().y);
 
     bgGrid_.setSize(grid_view.getSize());
     bgGrid_.setFillColor(sf::Color(238, 238, 238));
     bgMenu_.setSize(menu_view.getSize());
     bgMenu_.setFillColor(sf::Color::Green);
+    bgPopUp_.setSize(pop_up_view.getSize());
+    bgPopUp_.setFillColor(sf::Color::White);
+
 
     // Création et initialisation de la grille
     try{
@@ -47,12 +53,25 @@ void Game::Initialize()
     // Création du frame rate
     fps_grid = 1;
 
+    if (!main_font_.loadFromFile("/home/ensta/IN204/project/repository/fonts/Berliner_Wand.ttf"))
+    {
+        printf("error of Berliner_Wand loading\n");
+    }
+    end_msg_.setFont(main_font_);
+    end_msg_.setString("Perdu !!");
+    end_msg_.setCharacterSize(100);
+    end_msg_.setFillColor(sf::Color::Blue);
+    sf::Vector2f center {pop_up_view.getSize().x/2,pop_up_view.getSize().y/2};
+    setTextCenterPosition(end_msg_, center);
+
+
     //permet de créer des nombres aléatoires par la suite
     std::srand((unsigned) time(NULL));
 
-    current_block = new Block_T(5,3);
+    generate_new_block();
     current_block->display_block(grid);
     grid.display_grid();
+
 }
 
 
@@ -82,13 +101,14 @@ void Game::Frame()
 
     // On affiche tout !
 
-    if(clock.getElapsedTime().asMilliseconds() > (1000 / fps_grid))
+    if(!_game_break && clock.getElapsedTime().asMilliseconds() > (1000 / fps_grid))
     {
 
         current_block->hide_block(grid);
 
         if(!current_block->go_down(grid))
-            if(!generate_new_block())printf("Perdu !!\n");
+            if(!generate_new_block())_game_break = !_game_break;
+
 
         current_block->display_block(grid);
         grid.display_grid();
@@ -103,9 +123,9 @@ void Game::Frame()
 
     // a suppr
     grid.draw_grid();
-    for (size_t i = 0; i < grid.get_size().x; i++)
+    for (int i = 0; i < grid.get_size().x; i++)
     {
-        for (size_t j = 0; j < grid.get_size().y; j++)
+        for (int j = 0; j < grid.get_size().y; j++)
         {
             window.draw(grid.get_case_value_drawn(i, j));
         }
@@ -113,6 +133,12 @@ void Game::Frame()
 
     window.setView(menu_view);
     window.draw(bgMenu_);
+
+    if(_game_break){
+        window.setView(pop_up_view);
+        window.draw(bgPopUp_);
+        window.draw(end_msg_);
+    }
 
     window.display();
 }
@@ -126,6 +152,11 @@ void Game::set_fps_grid(float new_fps_grid)
 {
     fps_grid = new_fps_grid;
 }
+
+void Game::set_game_break()
+{
+    _game_break = !_game_break;
+};
 
 Grid Game::get_grid() const
 {
@@ -173,7 +204,9 @@ bool Game::generate_new_block()
     {
         int i_ = current_block->get_list_squares()[k].x;
         int j_ = current_block->get_list_squares()[k].y;
-        if(grid.get_case_value(i_, j_)!=0) return false;
+        if(grid.get_case_value(i_, j_)!=0) {
+            return false;
+        }
     }
     return true;
 }

@@ -1,6 +1,8 @@
 #ifndef GAME_HPP
 # define GAME_HPP
 
+#include <SFML/Graphics/Font.hpp>
+#include <SFML/Graphics/RectangleShape.hpp>
 #include <iostream>
 
 #include <SFML/Window.hpp>
@@ -16,6 +18,8 @@
 #include "./types_block/block_S.hpp"
 #include "./types_block/block_Z.hpp"
 #include "./types_block/block_T.hpp"
+#include "utils.hpp"
+
 
 const int WIN_WIDTH = 1500;
 const int WIN_HEIGHT = 1000;
@@ -26,6 +30,7 @@ class Game
         void Run();
         void set_running(bool new_running);
         void set_fps_grid(float new_fps_grid);
+        void set_game_break();
       
         Grid get_grid()const;
 
@@ -34,12 +39,20 @@ class Game
     private:
 
         bool _running = true;
+        bool _game_break = false;
+
         sf::RenderWindow window;
         sf::View grid_view;
         sf::View menu_view;
+        sf::View pop_up_view;
+
 
         sf::RectangleShape bgGrid_;
         sf::RectangleShape bgMenu_;
+        sf::RectangleShape bgPopUp_;
+
+        sf::Font main_font_;
+        sf::Text end_msg_;
 
         Grid grid;
 

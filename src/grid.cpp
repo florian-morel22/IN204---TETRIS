@@ -1,5 +1,4 @@
-#include <SFML/Graphics/Color.hpp>
-#include <SFML/Graphics/RectangleShape.hpp>
+#include <SFML/Graphics.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <cstdint>
 #include <cstdio>
@@ -20,14 +19,10 @@ void Grid::initialize_grid(int c, int l, sf::Vector2f grid_view_size) {
     (grid_view_size.x - c*dim_squares.x - (c-1)*space_btw_squares.x)/2,
     (grid_view_size.y - l*dim_squares.y - (l-1)*space_btw_squares.y)/2
     };
-  
-  printf("grid_view_size.x : %f\n", grid_view_size.x);
 
 
   nb_lines = l;
   nb_columns = c;
-
-  printf("%d, %d\n", nb_lines, nb_columns);
 
   // Allocation dynamique de la grille
   grid_num = new int *[nb_columns + 4];

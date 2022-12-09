@@ -33,8 +33,7 @@ bool Block::go_down(Grid &G) {
   for (size_t k = 0; k < list_squares.size(); k++) {
     int i_ = list_squares[k].x;
     int j_ = list_squares[k].y;
-    if (G.get_case_value(i_, j_ + 1) != 0 &&
-        !find_vector(list_squares, {i_, j_ + 1})) {
+    if (!G.empty_case(i_, j_+1, list_squares)) {
       is_go_down = false;
     }
   }
@@ -53,8 +52,7 @@ void Block::go_right(Grid &G) {
   for (size_t k = 0; k < list_squares.size(); k++) {
     int i_ = list_squares[k].x;
     int j_ = list_squares[k].y;
-    if (G.get_case_value(i_ + 1, j_) != 0 &&
-        !find_vector(list_squares, {i_ + 1, j_})) {
+    if (!G.empty_case(i_+1, j_, list_squares)) {
       is_go_right = false;
     }
   }
@@ -73,8 +71,7 @@ void Block::go_left(Grid &G) {
   for (size_t k = 0; k < list_squares.size(); k++) {
     int i_ = list_squares[k].x;
     int j_ = list_squares[k].y;
-    if (G.get_case_value(i_ - 1, j_) != 0 &&
-        !find_vector(list_squares, {i_ - 1, j_})) {
+    if (!G.empty_case(i_-1, j_, list_squares)) {
       is_go_left = false;
     }
   }
