@@ -5,7 +5,7 @@
 
 #include "../../inc/types_block/block_L.hpp"
 
-Block_L::Block_L(unsigned i, unsigned j) {
+Block_L::Block_L(int i, int j) {
   value = 3;
   rotate_value = 0;
 
@@ -18,8 +18,8 @@ Block_L::Block_L(unsigned i, unsigned j) {
 void Block_L::rotate(Grid &G) {
   if (rotate_value == 0) {
 
-    unsigned int i = list_squares[1].x;
-    unsigned int j = list_squares[1].y;
+    int i = list_squares[1].x;
+    int j = list_squares[1].y;
     if (G.empty_case(i, j - 1, list_squares) &&
         G.empty_case(i, j, list_squares) &&
         G.empty_case(i, j + 1, list_squares) &&
@@ -35,8 +35,8 @@ void Block_L::rotate(Grid &G) {
 
   else if (rotate_value == 1) {
 
-    unsigned int i = list_squares[1].x;
-    unsigned int j = list_squares[1].y;
+    int i = list_squares[1].x;
+    int j = list_squares[1].y;
     if (G.empty_case(i + 1, j, list_squares) &&
         G.empty_case(i, j, list_squares) &&
         G.empty_case(i - 1, j, list_squares) &&
@@ -52,8 +52,8 @@ void Block_L::rotate(Grid &G) {
 
   else if (rotate_value == 2) {
 
-    unsigned int i = list_squares[1].x;
-    unsigned int j = list_squares[1].y;
+    int i = list_squares[1].x;
+    int j = list_squares[1].y;
     if (G.empty_case(i, j + 1, list_squares) &&
         G.empty_case(i, j, list_squares) &&
         G.empty_case(i, j - 1, list_squares) &&
@@ -69,8 +69,8 @@ void Block_L::rotate(Grid &G) {
 
   else if (rotate_value == 3) {
 
-    unsigned int i = list_squares[1].x;
-    unsigned int j = list_squares[1].y;
+    int i = list_squares[1].x;
+    int j = list_squares[1].y;
     if (G.empty_case(i - 1, j, list_squares) &&
         G.empty_case(i, j, list_squares) &&
         G.empty_case(i + 1, j, list_squares) &&

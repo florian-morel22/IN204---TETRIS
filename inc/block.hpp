@@ -5,21 +5,20 @@
 #include <map>
 
 #include <SFML/System.hpp>
-#include <SFML/System/Vector2.hpp>
 
 #include "grid.hpp"
 #include "utils.hpp"
 
 class Block {
 protected:
-  unsigned int value;
-  unsigned int rotate_value = 0;
-  std::vector<sf::Vector2u> list_squares;
+  int value;
+  int rotate_value = 0;
+  std::vector<sf::Vector2i> list_squares;
 
 public:
-  sf::Vector2u get_pos() const;
-  unsigned int get_value() const;
-  std::vector<sf::Vector2u> get_list_squares() const;
+  sf::Vector2i get_pos() const;
+  int get_value() const;
+  std::vector<sf::Vector2i> get_list_squares() const;
   void display_block(Grid &);
   void hide_block(Grid &);
   bool go_down(Grid &);
@@ -28,4 +27,4 @@ public:
   virtual void rotate(Grid &) = 0;
 };
 
-#endif //! BLOCK_HPP
+#endif // !BLOCK_HPP

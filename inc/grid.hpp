@@ -15,15 +15,15 @@
 class Grid {
 
 private:
-  unsigned int nb_lines;
-  unsigned int nb_columns;
-  unsigned int **grid_num;
+  int nb_lines;
+  int nb_columns;
+  int **grid_num;
   sf::RectangleShape **grid_drawn;
 
   std::vector<sf::Color> list_color_block;
 
 public:
-  void initialize_grid(unsigned int l, unsigned int c, sf::Vector2f grid_view_size);
+  void initialize_grid(int l, int c, sf::Vector2f grid_view_size);
   void clean_grid();
   void clean_grid_with_borders();
   // clean TOUTE la grille avec des 1 (appeler clean
@@ -34,23 +34,22 @@ public:
   sf::RectangleShape case1;
   void draw_grid();
 
-  void set_case_value(unsigned int i, unsigned int j, unsigned int newValue);
-  unsigned int get_case_value(unsigned int i, unsigned int j) const;
+  void set_case_value(int i, int j, int newValue);
+  int get_case_value(int i, int j) const;
 
-  sf::RectangleShape get_case_value_drawn(unsigned int i, unsigned int j) const;
+  sf::RectangleShape get_case_value_drawn(int i, int j) const;
 
-  bool empty_case(unsigned int i, unsigned int j,
-                 std::vector<sf::Vector2u> list_squares);
+  bool empty_case(int i, int j, std::vector<sf::Vector2i> list_squares);
 
-  sf::Vector2u get_size() const;
-  unsigned int **get_grid_num() const;
+  sf::Vector2i get_size() const;
+  int **get_grid_num() const;
   sf::RectangleShape **get_grid_drawn() const;
 
-  void set_color_block(unsigned int k, sf::Color c);
-  sf::Color get_color_block(unsigned int k) const;
+  void set_color_block(int k, sf::Color c);
+  sf::Color get_color_block(int k) const;
 
   template <typename type_grid>
-  void Free_grid(type_grid _grid, unsigned int _nb_col);
+  void Free_grid(type_grid _grid, int _nb_col);
 };
 
 #endif

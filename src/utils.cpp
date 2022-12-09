@@ -3,7 +3,7 @@
 
 #include "../inc/utils.hpp"
 
-void transpose(std::vector<sf::Vector2u> &v) {
+void transpose(std::vector<sf::Vector2i> &v) {
 
   for (size_t i = 0; i < v.size(); i++) {
     int x = v[i].x;
@@ -12,7 +12,7 @@ void transpose(std::vector<sf::Vector2u> &v) {
   }
 }
 
-bool find_vector(std::vector<sf::Vector2u> list_vectors, sf::Vector2u vector) {
+bool find_vector(std::vector<sf::Vector2i> list_vectors, sf::Vector2i vector) {
   for (size_t k = 0; k < list_vectors.size(); k++)
     if (list_vectors[k].x == vector.x && list_vectors[k].y == vector.y)
       return true;

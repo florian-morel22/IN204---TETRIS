@@ -5,7 +5,7 @@
 
 #include "../../inc/types_block/block_Z.hpp"
 
-Block_Z::Block_Z(unsigned i, unsigned j) {
+Block_Z::Block_Z(int i, int j) {
   value = 6;
   rotate_value = 0;
 
@@ -18,8 +18,8 @@ Block_Z::Block_Z(unsigned i, unsigned j) {
 void Block_Z::rotate(Grid &g) {
   if (rotate_value == 0) {
 
-    unsigned int i = list_squares[0].x;
-    unsigned int j = list_squares[0].y;
+    int i = list_squares[0].x;
+    int j = list_squares[0].y;
     if (g.empty_case(i + 2, j, list_squares) &&
         g.empty_case(i + 2, j + 1, list_squares) &&
         g.empty_case(i + 1, j + 1, list_squares) &&
@@ -36,8 +36,8 @@ void Block_Z::rotate(Grid &g) {
 
   else if (rotate_value == 1) {
 
-    unsigned int i = list_squares[0].x;
-    unsigned int j = list_squares[0].y;
+    int i = list_squares[0].x;
+    int j = list_squares[0].y;
     if (g.empty_case(i, j + 2, list_squares) &&
         g.empty_case(i - 1, j + 2, list_squares) &&
         g.empty_case(i - 1, j + 1, list_squares) &&
@@ -54,8 +54,8 @@ void Block_Z::rotate(Grid &g) {
 
   else if (rotate_value == 2) {
 
-    unsigned int i = list_squares[0].x;
-    unsigned int j = list_squares[0].y;
+    int i = list_squares[0].x;
+    int j = list_squares[0].y;
     if (g.empty_case(i - 2, j, list_squares) &&
         g.empty_case(i - 2, j - 1, list_squares) &&
         g.empty_case(i - 1, j - 1, list_squares) &&
@@ -72,8 +72,8 @@ void Block_Z::rotate(Grid &g) {
 
   else if (rotate_value == 3) {
 
-    unsigned int i = list_squares[0].x;
-    unsigned int j = list_squares[0].y;
+    int i = list_squares[0].x;
+    int j = list_squares[0].y;
     if (g.empty_case(i, j - 2, list_squares) &&
         g.empty_case(i + 1, j - 2, list_squares) &&
         g.empty_case(i + 1, j - 1, list_squares) &&

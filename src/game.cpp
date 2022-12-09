@@ -58,7 +58,7 @@ void Game::Initialize()
 
 void Game::Shutdown(){
     try{
-        grid.Free_grid<unsigned int**>(grid.get_grid_num(), grid.get_size().x+4);
+        grid.Free_grid<int**>(grid.get_grid_num(), grid.get_size().x+4);
         grid.Free_grid<sf::RectangleShape**>(grid.get_grid_drawn(), grid.get_size().x);
     }
     catch(std::exception &e){
@@ -103,9 +103,9 @@ void Game::Frame()
 
     // a suppr
     grid.draw_grid();
-    for (unsigned int i = 0; i < grid.get_size().x; i++)
+    for (size_t i = 0; i < grid.get_size().x; i++)
     {
-        for (unsigned int j = 0; j < grid.get_size().y; j++)
+        for (size_t j = 0; j < grid.get_size().y; j++)
         {
             window.draw(grid.get_case_value_drawn(i, j));
         }
@@ -138,8 +138,8 @@ bool Game::generate_new_block()
     // On incorpore le block à la grid avant d'en creer un nouveau.
     for (size_t k = 0; k < current_block->get_list_squares().size(); k++)
     {
-        unsigned int i_ = current_block->get_list_squares()[k].x;
-        unsigned int j_ = current_block->get_list_squares()[k].y;
+        int i_ = current_block->get_list_squares()[k].x;
+        int j_ = current_block->get_list_squares()[k].y;
         grid.set_case_value(i_, j_, current_block->get_value());
     }
 
@@ -168,7 +168,7 @@ bool Game::generate_new_block()
         default:
             current_block = new Block_T(6, 3);
     }
-    
+
     for(size_t k=0;k<current_block->get_list_squares().size();k++)
     {
         int i_ = current_block->get_list_squares()[k].x;
