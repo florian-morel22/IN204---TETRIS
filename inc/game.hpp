@@ -23,6 +23,8 @@
 
 const int WIN_WIDTH = 1500;
 const int WIN_HEIGHT = 1000;
+const std::string MY_PATH = "/home/IN204/project";
+
 
 class Game
 {

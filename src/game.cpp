@@ -9,6 +9,7 @@
 
 
 #include "../inc/game.hpp"
+#include "types_block/block_I.hpp"
 #include "types_block/block_T.hpp"
 
 
@@ -53,7 +54,7 @@ void Game::Initialize()
     // Création du frame rate
     fps_grid = 1;
 
-    if (!main_font_.loadFromFile("/home/ensta/IN204/project/repository/fonts/Berliner_Wand.ttf"))
+    if (!main_font_.loadFromFile(MY_PATH + "/repository/fonts/Berliner_Wand.ttf"))
     {
         printf("error of Berliner_Wand loading\n");
     }
@@ -67,6 +68,8 @@ void Game::Initialize()
 
     //permet de créer des nombres aléatoires par la suite
     std::srand((unsigned) time(NULL));
+
+    current_block = new Block_I(3,4);
 
     generate_new_block();
     current_block->display_block(grid);
