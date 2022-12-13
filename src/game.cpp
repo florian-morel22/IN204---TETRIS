@@ -74,10 +74,9 @@ Game::~Game(){
         grid.Free_grid<sf::RectangleShape**>(grid.get_grid_drawn(), grid.get_size().x);
     }
     catch(std::exception &e){
-        //printf("erreur : %s\n", e.what());
         printf("erreur : %s\n", e.what());
     }
-    delete current_block; // => core dumped ?????????????????????
+    //delete current_block; // => core dumped ?????????????????????
     window.close();
     printf("Fermeture\n");
 }

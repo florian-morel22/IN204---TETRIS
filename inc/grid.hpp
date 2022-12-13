@@ -48,8 +48,8 @@ public:
   void set_color_block(int k, sf::Color c);
   sf::Color get_color_block(int k) const;
 
-  template <typename type_grid>
-  void Free_grid(type_grid _grid, int _nb_col);
+  template <typename TYPE_GRID>
+  void Free_grid(TYPE_GRID _grid, int _nb_col);
 };
 
 #endif

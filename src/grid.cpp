@@ -92,8 +92,8 @@ int Grid::get_case_value(int i, int j) const {
 
 sf::Vector2i Grid::get_size() const { return {nb_columns, nb_lines}; };
 
-template<typename type_grid>
-void Grid::Free_grid(type_grid _grid, int _nb_col){
+template<typename TYPE_GRID>
+void Grid::Free_grid(TYPE_GRID _grid, int _nb_col){
     if (_grid == NULL)
       throw(std::runtime_error("Liberation grille"));
 
