@@ -7,12 +7,9 @@
 #include <SFML/Window.hpp>
 #include <SFML/System.hpp>
 
-
 #include "../inc/game.hpp"
 #include "types_block/block_I.hpp"
 #include "types_block/block_T.hpp"
-
-
 
 void Game::Run(){
     while (_running)
