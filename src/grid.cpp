@@ -7,6 +7,9 @@
 #include "../inc/game.hpp"
 #include "../inc/grid.hpp"
 
+namespace TETRIS {
+
+
 void Grid::initialize_grid(int c, int l, sf::Vector2f grid_view_size) {
 
   float ratio = 1/(0.7 * WIN_WIDTH)*WIN_HEIGHT;
@@ -154,3 +157,6 @@ bool Grid::empty_case(int i, int j, std::vector<sf::Vector2i> list_squares) {
   else
     return false;
 }
+
+
+} // !namespace TETRIS

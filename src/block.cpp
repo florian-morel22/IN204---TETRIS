@@ -1,9 +1,11 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
-#include <SFML/System/Vector2.hpp>
 #include <SFML/Window.hpp>
 
 #include "../inc/block.hpp"
+
+namespace TETRIS {
+
 
 int Block::get_value() const { return value; }
 
@@ -82,3 +84,6 @@ void Block::go_left(Grid &G) {
   } else
     printf("kéblo !\n");
 };
+
+
+} // !namespace TETRIS

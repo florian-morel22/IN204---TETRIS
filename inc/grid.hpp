@@ -12,6 +12,9 @@
 
 #include "utils.hpp"
 
+namespace TETRIS{
+
+
 class Grid {
 
 private:
@@ -52,4 +55,7 @@ public:
   void Free_grid(TYPE_GRID _grid, int _nb_col);
 };
 
-#endif
+
+} // !namespace TETRIS
+
+#endif // !GRID_HPP

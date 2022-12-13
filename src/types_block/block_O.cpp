@@ -5,6 +5,9 @@
 
 #include "../../inc/types_block/block_O.hpp"
 
+namespace TETRIS {
+
+
 Block_O::Block_O(int i, int j) {
   value = 4;
   rotate_value = 0;
@@ -16,3 +19,6 @@ Block_O::Block_O(int i, int j) {
 }
 
 void Block_O::rotate(Grid &g){};
+
+
+} // !namespace TETRIS

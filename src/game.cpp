@@ -1,4 +1,3 @@
-#include <SFML/System/Vector2.hpp>
 #include <cstddef>
 #include <cstdio>
 #include <exception>
@@ -8,8 +7,9 @@
 #include <SFML/System.hpp>
 
 #include "../inc/game.hpp"
-#include "types_block/block_I.hpp"
-#include "types_block/block_T.hpp"
+
+namespace TETRIS {
+
 
 void Game::Run(){
     while (_running)
@@ -243,3 +243,6 @@ void InputHandler(sf::Event event, Game &game, Block &current_block, Grid &grid 
             game.set_fps_grid(1);
     // Ajouter les actions que l'utilisateur peut realiser
 };
+
+
+} // !namespace TETRIS

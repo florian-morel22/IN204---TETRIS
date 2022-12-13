@@ -6,6 +6,9 @@
 #include "grid.hpp"
 #include "utils.hpp"
 
+namespace TETRIS {
+
+
 class Block {
 
 	protected:
@@ -25,5 +28,8 @@ class Block {
 
 		virtual void rotate(Grid &) = 0;
 };
+
+
+} // !namespace TETRIS
 
 #endif // !BLOCK_HPP

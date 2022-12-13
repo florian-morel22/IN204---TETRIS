@@ -4,6 +4,9 @@
 
 #include "../inc/utils.hpp"
 
+namespace TETRIS {
+
+
 void transpose(std::vector<sf::Vector2i> &v) {
 
   for (size_t i = 0; i < v.size(); i++) {
@@ -28,3 +31,6 @@ void setTextCenterPosition(sf::Text &txt, sf::Vector2f& center)
 
     txt.setPosition(center + offset);
 }
+
+
+} // !namespace TETRIS

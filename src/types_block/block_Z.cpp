@@ -5,6 +5,9 @@
 
 #include "../../inc/types_block/block_Z.hpp"
 
+namespace TETRIS {
+
+
 Block_Z::Block_Z(int i, int j) {
   value = 6;
   rotate_value = 0;
@@ -88,3 +91,6 @@ void Block_Z::rotate(Grid &g) {
     }
   }
 }
+
+
+} // !namespace TETRIS

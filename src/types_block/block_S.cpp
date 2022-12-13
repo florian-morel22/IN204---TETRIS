@@ -5,6 +5,9 @@
 
 #include "../../inc/types_block/block_S.hpp"
 
+namespace TETRIS {
+
+
 Block_S::Block_S(int i, int j)
 {
   value = 5;
@@ -96,3 +99,6 @@ void Block_S::rotate(Grid &g)
     }
   }
 }
+
+
+} // !namespace TETRIS

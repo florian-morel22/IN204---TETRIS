@@ -1,7 +1,10 @@
 #ifndef BLOCK_L_HPP
 # define BLOCK_L_HPP
 
-#include "../block.hpp"
+# include "../block.hpp"
+
+namespace TETRIS {
+
 
 class Block_L : public Block {
 
@@ -10,4 +13,7 @@ class Block_L : public Block {
     void rotate(Grid &);
 };
 
-#endif // !BLOCK_L_hpp
+
+} // !namespace TETRIS
+
+#endif // !BLOCK_L_HPP
