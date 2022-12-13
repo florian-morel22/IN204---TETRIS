@@ -8,7 +8,7 @@
 
 #include "../inc/game.hpp"
 
-namespace TETRIS {
+namespace tetris {
 
 
 void Game::Run(){
@@ -245,4 +245,4 @@ void InputHandler(sf::Event event, Game &game, Block &current_block, Grid &grid 
 };
 
 
-} // !namespace TETRIS
+} // !namespace tetris

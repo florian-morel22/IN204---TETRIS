@@ -20,7 +20,7 @@
 #include "./types_block/block_T.hpp"
 #include "utils.hpp"
 
-namespace TETRIS {
+namespace tetris {
 
 
 const int WIN_WIDTH = 1500;
@@ -77,6 +77,6 @@ class Game
 void InputHandler(sf::Event, Game &, Block &, Grid &);
 
 
-} // !namespace TETRIS
+} // !namespace tetris
 
 #endif // !GAME_HPP

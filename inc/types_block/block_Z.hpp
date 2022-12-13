@@ -3,7 +3,7 @@
 
 # include "../block.hpp"
 
-namespace TETRIS {
+namespace tetris {
 
 
 class Block_Z : public Block {
@@ -14,6 +14,6 @@ class Block_Z : public Block {
 };
 
 
-} // !namespace TETRIS
+} // !namespace tetris
 
 #endif // !BLOCK_Z_HPP

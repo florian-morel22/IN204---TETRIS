@@ -6,7 +6,7 @@
 #include <SFML/System.hpp>
 #include <SFML/Graphics.hpp>
 
-namespace TETRIS {
+namespace tetris {
 
 
 void transpose(std::vector<sf::Vector2i> &);
@@ -16,6 +16,6 @@ bool find_vector(std::vector<sf::Vector2i>, sf::Vector2i);
 void setTextCenterPosition(sf::Text&, sf::Vector2f&);
 
 
-} // !namespace TETRIS
+} // !namespace tetris
 
 #endif // !UTILS_HPP

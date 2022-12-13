@@ -4,7 +4,7 @@
 
 #include "../inc/block.hpp"
 
-namespace TETRIS {
+namespace tetris {
 
 
 int Block::get_value() const { return value; }
@@ -86,4 +86,4 @@ void Block::go_left(Grid &G) {
 };
 
 
-} // !namespace TETRIS
+} // !namespace tetris

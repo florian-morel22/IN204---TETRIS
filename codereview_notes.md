@@ -19,7 +19,7 @@
   --> Putting // !BLOCK_HPP one each or none
 * Put template in upper case, this is regular practice (`template <typename TYPE_GRID>`) :white_check_mark:
 * You could use a namespace for your project
-  --> `namespace tetris {...}` so your constants are not in global scope (some library have some too)
+  --> `namespace tetris {...}` so your constants are not in global scope (some library have some too) :white_check_mark:
 
 ```cpp
 #include "inc/game.hpp"

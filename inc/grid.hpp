@@ -12,7 +12,7 @@
 
 #include "utils.hpp"
 
-namespace TETRIS{
+namespace tetris{
 
 
 class Grid {
@@ -56,6 +56,6 @@ public:
 };
 
 
-} // !namespace TETRIS
+} // !namespace tetris
 
 #endif // !GRID_HPP

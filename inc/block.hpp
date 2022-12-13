@@ -6,7 +6,7 @@
 #include "grid.hpp"
 #include "utils.hpp"
 
-namespace TETRIS {
+namespace tetris {
 
 
 class Block {
@@ -30,6 +30,6 @@ class Block {
 };
 
 
-} // !namespace TETRIS
+} // !namespace tetris
 
 #endif // !BLOCK_HPP

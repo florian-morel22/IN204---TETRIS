@@ -6,7 +6,7 @@
 #include "../../inc/types_block/block_T.hpp"
 #include "grid.hpp"
 
-namespace TETRIS {
+namespace tetris {
 
 
 
@@ -79,4 +79,4 @@ void Block_T::rotate(Grid &G) {
 }
 
 
-} // !namespace TETRIS
+} // !namespace tetris

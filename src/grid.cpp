@@ -7,7 +7,7 @@
 #include "../inc/game.hpp"
 #include "../inc/grid.hpp"
 
-namespace TETRIS {
+namespace tetris {
 
 
 void Grid::initialize_grid(int c, int l, sf::Vector2f grid_view_size) {
@@ -159,4 +159,4 @@ bool Grid::empty_case(int i, int j, std::vector<sf::Vector2i> list_squares) {
 }
 
 
-} // !namespace TETRIS
+} // !namespace tetris

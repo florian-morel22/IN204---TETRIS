@@ -2,10 +2,10 @@
 
 #include "../inc/game.hpp"
 
-using namespace TETRIS;
+using namespace tetris;
 
 int main (){
-    TETRIS::Game* game = new TETRIS::Game();
+    tetris::Game* game = new tetris::Game();
     game->Run();
     delete game;
     return 0;

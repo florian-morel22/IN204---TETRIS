@@ -4,7 +4,7 @@
 
 #include "../inc/utils.hpp"
 
-namespace TETRIS {
+namespace tetris {
 
 
 void transpose(std::vector<sf::Vector2i> &v) {
@@ -33,4 +33,4 @@ void setTextCenterPosition(sf::Text &txt, sf::Vector2f& center)
 }
 
 
-} // !namespace TETRIS
+} // !namespace tetris
