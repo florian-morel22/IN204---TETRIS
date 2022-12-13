@@ -5,7 +5,8 @@
 
 #include "../../inc/types_block/block_S.hpp"
 
-Block_S::Block_S(int i, int j) {
+Block_S::Block_S(int i, int j)
+{
   value = 5;
   rotate_value = 0;
 
@@ -15,15 +16,18 @@ Block_S::Block_S(int i, int j) {
   list_squares.push_back({i + 2, j});
 }
 
-void Block_S::rotate(Grid &g) {
-  if (rotate_value == 0) {
+void Block_S::rotate(Grid &g)
+{
+  if (rotate_value == 0)
+  {
 
     int i = list_squares[0].x;
     int j = list_squares[0].y;
     if (g.empty_case(i, j - 2, list_squares) &&
         g.empty_case(i, j - 1, list_squares) &&
         g.empty_case(i + 1, j - 1, list_squares) &&
-        g.empty_case(i + 1, j, list_squares)) {
+        g.empty_case(i + 1, j, list_squares))
+    {
       list_squares.clear();
       list_squares.push_back({i, j - 2});
       list_squares.push_back({i, j - 1});
@@ -33,14 +37,16 @@ void Block_S::rotate(Grid &g) {
     }
   }
 
-  else if (rotate_value == 1) {
+  else if (rotate_value == 1)
+  {
 
     int i = list_squares[0].x;
     int j = list_squares[0].y;
     if (g.empty_case(i + 2, j, list_squares) &&
         g.empty_case(i + 1, j, list_squares) &&
         g.empty_case(i + 1, j + 1, list_squares) &&
-        g.empty_case(i, j + 1, list_squares)) {
+        g.empty_case(i, j + 1, list_squares))
+    {
       list_squares.clear();
       list_squares.push_back({i + 2, j});
       list_squares.push_back({i + 1, j});
@@ -50,14 +56,16 @@ void Block_S::rotate(Grid &g) {
     }
   }
 
-  else if (rotate_value == 2) {
+  else if (rotate_value == 2)
+  {
 
     int i = list_squares[0].x;
     int j = list_squares[0].y;
     if (g.empty_case(i, j + 2, list_squares) &&
         g.empty_case(i, j + 1, list_squares) &&
         g.empty_case(i - 1, j + 1, list_squares) &&
-        g.empty_case(i - 1, j, list_squares)) {
+        g.empty_case(i - 1, j, list_squares))
+    {
       list_squares.clear();
       list_squares.push_back({i, j + 2});
       list_squares.push_back({i, j + 1});
@@ -68,14 +76,16 @@ void Block_S::rotate(Grid &g) {
     }
   }
 
-  else if (rotate_value == 3) {
+  else if (rotate_value == 3)
+  {
 
     int i = list_squares[0].x;
     int j = list_squares[0].y;
     if (g.empty_case(i - 2, j, list_squares) &&
         g.empty_case(i - 1, j, list_squares) &&
         g.empty_case(i - 1, j - 1, list_squares) &&
-        g.empty_case(i, j - 1, list_squares)) {
+        g.empty_case(i, j - 1, list_squares))
+    {
       list_squares.clear();
       list_squares.push_back({i - 2, j});
       list_squares.push_back({i - 1, j});
