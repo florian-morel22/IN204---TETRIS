@@ -14,13 +14,11 @@
 
 
 void Game::Run(){
-    Initialize();
     while (_running)
         Frame();
-    Shutdown();
 }
 
-void Game::Initialize()
+Game::Game()
 {
     printf("Initialisation\n");
     window.create(sf::VideoMode(WIN_WIDTH, WIN_HEIGHT), "TETRIS", sf::Style::Close);
@@ -71,7 +69,7 @@ void Game::Initialize()
 }
 
 
-void Game::Shutdown(){
+Game::~Game(){
     try{
         grid.Free_grid<int**>(grid.get_grid_num(), grid.get_size().x+4);
         grid.Free_grid<sf::RectangleShape**>(grid.get_grid_drawn(), grid.get_size().x);
@@ -80,7 +78,7 @@ void Game::Shutdown(){
         //printf("erreur : %s\n", e.what());
         printf("erreur : %s\n", e.what());
     }
-    //delete[] current_block; // => core dumped ?????????????????????
+    delete current_block; // => core dumped ?????????????????????
     window.close();
     printf("Fermeture\n");
 }
