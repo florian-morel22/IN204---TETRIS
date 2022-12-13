@@ -41,7 +41,7 @@ int main (){
 
 ### game.{cpp,hpp} ###
 
-* use size_t for unsigned constant
+* use size_t for unsigned constant :white_check_mark:
 ```cpp
 const int WIN_WIDTH = 800;
 const int WIN_HEIGHT = 800;
@@ -85,7 +85,7 @@ void Game::Initialize()
 ```
 
 * `std::srand()`, use C++ random when possible
-* don't use `NULL`, use `nullptr` (first is an untyped define, the other is a null pointer)
+* don't use `NULL`, use `nullptr` (first is an untyped define, the other is a null pointer) :white_check_mark:
 * `new` is not catched for memory allocation error
 * don't use `unsigned int`, way too verbose and error prone, use `size_t`, it's designed for that
 * Use smart pointers to wrap allocated memory when possible

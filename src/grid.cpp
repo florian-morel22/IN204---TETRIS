@@ -29,21 +29,21 @@ void Grid::initialize_grid(int c, int l, sf::Vector2f grid_view_size) {
 
   // Allocation dynamique de la grille
   grid_num = new int *[nb_columns + 4];
-  if (grid_num == NULL)
+  if (grid_num == nullptr)
     throw std::runtime_error("Allocation de mémoire pour la grille");
   for (int i = 0; i < nb_columns + 4; i++) {
     grid_num[i] = new int[nb_lines + 4];
-    if (grid_num[i] == NULL)
+    if (grid_num[i] == nullptr)
       throw std::runtime_error("Allocation de mémoire pour la grille");
   }
 
   // Allocation dynamique de la grille_drawn (Grille graphique)
   grid_drawn = new sf::RectangleShape *[nb_columns];
-  if (grid_drawn == NULL)
+  if (grid_drawn == nullptr)
     throw std::runtime_error("Allocation de mémoire pour la grille_drawn");
   for (int i = 0; i < nb_columns; i++) {
     grid_drawn[i] = new sf::RectangleShape[nb_lines];
-    if (grid_drawn[i] == NULL)
+    if (grid_drawn[i] == nullptr)
       throw std::runtime_error("Allocation de mémoire pour la grille_drawn");
   }
 
@@ -97,11 +97,11 @@ sf::Vector2i Grid::get_size() const { return {nb_columns, nb_lines}; };
 
 template<typename TYPE_GRID>
 void Grid::Free_grid(TYPE_GRID _grid, int _nb_col){
-    if (_grid == NULL)
+    if (_grid == nullptr)
       throw(std::runtime_error("Liberation grille"));
 
     for (int i = 0; i < _nb_col; i++) {
-      if (_grid[i] == NULL) {
+      if (_grid[i] == nullptr) {
         delete[] _grid;
         printf("Grille libérée\n");
         throw(std::runtime_error("Liberation grille"));

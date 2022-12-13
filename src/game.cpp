@@ -60,7 +60,7 @@ Game::Game()
     setTextCenterPosition(end_msg_, center);
 
     //permet de créer des nombres aléatoires par la suite
-    std::srand((unsigned) time(NULL));
+    std::srand((unsigned) time(nullptr));
 
     generate_new_block();
     current_block->display_block(grid);
