@@ -34,6 +34,7 @@ class Game
       
         Grid get_grid()const;
 
+        void integrate_block_to_grid();
         bool generate_new_block();
 
     private:

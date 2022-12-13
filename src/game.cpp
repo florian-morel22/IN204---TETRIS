@@ -39,7 +39,6 @@ void Game::Initialize()
     bgPopUp_.setSize(pop_up_view.getSize());
     bgPopUp_.setFillColor(sf::Color::White);
 
-
     // Création et initialisation de la grille
     try{
         grid.initialize_grid(10, 20, grid_view.getSize());
@@ -53,7 +52,7 @@ void Game::Initialize()
     // Création du frame rate
     fps_grid = 1;
 
-    if (!main_font_.loadFromFile("/home/ensta/IN204/project/repository/fonts/Berliner_Wand.ttf"))
+    if (!main_font_.loadFromFile("/home/joyeux/Documents/IN204/project/repository/fonts/Berliner_Wand.ttf"))
     {
         printf("error of Berliner_Wand loading\n");
     }
@@ -64,14 +63,11 @@ void Game::Initialize()
     sf::Vector2f center {pop_up_view.getSize().x/2,pop_up_view.getSize().y/2};
     setTextCenterPosition(end_msg_, center);
 
-
     //permet de créer des nombres aléatoires par la suite
     std::srand((unsigned) time(NULL));
-
     generate_new_block();
     current_block->display_block(grid);
     grid.display_grid();
-
 }
 
 
@@ -106,8 +102,11 @@ void Game::Frame()
 
         current_block->hide_block(grid);
 
-        if(!current_block->go_down(grid))
+        if(!current_block->go_down(grid)){
+            integrate_block_to_grid();
             if(!generate_new_block())_game_break = !_game_break;
+        }
+           
 
 
         current_block->display_block(grid);
@@ -163,17 +162,19 @@ Grid Game::get_grid() const
     return grid;
 }
 
-bool Game::generate_new_block()
+void Game::integrate_block_to_grid()
 {
-
     // On incorpore le block à la grid avant d'en creer un nouveau.
-    for (size_t k = 0; k < current_block->get_list_squares().size(); k++)
-    {
+
+    for (size_t k = 0; k < current_block->get_list_squares().size(); k++){
         int i_ = current_block->get_list_squares()[k].x;
         int j_ = current_block->get_list_squares()[k].y;
         grid.set_case_value(i_, j_, current_block->get_value());
     }
+}
 
+bool Game::generate_new_block()
+{
     //enum Block {I, J, L, O, S, Z, T};
     int value_new_block = 1+(std::rand()%8);
 
@@ -200,6 +201,7 @@ bool Game::generate_new_block()
             current_block = new Block_T(6, 3);
     }
 
+    // Condition for the end of the game
     for(size_t k=0;k<current_block->get_list_squares().size();k++)
     {
         int i_ = current_block->get_list_squares()[k].x;
