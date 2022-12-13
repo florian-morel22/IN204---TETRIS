@@ -15,13 +15,11 @@
 
 
 void Game::Run(){
-    Initialize();
     while (_running)
         Frame();
-    Shutdown();
 }
 
-void Game::Initialize()
+Game::Game()
 {
     printf("Initialisation\n");
     window.create(sf::VideoMode(WIN_WIDTH, WIN_HEIGHT), "TETRIS", sf::Style::Close);
@@ -40,7 +38,6 @@ void Game::Initialize()
     bgPopUp_.setSize(pop_up_view.getSize());
     bgPopUp_.setFillColor(sf::Color::White);
 
-
     // Création et initialisation de la grille
     try{
         grid.initialize_grid(10, 20, grid_view.getSize());
@@ -54,7 +51,7 @@ void Game::Initialize()
     // Création du frame rate
     fps_grid = 1;
 
-    if (!main_font_.loadFromFile(MY_PATH + "/repository/fonts/Berliner_Wand.ttf"))
+    if (!main_font_.loadFromFile("../fonts/Berliner_Wand.ttf"))
     {
         printf("error of Berliner_Wand loading\n");
     }
@@ -65,20 +62,16 @@ void Game::Initialize()
     sf::Vector2f center {pop_up_view.getSize().x/2,pop_up_view.getSize().y/2};
     setTextCenterPosition(end_msg_, center);
 
-
     //permet de créer des nombres aléatoires par la suite
     std::srand((unsigned) time(NULL));
-
-    current_block = new Block_I(3,4);
 
     generate_new_block();
     current_block->display_block(grid);
     grid.display_grid();
-
 }
 
 
-void Game::Shutdown(){
+Game::~Game(){
     try{
         grid.Free_grid<int**>(grid.get_grid_num(), grid.get_size().x+4);
         grid.Free_grid<sf::RectangleShape**>(grid.get_grid_drawn(), grid.get_size().x);
@@ -87,7 +80,7 @@ void Game::Shutdown(){
         //printf("erreur : %s\n", e.what());
         printf("erreur : %s\n", e.what());
     }
-    //delete[] current_block; // => core dumped ?????????????????????
+    delete current_block; // => core dumped ?????????????????????
     window.close();
     printf("Fermeture\n");
 }
@@ -109,8 +102,11 @@ void Game::Frame()
 
         current_block->hide_block(grid);
 
-        if(!current_block->go_down(grid))
+        if(!current_block->go_down(grid)){
+            integrate_block_to_grid();
             if(!generate_new_block())_game_break = !_game_break;
+        }
+           
 
 
         current_block->display_block(grid);
@@ -166,17 +162,19 @@ Grid Game::get_grid() const
     return grid;
 }
 
-bool Game::generate_new_block()
+void Game::integrate_block_to_grid()
 {
-
     // On incorpore le block à la grid avant d'en creer un nouveau.
-    for (size_t k = 0; k < current_block->get_list_squares().size(); k++)
-    {
+
+    for (size_t k = 0; k < current_block->get_list_squares().size(); k++){
         int i_ = current_block->get_list_squares()[k].x;
         int j_ = current_block->get_list_squares()[k].y;
         grid.set_case_value(i_, j_, current_block->get_value());
     }
+}
 
+bool Game::generate_new_block()
+{
     //enum Block {I, J, L, O, S, Z, T};
     int value_new_block = 1+(std::rand()%8);
 
@@ -203,6 +201,7 @@ bool Game::generate_new_block()
             current_block = new Block_T(6, 3);
     }
 
+    // Condition for the end of the game
     for(size_t k=0;k<current_block->get_list_squares().size();k++)
     {
         int i_ = current_block->get_list_squares()[k].x;

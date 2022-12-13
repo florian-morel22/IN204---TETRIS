@@ -30,12 +30,17 @@ class Game
 {
      public:
         void Run();
+
+        Game();
+        ~Game();
+
         void set_running(bool new_running);
         void set_fps_grid(float new_fps_grid);
         void set_game_break();
       
         Grid get_grid()const;
 
+        void integrate_block_to_grid();
         bool generate_new_block();
 
     private:
@@ -63,9 +68,6 @@ class Game
         sf::Clock clock;
         float fps_grid;
 
-
-        void Initialize();
-        void Shutdown();
         void Frame();
 
 };
