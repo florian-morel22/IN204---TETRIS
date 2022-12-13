@@ -50,7 +50,7 @@ Game::Game()
     // Création du frame rate
     fps_grid = 1;
 
-    if (!main_font_.loadFromFile("/home/joyeux/Documents/IN204/project/repository/fonts/Berliner_Wand.ttf"))
+    if (!main_font_.loadFromFile("../fonts/Berliner_Wand.ttf"))
     {
         printf("error of Berliner_Wand loading\n");
     }
