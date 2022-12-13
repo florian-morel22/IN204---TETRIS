@@ -17,7 +17,7 @@
   --> space between function name and parenthesis ? (main.cpp vs game.cpp)
   --> return after parenthesis ? (avoid mixing one liners)
   --> Putting // !BLOCK_HPP one each or none
-* Put template in upper case, this is regular practice (`template <typename TYPE_GRID>`)
+* Put template in upper case, this is regular practice (`template <typename TYPE_GRID>`) :white_check_mark:
 * You could use a namespace for your project
   --> `namespace tetris {...}` so your constants are not in global scope (some library have some too)
 
@@ -67,9 +67,6 @@ int main()
 {
   Game<int> g1;
   Game<char> g2(1);
-}
-```
-
 * Document the includes, especially SMFL + don't mix std includes and SFML
 * `void Game::Run()`
   --> This looks like a ctors + run + dtors, do a proper class
