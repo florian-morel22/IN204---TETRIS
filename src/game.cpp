@@ -70,8 +70,8 @@ Game::Game()
 
 Game::~Game(){
     try{
-        grid.Free_grid<int**>(grid.get_grid_num(), grid.get_size().x+4);
-        grid.Free_grid<sf::RectangleShape**>(grid.get_grid_drawn(), grid.get_size().x);
+        grid.Call_Free_grid("grid_num");
+        grid.Call_Free_grid("grid_drawn");
     }
     catch(std::exception &e){
         printf("erreur : %s\n", e.what());
@@ -84,6 +84,8 @@ Game::~Game(){
 void Game::Frame()
 {
 
+    bool go_to_next_gameFrame = !end_game && clock.getElapsedTime().asMilliseconds() > (1000 / fps_grid);
+
     // Gestion de des events utilisateurs
     sf::Event event;
     while (window.pollEvent(event))
@@ -92,19 +94,14 @@ void Game::Frame()
     }
 
     // On affiche tout !
-
-    if(!_game_break && clock.getElapsedTime().asMilliseconds() > (1000 / fps_grid))
+    
+    if(go_to_next_gameFrame)
     {
-
         current_block->hide_block(grid);
-
         if(!current_block->go_down(grid)){
             integrate_block_to_grid();
-            if(!generate_new_block())_game_break = !_game_break;
+            if(!generate_new_block()) end_game = !end_game;
         }
-           
-
-
         current_block->display_block(grid);
         grid.display_grid();
 
@@ -129,7 +126,7 @@ void Game::Frame()
     window.setView(menu_view);
     window.draw(bgMenu_);
 
-    if(_game_break){
+    if(end_game){
         window.setView(pop_up_view);
         window.draw(bgPopUp_);
         window.draw(end_msg_);
@@ -150,8 +147,8 @@ void Game::set_fps_grid(float new_fps_grid)
 
 void Game::set_game_break()
 {
-    _game_break = !_game_break;
-};
+    end_game = !end_game;
+}
 
 Grid Game::get_grid() const
 {
@@ -217,7 +214,7 @@ void InputHandler(sf::Event event, Game &game, Block &current_block, Grid &grid 
     if (event.type == sf::Event::KeyPressed)
     {
         if (event.key.code == sf::Keyboard::Down)
-            game.set_fps_grid(20);
+            game.set_fps_grid(50);
         if (event.key.code == sf::Keyboard::Right)
         {
             current_block.hide_block(grid);

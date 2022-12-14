@@ -87,14 +87,14 @@ void Game::Initialize()
 * `std::srand()`, use C++ random when possible
 * don't use `NULL`, use `nullptr` (first is an untyped define, the other is a null pointer) :white_check_mark:
 * `new` is not catched for memory allocation error
-* don't use `unsigned int`, way too verbose and error prone, use `size_t`, it's designed for that
+* don't use `unsigned int`, way too verbose and error prone, use `size_t`, it's designed for that :white_check_mark:
 * Use smart pointers to wrap allocated memory when possible
 
 * `unsigned int** get_grid_num()const;`: NO, please ><
-  --> This is a violation of the const, if you want to modify the object do it within the class (otherwise you let a someone else modify your content, this is dirty)
+  --> This is a violation of the const, if you want to modify the object do it within the class (otherwise you let a someone else modify your content, this is dirty) :white_check_mark:
 
 * `if (clock.getElapsedTime().asMilliseconds() > (1000 / fps_grid))`
-  --> You can also put the condition in a variable to make it more readable
+  --> You can also put the condition in a variable to make it more readable :white_check_mark:
 
 ```Cpp
 	size_t has_timed_out = clock.getElapsedTime().asMilliseconds() > (1000 / fps_grid);
@@ -102,7 +102,7 @@ void Game::Initialize()
 	{/*...*/}
 ```
 
-* `void Game::generate_new_block()`: A switch would be better than a list of if/elseif/else
+* `void Game::generate_new_block()`: A switch would be better than a list of if/elseif/else :white_check_mark:
   --> https://en.cppreference.com/w/cpp/language/enum
 * Same for input handler (multiple if in chain ? Can many trigger at once ?)
 
@@ -110,16 +110,16 @@ void Game::Initialize()
 
 * careful for unneded includes
 * `   protected: //Les classes qui en heritent en ont besoin`
-  --> C++ common knowledge, no need to comment it
+  --> C++ common knowledge, no need to comment it :white_check_mark:
 * `#include <map>` : No map used in the header, but std::vector<>
 * might be overkill to get a full class for each block, might want to have a single file also since
   this is mostly the same level of code.
 
 ### grid.{cpp,hpp} ###
 
-* `grid_num = new unsigned int* [nb_columns+4];`
+* `grid_num = new unsigned int* [nb_columns+4];` :white_check_mark:
 * `grid_drawn[i][j].setSize({30/(0.7*WIN_WIDTH)*WIN_HEIGHT,30});`
-  --> Hard to read, please move parameter to variable. why 30 ? why 0.7 ? why +4 ?
+  --> Hard to read, please move parameter to variable. why 30 ? why 0.7 ? why +4 ? :white_check_mark:
   
 * Unless your code is 100% failsafe, don't set attributes first. Make it last once you are sure it's done (transactional code and exception safety level, if one of the new fail, your Grid object is corrupted)
 ```cpp
@@ -141,7 +141,7 @@ void Grid::initialize_grid(unsigned int c, unsigned int l){
 
 * std::vector<sf::Vector2u> is passed by copy, big memory and copy cost, especially for a vector
 * you need a `const` over there too
-* Also, don't use the "free" name in your function, confusing we can think it's freeing stuff.
+* Also, don't use the "free" name in your function, confusing we can think it's freeing stuff. :white_check_mark:
   --> Rename as "empty" or "clear"
 ```bash
 inc/grid.hpp

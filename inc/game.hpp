@@ -48,7 +48,7 @@ class Game
     private:
 
         bool _running = true;
-        bool _game_break = false;
+        bool end_game = false;
 
         sf::RenderWindow window;
         sf::View grid_view;

@@ -1,8 +1,10 @@
 #include <SFML/Graphics.hpp>
+#include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <cstdint>
 #include <cstdio>
 #include <exception>
+#include <string>
 
 #include "../inc/game.hpp"
 #include "../inc/grid.hpp"
@@ -28,7 +30,7 @@ void Grid::initialize_grid(int c, int l, sf::Vector2f grid_view_size) {
   nb_columns = c;
 
   // Allocation dynamique de la grille
-  grid_num = new int *[nb_columns + 4];
+  grid_num = new int* [nb_columns + 4];
   if (grid_num == nullptr)
     throw std::runtime_error("Allocation de mémoire pour la grille");
   for (int i = 0; i < nb_columns + 4; i++) {
@@ -95,8 +97,20 @@ int Grid::get_case_value(int i, int j) const {
 
 sf::Vector2i Grid::get_size() const { return {nb_columns, nb_lines}; };
 
-template<typename TYPE_GRID>
+
+void Grid::Call_Free_grid(std::string type_grid){
+
+	if(type_grid == "grid_num")
+		Free_grid(grid_num, nb_columns+4);
+	else if (type_grid == "grid_drawn")
+		Free_grid(grid_drawn, nb_columns);
+	else
+		printf("No grid to free\n");
+};
+
+template <typename TYPE_GRID>
 void Grid::Free_grid(TYPE_GRID _grid, int _nb_col){
+
     if (_grid == nullptr)
       throw(std::runtime_error("Liberation grille"));
 
@@ -109,10 +123,9 @@ void Grid::Free_grid(TYPE_GRID _grid, int _nb_col){
       delete[] _grid[i];
       printf("colonne %d de la grille libérée\n", i + 1);
     }
-
     delete[] _grid;
     printf("Grille libérée\n");
-  };
+}
 
 template void Grid::Free_grid<int**>(int**, int);
 template void Grid::Free_grid<sf::RectangleShape**>(sf::RectangleShape**, int);
@@ -147,11 +160,9 @@ sf::RectangleShape Grid::get_case_value_drawn(int i, int j) const {
   return grid_drawn[i][j];
 }
 
-int **Grid::get_grid_num() const { return grid_num; };
-
 sf::RectangleShape **Grid::get_grid_drawn() const { return grid_drawn; };
 
-bool Grid::empty_case(int i, int j, std::vector<sf::Vector2i> list_squares) {
+bool Grid::empty_case(int i, int j, std::vector<sf::Vector2i> &list_squares) {
   if (get_case_value(i, j) == 0 || find_vector(list_squares, {i, j}))
     return true;
   else
