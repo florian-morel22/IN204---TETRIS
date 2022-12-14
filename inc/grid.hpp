@@ -44,7 +44,7 @@ class Grid {
 
 		sf::RectangleShape get_case_value_drawn(int i, int j) const;
 
-		bool empty_case(int, int, std::vector<sf::Vector2i>&);
+		bool empty_case(int, int, const std::vector<sf::Vector2i> &);
 
 		sf::Vector2i get_size() const;
 		sf::RectangleShape **get_grid_drawn() const;

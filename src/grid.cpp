@@ -162,7 +162,7 @@ sf::RectangleShape Grid::get_case_value_drawn(int i, int j) const {
 
 sf::RectangleShape **Grid::get_grid_drawn() const { return grid_drawn; };
 
-bool Grid::empty_case(int i, int j, std::vector<sf::Vector2i> &list_squares) {
+bool Grid::empty_case(int i, int j, const std::vector<sf::Vector2i> &list_squares) {
   if (get_case_value(i, j) == 0 || find_vector(list_squares, {i, j}))
     return true;
   else
