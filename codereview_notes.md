@@ -140,7 +140,7 @@ void Grid::initialize_grid(unsigned int c, unsigned int l){
 ```
 
 * std::vector<sf::Vector2u> is passed by copy, big memory and copy cost, especially for a vector :white_check_mark:
-* you need a `const` over there too
+* you need a `const` over there too :white_check_mark:
 * Also, don't use the "free" name in your function, confusing we can think it's freeing stuff. :white_check_mark:
   --> Rename as "empty" or "clear"
 ```bash
