@@ -1,6 +1,5 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
-#include <SFML/System/Vector2.hpp>
 #include <SFML/Window.hpp>
 
 #include "../../inc/types_block/block_Z.hpp"
@@ -18,76 +17,69 @@ Block_Z::Block_Z(int i, int j) {
 }
 
 void Block_Z::rotate(Grid &g) {
-  if (rotate_value == 0) {
 
-    int i = list_squares[0].x;
-    int j = list_squares[0].y;
-    if (g.is_empty_case(i + 2, j, list_squares) &&
-        g.is_empty_case(i + 2, j + 1, list_squares) &&
-        g.is_empty_case(i + 1, j + 1, list_squares) &&
-        g.is_empty_case(i + 1, j + 2, list_squares)) {
-      list_squares.clear();
-      list_squares.push_back({i + 2, j});
-      list_squares.push_back({i + 2, j + 1});
-      list_squares.push_back({i + 1, j + 1});
-      list_squares.push_back({i + 1, j + 2});
+  int i = list_squares[0].x;
+  int j = list_squares[0].y;
+  int next_i[4] = {0, 0, 0, 0};
+  int next_j[4] = {0, 0, 0, 0};
 
-      rotate_value++;
-    }
+  switch (rotate_value) {
+
+  case 0: {
+    next_i[0] = i + 2;
+    next_i[1] = i + 2;
+    next_i[2] = i + 1;
+    next_i[3] = i + 1;
+    next_j[0] = j;
+    next_j[1] = j + 1;
+    next_j[2] = j + 1;
+    next_j[3] = j + 2;
+  } break;
+
+  case 1: {
+    next_i[0] = i;
+    next_i[1] = i - 1;
+    next_i[2] = i - 1;
+    next_i[3] = i - 2;
+    next_j[0] = j + 2;
+    next_j[1] = j + 2;
+    next_j[2] = j + 1;
+    next_j[3] = j + 1;
+  } break;
+
+  case 2: {
+    next_i[0] = i - 2;
+    next_i[1] = i - 2;
+    next_i[2] = i - 1;
+    next_i[3] = i - 1;
+    next_j[0] = j;
+    next_j[1] = j - 1;
+    next_j[2] = j - 1;
+    next_j[3] = j - 2;
+  } break;
+
+  case 3: {
+    next_i[0] = i;
+    next_i[1] = i + 1;
+    next_i[2] = i + 1;
+    next_i[3] = i + 2;
+    next_j[0] = j - 2;
+    next_j[1] = j - 2;
+    next_j[2] = j - 1;
+    next_j[3] = j - 1;
+  } break;
   }
 
-  else if (rotate_value == 1) {
-
-    int i = list_squares[0].x;
-    int j = list_squares[0].y;
-    if (g.is_empty_case(i, j + 2, list_squares) &&
-        g.is_empty_case(i - 1, j + 2, list_squares) &&
-        g.is_empty_case(i - 1, j + 1, list_squares) &&
-        g.is_empty_case(i - 2, j + 1, list_squares)) {
-      list_squares.clear();
-      list_squares.push_back({i, j + 2});
-      list_squares.push_back({i - 1, j + 2});
-      list_squares.push_back({i - 1, j + 1});
-      list_squares.push_back({i - 2, j + 1});
-
-      rotate_value++;
-    }
-  }
-
-  else if (rotate_value == 2) {
-
-    int i = list_squares[0].x;
-    int j = list_squares[0].y;
-    if (g.is_empty_case(i - 2, j, list_squares) &&
-        g.is_empty_case(i - 2, j - 1, list_squares) &&
-        g.is_empty_case(i - 1, j - 1, list_squares) &&
-        g.is_empty_case(i - 1, j - 2, list_squares)) {
-      list_squares.clear();
-      list_squares.push_back({i - 2, j});
-      list_squares.push_back({i - 2, j - 1});
-      list_squares.push_back({i - 1, j - 1});
-      list_squares.push_back({i - 1, j - 2});
-
-      rotate_value++;
-    }
-  }
-
-  else if (rotate_value == 3) {
-
-    int i = list_squares[0].x;
-    int j = list_squares[0].y;
-    if (g.is_empty_case(i, j - 2, list_squares) &&
-        g.is_empty_case(i + 1, j - 2, list_squares) &&
-        g.is_empty_case(i + 1, j - 1, list_squares) &&
-        g.is_empty_case(i + 2, j - 1, list_squares)) {
-      list_squares.clear();
-      list_squares.push_back({i, j - 2});
-      list_squares.push_back({i + 1, j - 2});
-      list_squares.push_back({i + 1, j - 1});
-      list_squares.push_back({i + 2, j - 1});
-
-      rotate_value = 0;
-    }
+  if (g.is_empty_case(next_i[0], next_j[0], list_squares) &&
+      g.is_empty_case(next_i[1], next_j[1], list_squares) &&
+      g.is_empty_case(next_i[2], next_j[2], list_squares) &&
+      g.is_empty_case(next_i[3], next_j[3], list_squares)) {
+    list_squares.clear();
+    list_squares.push_back({next_i[0], next_j[0]});
+    list_squares.push_back({next_i[1], next_j[1]});
+    list_squares.push_back({next_i[2], next_j[2]});
+    list_squares.push_back({next_i[3], next_j[3]});
+    rotate_value = (rotate_value + 1) % 4;
   }
 }
 
