@@ -1,11 +1,10 @@
-#include <SFML/System.hpp>
 #include <SFML/Graphics.hpp>
+#include <SFML/System.hpp>
 #include <vector>
 
 #include "../inc/utils.hpp"
 
 namespace tetris {
-
 
 void transpose(std::vector<sf::Vector2i> &v) {
 
@@ -23,14 +22,14 @@ bool find_vector(std::vector<sf::Vector2i> list_vectors, sf::Vector2i vector) {
   return false;
 }
 
-void setTextCenterPosition(sf::Text &txt, sf::Vector2f& center) 
-{   
-    sf::Vector2f offset;
-    offset.x = txt.getPosition().x - txt.getGlobalBounds().left - txt.getGlobalBounds().width/2.;
-    offset.y = txt.getPosition().y - txt.getGlobalBounds().top - txt.getGlobalBounds().height/2.;
+void setTextCenterPosition(sf::Text &txt, sf::Vector2f &center) {
+  sf::Vector2f offset;
+  offset.x = txt.getPosition().x - txt.getGlobalBounds().left -
+             txt.getGlobalBounds().width / 2.;
+  offset.y = txt.getPosition().y - txt.getGlobalBounds().top -
+             txt.getGlobalBounds().height / 2.;
 
-    txt.setPosition(center + offset);
+  txt.setPosition(center + offset);
 }
 
-
-} // !namespace tetris
+} // namespace tetris

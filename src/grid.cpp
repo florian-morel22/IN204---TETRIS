@@ -11,26 +11,25 @@
 
 namespace tetris {
 
-
 void Grid::initialize_grid(int c, int l, sf::Vector2f grid_view_size) {
 
-  float ratio = 1/(0.7 * WIN_WIDTH)*WIN_HEIGHT;
+  float ratio = 1 / (0.7 * WIN_WIDTH) * WIN_HEIGHT;
   float d = 35;
   float sp = 10;
 
-  sf::Vector2f dim_squares {d*ratio, d};
-  sf::Vector2f space_btw_squares {sp*ratio,sp};
-  sf::Vector2f pos_first_square {
-    (grid_view_size.x - c*dim_squares.x - (c-1)*space_btw_squares.x)/2,
-    (grid_view_size.y - l*dim_squares.y - (l-1)*space_btw_squares.y)/2
-    };
-
+  sf::Vector2f dim_squares{d * ratio, d};
+  sf::Vector2f space_btw_squares{sp * ratio, sp};
+  sf::Vector2f pos_first_square{
+      (grid_view_size.x - c * dim_squares.x - (c - 1) * space_btw_squares.x) /
+          2,
+      (grid_view_size.y - l * dim_squares.y - (l - 1) * space_btw_squares.y) /
+          2};
 
   nb_lines = l;
   nb_columns = c;
 
   // Allocation dynamique de la grille
-  grid_num = new int* [nb_columns + 4];
+  grid_num = new int *[nb_columns + 4];
   if (grid_num == nullptr)
     throw std::runtime_error("Allocation de mémoire pour la grille");
   for (int i = 0; i < nb_columns + 4; i++) {
@@ -53,12 +52,11 @@ void Grid::initialize_grid(int c, int l, sf::Vector2f grid_view_size) {
     for (int j = 0; j < nb_lines; j++) {
       // Faire en sorte que les carrés soient carrés. Utiliser des proportions
       grid_drawn[i][j].setSize(dim_squares);
-      float i_ = (dim_squares.x+space_btw_squares.x)*i + pos_first_square.x;
-      float j_ = (dim_squares.y+space_btw_squares.y)*j + pos_first_square.y;
+      float i_ = (dim_squares.x + space_btw_squares.x) * i + pos_first_square.x;
+      float j_ = (dim_squares.y + space_btw_squares.y) * j + pos_first_square.y;
       grid_drawn[i][j].setPosition({i_, j_});
     }
   }
-
 
   clean_grid_with_borders();
   clean_grid();
@@ -91,44 +89,42 @@ void Grid::set_case_value(int i, int j, int newValue) {
   grid_num[i][j] = newValue;
 };
 
-int Grid::get_case_value(int i, int j) const {
-  return grid_num[i][j];
-};
+int Grid::get_case_value(int i, int j) const { return grid_num[i][j]; };
 
 sf::Vector2i Grid::get_size() const { return {nb_columns, nb_lines}; };
 
+void Grid::Call_Free_grid(std::string type_grid) {
 
-void Grid::Call_Free_grid(std::string type_grid){
-
-	if(type_grid == "grid_num")
-		Free_grid(grid_num, nb_columns+4);
-	else if (type_grid == "grid_drawn")
-		Free_grid(grid_drawn, nb_columns);
-	else
-		printf("No grid to free\n");
+  if (type_grid == "grid_num")
+    Free_grid(grid_num, nb_columns + 4);
+  else if (type_grid == "grid_drawn")
+    Free_grid(grid_drawn, nb_columns);
+  else
+    printf("No grid to free\n");
 };
 
 template <typename TYPE_GRID>
-void Grid::Free_grid(TYPE_GRID _grid, int _nb_col){
+void Grid::Free_grid(TYPE_GRID _grid, int _nb_col) {
 
-    if (_grid == nullptr)
+  if (_grid == nullptr)
+    throw(std::runtime_error("Liberation grille"));
+
+  for (int i = 0; i < _nb_col; i++) {
+    if (_grid[i] == nullptr) {
+      delete[] _grid;
+      printf("Grille libérée\n");
       throw(std::runtime_error("Liberation grille"));
-
-    for (int i = 0; i < _nb_col; i++) {
-      if (_grid[i] == nullptr) {
-        delete[] _grid;
-        printf("Grille libérée\n");
-        throw(std::runtime_error("Liberation grille"));
-      }
-      delete[] _grid[i];
-      printf("colonne %d de la grille libérée\n", i + 1);
     }
-    delete[] _grid;
-    printf("Grille libérée\n");
+    delete[] _grid[i];
+    printf("colonne %d de la grille libérée\n", i + 1);
+  }
+  delete[] _grid;
+  printf("Grille libérée\n");
 }
 
-template void Grid::Free_grid<int**>(int**, int);
-template void Grid::Free_grid<sf::RectangleShape**>(sf::RectangleShape**, int);
+template void Grid::Free_grid<int **>(int **, int);
+template void Grid::Free_grid<sf::RectangleShape **>(sf::RectangleShape **,
+                                                     int);
 
 void Grid::display_grid() const {
   for (int i = 0; i < nb_columns + 4; ++i) {
@@ -148,13 +144,9 @@ void Grid::draw_grid() {
   }
 }
 
-void Grid::set_color_block(int i, sf::Color c) {
-  list_color_block[i] = c;
-}
+void Grid::set_color_block(int i, sf::Color c) { list_color_block[i] = c; }
 
-sf::Color Grid::get_color_block(int k) const {
-  return list_color_block[k];
-};
+sf::Color Grid::get_color_block(int k) const { return list_color_block[k]; };
 
 sf::RectangleShape Grid::get_case_value_drawn(int i, int j) const {
   return grid_drawn[i][j];
@@ -162,12 +154,12 @@ sf::RectangleShape Grid::get_case_value_drawn(int i, int j) const {
 
 sf::RectangleShape **Grid::get_grid_drawn() const { return grid_drawn; };
 
-bool Grid::empty_case(int i, int j, const std::vector<sf::Vector2i> &list_squares) {
+bool Grid::is_empty_case(int i, int j,
+                         const std::vector<sf::Vector2i> &list_squares) {
   if (get_case_value(i, j) == 0 || find_vector(list_squares, {i, j}))
     return true;
   else
     return false;
 }
 
-
-} // !namespace tetris
+} // namespace tetris

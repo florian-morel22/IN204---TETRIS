@@ -4,9 +4,10 @@
 
 using namespace tetris;
 
-int main (){
-    tetris::Game* game = new tetris::Game();
-    game->Run();
-    delete game;
-    return 0;
+int main() {
+  tetris::Game *game = new tetris::Game();
+
+  game->Run();
+  delete game;
+  return 0;
 }

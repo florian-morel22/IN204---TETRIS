@@ -7,9 +7,7 @@
 
 namespace tetris {
 
-
-Block_I::Block_I(int i, int j)
-{
+Block_I::Block_I(int i, int j) {
   value = 1;
   rotate_value = 0;
 
@@ -19,17 +17,14 @@ Block_I::Block_I(int i, int j)
   list_squares.push_back({i, j + 3});
 }
 
-void Block_I::rotate(Grid &G)
-{
-  if (rotate_value == 0)
-  {
+void Block_I::rotate(Grid &G) {
+  if (rotate_value == 0) {
     int i = list_squares[0].x;
     int j = list_squares[0].y;
-    if (G.empty_case(i + 1, j + 2, list_squares) &&
-        G.empty_case(i, j + 2, list_squares) &&
-        G.empty_case(i - 1, j + 2, list_squares) &&
-        G.empty_case(i - 2, j + 2, list_squares))
-    {
+    if (G.is_empty_case(i + 1, j + 2, list_squares) &&
+        G.is_empty_case(i, j + 2, list_squares) &&
+        G.is_empty_case(i - 1, j + 2, list_squares) &&
+        G.is_empty_case(i - 2, j + 2, list_squares)) {
       list_squares.clear();
       list_squares.push_back({i + 1, j + 2});
       list_squares.push_back({i, j + 2});
@@ -39,15 +34,13 @@ void Block_I::rotate(Grid &G)
     }
   }
 
-  else if (rotate_value == 1)
-  {
+  else if (rotate_value == 1) {
     int i = list_squares[0].x;
     int j = list_squares[0].y;
-    if (G.empty_case(i - 2, j + 1, list_squares) &&
-        G.empty_case(i - 2, j, list_squares) &&
-        G.empty_case(i - 2, j - 1, list_squares) &&
-        G.empty_case(i - 2, j - 2, list_squares))
-    {
+    if (G.is_empty_case(i - 2, j + 1, list_squares) &&
+        G.is_empty_case(i - 2, j, list_squares) &&
+        G.is_empty_case(i - 2, j - 1, list_squares) &&
+        G.is_empty_case(i - 2, j - 2, list_squares)) {
       list_squares.clear();
       list_squares.push_back({i - 2, j + 1});
       list_squares.push_back({i - 2, j});
@@ -57,15 +50,13 @@ void Block_I::rotate(Grid &G)
     }
   }
 
-  else if (rotate_value == 2)
-  {
+  else if (rotate_value == 2) {
     int i = list_squares[0].x;
     int j = list_squares[0].y;
-    if (G.empty_case(i - 1, j - 2, list_squares) &&
-        G.empty_case(i, j - 2, list_squares) &&
-        G.empty_case(i + 1, j - 2, list_squares) &&
-        G.empty_case(i + 2, j - 2, list_squares))
-    {
+    if (G.is_empty_case(i - 1, j - 2, list_squares) &&
+        G.is_empty_case(i, j - 2, list_squares) &&
+        G.is_empty_case(i + 1, j - 2, list_squares) &&
+        G.is_empty_case(i + 2, j - 2, list_squares)) {
       list_squares.clear();
       list_squares.push_back({i - 1, j - 2});
       list_squares.push_back({i, j - 2});
@@ -75,15 +66,13 @@ void Block_I::rotate(Grid &G)
     }
   }
 
-  else if (rotate_value == 3)
-  {
+  else if (rotate_value == 3) {
     int i = list_squares[0].x;
     int j = list_squares[0].y;
-    if (G.empty_case(i + 2, j - 1, list_squares) &&
-        G.empty_case(i + 2, j, list_squares) &&
-        G.empty_case(i + 2, j + 1, list_squares) &&
-        G.empty_case(i + 2, j + 2, list_squares))
-    {
+    if (G.is_empty_case(i + 2, j - 1, list_squares) &&
+        G.is_empty_case(i + 2, j, list_squares) &&
+        G.is_empty_case(i + 2, j + 1, list_squares) &&
+        G.is_empty_case(i + 2, j + 2, list_squares)) {
       list_squares.clear();
       list_squares.push_back({i + 2, j - 1});
       list_squares.push_back({i + 2, j});
@@ -94,5 +83,4 @@ void Block_I::rotate(Grid &G)
   }
 }
 
-
-} // !namespace tetris
+} // namespace tetris
