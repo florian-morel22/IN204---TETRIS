@@ -1,8 +1,3 @@
-#include <SFML/Graphics.hpp>
-#include <SFML/System.hpp>
-#include <SFML/System/Vector2.hpp>
-#include <SFML/Window.hpp>
-
 #include "../../inc/types_block/block_O.hpp"
 
 namespace tetris {
@@ -17,6 +12,6 @@ Block_O::Block_O(int i, int j) {
   list_squares.push_back({i, j + 1});
 }
 
-void Block_O::rotate(Grid &g){return;};
+void Block_O::rotate(Grid &g) { return; };
 
 } // namespace tetris

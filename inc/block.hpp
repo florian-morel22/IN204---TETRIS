@@ -1,8 +1,6 @@
 #ifndef BLOCK_HPP
 #define BLOCK_HPP
 
-#include <SFML/System.hpp>
-
 #include "grid.hpp"
 #include "utils.hpp"
 

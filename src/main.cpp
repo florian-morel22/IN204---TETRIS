@@ -1,5 +1,3 @@
-#include <cstdio>
-
 #include "../inc/game.hpp"
 
 using namespace tetris;

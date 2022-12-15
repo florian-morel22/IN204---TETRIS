@@ -1,8 +1,3 @@
-#include <SFML/Graphics.hpp>
-#include <SFML/System.hpp>
-#include <SFML/System/Vector2.hpp>
-#include <SFML/Window.hpp>
-
 #include "../../inc/types_block/block_I.hpp"
 
 namespace tetris {
@@ -17,7 +12,7 @@ Block_I::Block_I(int i, int j) {
   list_squares.push_back({i, j + 3});
 }
 
-void Block_I::rotate(Grid &G) {
+void Block_I::rotate(Grid &g) {
   int i = list_squares[0].x;
   int j = list_squares[0].y;
   int next_i[4] = {0, 0, 0, 0};

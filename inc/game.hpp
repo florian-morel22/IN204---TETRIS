@@ -20,10 +20,6 @@
 
 namespace tetris {
 
-const size_t WIN_WIDTH = 1500;
-const size_t WIN_HEIGHT = 1000;
-const std::string MY_PATH = "/home/IN204/project";
-
 class Game {
 public:
   void Run();

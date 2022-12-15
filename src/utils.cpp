@@ -1,7 +1,3 @@
-#include <SFML/Graphics.hpp>
-#include <SFML/System.hpp>
-#include <vector>
-
 #include "../inc/utils.hpp"
 
 namespace tetris {

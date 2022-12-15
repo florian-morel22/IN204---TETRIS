@@ -1,12 +1,3 @@
-#include <SFML/Graphics.hpp>
-#include <SFML/Graphics/RectangleShape.hpp>
-#include <SFML/System/Vector2.hpp>
-#include <cstdint>
-#include <cstdio>
-#include <exception>
-#include <string>
-
-#include "../inc/game.hpp"
 #include "../inc/grid.hpp"
 
 namespace tetris {

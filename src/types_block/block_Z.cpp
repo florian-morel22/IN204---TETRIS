@@ -1,7 +1,3 @@
-#include <SFML/Graphics.hpp>
-#include <SFML/System.hpp>
-#include <SFML/Window.hpp>
-
 #include "../../inc/types_block/block_Z.hpp"
 
 namespace tetris {
