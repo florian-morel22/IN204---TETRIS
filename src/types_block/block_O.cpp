@@ -17,6 +17,6 @@ Block_O::Block_O(int i, int j) {
   list_squares.push_back({i, j + 1});
 }
 
-void Block_O::rotate(Grid &g){};
+void Block_O::rotate(Grid &g){return;};
 
 } // namespace tetris
