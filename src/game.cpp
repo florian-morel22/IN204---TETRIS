@@ -1,4 +1,8 @@
 #include "../inc/game.hpp"
+#include "utils.hpp"
+#include <SFML/Graphics/Rect.hpp>
+#include <SFML/System/Vector2.hpp>
+#include <SFML/Window/Mouse.hpp>
 
 namespace tetris {
 
@@ -9,22 +13,39 @@ void Game::Run() {
 
 Game::Game() {
   printf("Initialisation\n");
+
+  /*Scaling different views*/
+  float grid_view_x = 0;
+  float grid_view_y = 0;
+  float grid_view_dx = 0.5;
+  float grid_view_dy = 1;
+
+  float menu_view_x = grid_view_x + grid_view_dx;
+  float menu_view_y = grid_view_y;
+  float menu_view_dx = 1 - grid_view_dx;
+  float menu_view_dy = grid_view_dy;
+
+  sf::FloatRect scale_grid_view = {grid_view_x, grid_view_y, grid_view_dx,
+                                   grid_view_dy};
+  sf::FloatRect scale_menu_view = {menu_view_x, menu_view_y, menu_view_dx,
+                                   menu_view_dy};
+  /* END Scaling different views*/
+
   window.create(sf::VideoMode(WIN_WIDTH, WIN_HEIGHT), "TETRIS",
                 sf::Style::Close);
   window.setVerticalSyncEnabled(true); // Optimisation de la fenetre
 
   // Création de 2 vues côtes a côte : a gauche la grille, a droite le menu
-  grid_view.setViewport(sf::FloatRect(0.f, 0.f, 0.7f, 1.f));
-  menu_view.setViewport(sf::FloatRect(0.7f, 0.f, 0.3f, 1.f));
-  pop_up_view.setViewport(sf::FloatRect(0.2f, 0.3f, 0.6f, 0.4f));
-  printf("getsize : %f, %f\n", grid_view.getSize().x, grid_view.getSize().y);
+  grid_view.setViewport(scale_grid_view);
+  menu_view.setViewport(scale_menu_view);
 
   bgGrid_.setSize(grid_view.getSize());
   bgGrid_.setFillColor(sf::Color(238, 238, 238));
   bgMenu_.setSize(menu_view.getSize());
-  bgMenu_.setFillColor(sf::Color::Green);
-  bgPopUp_.setSize(pop_up_view.getSize());
-  bgPopUp_.setFillColor(sf::Color::White);
+  bgMenu_.setFillColor(sf::Color(255, 255, 255));
+
+  blurGrid_.setSize(grid_view.getSize());
+  blurGrid_.setFillColor(sf::Color(192, 192, 192, 150));
 
   // Création et initialisation de la grille
   try {
@@ -35,25 +56,20 @@ Game::Game() {
     return;
   }
 
-  // Création du frame rate
-  fps_grid = 1;
-
-  if (!main_font_.loadFromFile("../fonts/Berliner_Wand.ttf")) {
+  if (!main_font_.loadFromFile(
+          "/home/ensta/IN204/project/repository/fonts/Berliner_Wand.ttf")) {
     printf("error of Berliner_Wand loading\n");
   }
-  end_msg_.setFont(main_font_);
-  end_msg_.setString("Perdu !!");
-  end_msg_.setCharacterSize(100);
-  end_msg_.setFillColor(sf::Color::Blue);
-  sf::Vector2f center{pop_up_view.getSize().x / 2, pop_up_view.getSize().y / 2};
-  setTextCenterPosition(end_msg_, center);
+  initialize_text(end_msg_, main_font_, grid_view.getCenter(), 100, "TERMINADO",
+                  sf::Color(34, 19, 73), {1, 0.7});
+  initialize_text(try_again_, main_font_,
+                  {grid_view.getCenter().x, grid_view.getCenter().y * 5 / 4},
+                  50, "Click to try again", sf::Color(34, 19, 73), {1, 0.7});
 
   // permet de créer des nombres aléatoires par la suite
-  std::srand((unsigned)time(nullptr));
+  std::srand((unsigned int)time(nullptr));
 
-  generate_new_block();
-  current_block->display_block(grid);
-  grid.display_grid();
+  Initialize_game();
 }
 
 Game::~Game() {
@@ -72,11 +88,15 @@ void Game::Frame() {
 
   bool go_to_next_gameFrame =
       !end_game && clock.getElapsedTime().asMilliseconds() > (1000 / fps_grid);
+  bool display_try_again =
+      end_game && clock.getElapsedTime().asMilliseconds() > 500;
+  bool hide_try_again =
+      end_game && clock.getElapsedTime().asMilliseconds() > 1000;
 
   // Gestion de des events utilisateurs
   sf::Event event;
   while (window.pollEvent(event)) {
-    InputHandler(event, *this, *current_block, grid);
+    InputHandler(event);
   }
 
   // On affiche tout !
@@ -89,7 +109,7 @@ void Game::Frame() {
         end_game = !end_game;
     }
     current_block->display_block(grid);
-    grid.display_grid();
+    // grid.display_grid();
 
     clock.restart();
   }
@@ -107,14 +127,18 @@ void Game::Frame() {
     }
   }
 
+  if (end_game) {
+    window.draw(blurGrid_);
+    window.draw(end_msg_);
+    if (display_try_again) {
+      window.draw(try_again_);
+      if (hide_try_again)
+        clock.restart();
+    }
+  }
+
   window.setView(menu_view);
   window.draw(bgMenu_);
-
-  if (end_game) {
-    window.setView(pop_up_view);
-    window.draw(bgPopUp_);
-    window.draw(end_msg_);
-  }
 
   window.display();
 }
@@ -175,35 +199,53 @@ bool Game::generate_new_block() {
   return true;
 }
 
-void InputHandler(sf::Event event, Game &game, Block &current_block,
-                  Grid &grid /*, sf::RenderWindow& window*/) {
+void Game::Initialize_game() {
+  fps_grid = 1;
+
+  grid.clean_grid_with_borders();
+  grid.clean_grid();
+
+  generate_new_block();
+  current_block->display_block(grid);
+
+  clock.restart();
+}
+
+void Game::InputHandler(sf::Event event) {
 
   if (event.type == sf::Event::Closed)
-    game.set_running(false);
+    set_running(false);
   if (event.type == sf::Event::KeyPressed) {
-    if (event.key.code == sf::Keyboard::Down)
-      game.set_fps_grid(50);
-    if (event.key.code == sf::Keyboard::Right) {
-      current_block.hide_block(grid);
-      current_block.go_right(grid);
-      current_block.display_block(grid);
+    if (!end_game && event.key.code == sf::Keyboard::Down)
+      set_fps_grid(50);
+    if (!end_game && event.key.code == sf::Keyboard::Right) {
+      current_block->hide_block(grid);
+      current_block->go_right(grid);
+      current_block->display_block(grid);
     }
-    if (event.key.code == sf::Keyboard::Left) {
-      current_block.hide_block(grid);
-      current_block.go_left(grid);
-      current_block.display_block(grid);
+    if (!end_game && event.key.code == sf::Keyboard::Left) {
+      current_block->hide_block(grid);
+      current_block->go_left(grid);
+      current_block->display_block(grid);
     }
-    if (event.key.code == sf::Keyboard::Up) {
-      current_block.hide_block(grid);
-      current_block.rotate(grid);
-      current_block.display_block(grid);
+    if (!end_game && event.key.code == sf::Keyboard::Up) {
+      current_block->hide_block(grid);
+      current_block->rotate(grid);
+      current_block->display_block(grid);
     }
   }
 
   if (event.type == sf::Event::KeyReleased)
-    if (event.key.code == sf::Keyboard::Down)
-      game.set_fps_grid(1);
-  // Ajouter les actions que l'utilisateur peut realiser
+    if (!end_game && event.key.code == sf::Keyboard::Down)
+      set_fps_grid(1);
+
+  if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+    sf::Vector2i localPosition = sf::Mouse::getPosition(window);
+    if (localPosition.x < 0.5 * WIN_WIDTH && end_game) {
+      Initialize_game();
+      end_game = !end_game;
+    }
+  }
 };
 
 } // namespace tetris

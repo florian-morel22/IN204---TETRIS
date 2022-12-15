@@ -4,7 +4,7 @@ namespace tetris {
 
 void Grid::initialize_grid(int c, int l, sf::Vector2f grid_view_size) {
 
-  float ratio = 1 / (0.7 * WIN_WIDTH) * WIN_HEIGHT;
+  float ratio = 1 / (0.5 * WIN_WIDTH) * WIN_HEIGHT;
   float d = 35;
   float sp = 10;
 
@@ -142,8 +142,6 @@ sf::Color Grid::get_color_block(int k) const { return list_color_block[k]; };
 sf::RectangleShape Grid::get_case_value_drawn(int i, int j) const {
   return grid_drawn[i][j];
 }
-
-sf::RectangleShape **Grid::get_grid_drawn() const { return grid_drawn; };
 
 bool Grid::is_empty_case(int i, int j,
                          const std::vector<sf::Vector2i> &list_squares) {

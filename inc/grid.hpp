@@ -22,28 +22,25 @@ private:
   template <typename TYPE_GRID> void Free_grid(TYPE_GRID, int);
 
 public:
-  void initialize_grid(int l, int c, sf::Vector2f grid_view_size);
-  void clean_grid();
-  void clean_grid_with_borders();
+  auto initialize_grid(int l, int c, sf::Vector2f grid_view_size) -> void;
+  auto get_size() const -> sf::Vector2i;
 
-  void display_grid() const;
+  auto clean_grid() -> void;
+  auto clean_grid_with_borders() -> void;
 
-  void draw_grid();
+  auto display_grid() const -> void;
+  auto draw_grid() -> void;
 
-  void set_case_value(int i, int j, int newValue);
-  int get_case_value(int i, int j) const;
+  auto set_case_value(int i, int j, int newValue) -> void;
+  auto get_case_value(int i, int j) const -> int;
+  auto get_case_value_drawn(int i, int j) const -> sf::RectangleShape;
 
-  sf::RectangleShape get_case_value_drawn(int i, int j) const;
+  auto is_empty_case(int, int, const std::vector<sf::Vector2i> &) -> bool;
 
-  bool is_empty_case(int, int, const std::vector<sf::Vector2i> &);
+  auto set_color_block(int k, sf::Color c) -> void;
+  auto get_color_block(int k) const -> sf::Color;
 
-  sf::Vector2i get_size() const;
-  sf::RectangleShape **get_grid_drawn() const;
-
-  void set_color_block(int k, sf::Color c);
-  sf::Color get_color_block(int k) const;
-
-  void Call_Free_grid(std::string);
+  auto Call_Free_grid(std::string) -> void;
 };
 
 } // namespace tetris

@@ -1,8 +1,6 @@
 #ifndef GAME_HPP
 #define GAME_HPP
 
-#include <iostream>
-
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
@@ -21,21 +19,6 @@
 namespace tetris {
 
 class Game {
-public:
-  void Run();
-
-  Game();
-  ~Game();
-
-  void set_running(bool new_running);
-  void set_fps_grid(float new_fps_grid);
-  void set_game_break();
-
-  Grid get_grid() const;
-
-  void integrate_block_to_grid();
-  bool generate_new_block();
-
 private:
   bool _running = true;
   bool end_game = false;
@@ -43,14 +26,14 @@ private:
   sf::RenderWindow window;
   sf::View grid_view;
   sf::View menu_view;
-  sf::View pop_up_view;
 
   sf::RectangleShape bgGrid_;
   sf::RectangleShape bgMenu_;
-  sf::RectangleShape bgPopUp_;
+  sf::RectangleShape blurGrid_;
 
   sf::Font main_font_;
   sf::Text end_msg_;
+  sf::Text try_again_;
 
   Grid grid;
 
@@ -60,6 +43,22 @@ private:
   float fps_grid;
 
   void Frame();
+  void InputHandler(sf::Event);
+  void Initialize_game();
+
+public:
+  Game();
+  ~Game();
+  void Run();
+
+  void set_running(bool new_running);
+  void set_fps_grid(float new_fps_grid);
+  void set_game_break();
+
+  Grid get_grid() const;
+
+  void integrate_block_to_grid();
+  bool generate_new_block();
 };
 
 void InputHandler(sf::Event, Game &, Block &, Grid &);

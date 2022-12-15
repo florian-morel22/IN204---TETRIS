@@ -13,7 +13,13 @@ void transpose(std::vector<sf::Vector2i> &);
 
 bool find_vector(std::vector<sf::Vector2i>, sf::Vector2i);
 
-void setTextCenterPosition(sf::Text &, sf::Vector2f &);
+void setTextCenterPosition(sf::Text &, sf::Vector2f);
+
+void initialize_text(sf::Text &text, sf::Font &font,
+                     sf::Vector2f pos = {10.f, 10.f},
+                     unsigned int charSize = 10, std::string str = "TEXT",
+                     sf::Color color = sf::Color(0, 0, 0),
+                     sf::Vector2f scale = {1.f, 1.f});
 
 } // namespace tetris
 
