@@ -36,8 +36,10 @@ private:
   sf::Text try_again_;
 
   Grid grid;
+  Grid little_grid;
 
   Block *current_block;
+  Block *next_block;
 
   sf::Clock clock;
   float fps_grid;
@@ -58,7 +60,8 @@ public:
   Grid get_grid() const;
 
   void integrate_block_to_grid();
-  bool generate_new_block();
+  void generate_new_next_block();
+  bool is_end_game();
 };
 
 void InputHandler(sf::Event, Game &, Block &, Grid &);

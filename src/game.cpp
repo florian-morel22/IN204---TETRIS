@@ -12,7 +12,6 @@ void Game::Run() {
 }
 
 Game::Game() {
-  printf("Initialisation\n");
 
   /*Scaling different views*/
   float grid_view_x = 0;
@@ -42,10 +41,12 @@ Game::Game() {
   bgGrid_.setSize(grid_view.getSize());
   bgGrid_.setFillColor(sf::Color(238, 238, 238));
   bgMenu_.setSize(menu_view.getSize());
-  bgMenu_.setFillColor(sf::Color(255, 255, 255));
-
+  bgMenu_.setFillColor(sf::Color(100, 100, 100));
   blurGrid_.setSize(grid_view.getSize());
   blurGrid_.setFillColor(sf::Color(192, 192, 192, 150));
+
+  grid.set_color_empty_block(sf::Color::White);
+  little_grid.set_color_empty_block(sf::Color(0, 0, 0, 0));
 
   // Grid creation and initilisation
   try {
@@ -56,6 +57,16 @@ Game::Game() {
     return;
   }
 
+  try {
+    little_grid.initialize_grid(
+        4, 3, {bgMenu_.getSize().x / 2, bgMenu_.getSize().y / 2});
+  } catch (std::exception const &e) {
+    printf("erreur : %s\n", e.what());
+    _running = false;
+    return;
+  }
+
+  // initialisation of texts
   if (!main_font_.loadFromFile(
           "/home/ensta/IN204/project/repository/fonts/Berliner_Wand.ttf")) {
     printf("error of Berliner_Wand loading\n");
@@ -76,6 +87,8 @@ Game::~Game() {
   try {
     grid.Call_Free_grid("grid_num");
     grid.Call_Free_grid("grid_drawn");
+    little_grid.Call_Free_grid("grid_num");
+    little_grid.Call_Free_grid("grid_drawn");
   } catch (std::exception &e) {
     printf("erreur : %s\n", e.what());
   }
@@ -105,11 +118,14 @@ void Game::Frame() {
     current_block->hide_block(grid);
     if (!current_block->go_down(grid)) {
       integrate_block_to_grid();
-      if (!generate_new_block())
+      current_block = next_block;
+      generate_new_next_block();
+      if (is_end_game())
         end_game = !end_game;
     }
     current_block->display_block(grid);
-    // grid.display_grid();
+    little_grid.clean_grid();
+    next_block->display_block(little_grid, -3, 0);
 
     clock.restart();
   }
@@ -119,7 +135,7 @@ void Game::Frame() {
   window.setView(grid_view);
   window.draw(bgGrid_);
 
-  // to delete
+  // to delete ??
   grid.draw_grid();
   for (int i = 0; i < grid.get_size().x; i++) {
     for (int j = 0; j < grid.get_size().y; j++) {
@@ -139,6 +155,13 @@ void Game::Frame() {
 
   window.setView(menu_view);
   window.draw(bgMenu_);
+
+  little_grid.draw_grid();
+  for (int i = 0; i < little_grid.get_size().x; i++) {
+    for (int j = 0; j < little_grid.get_size().y; j++) {
+      window.draw(little_grid.get_case_value_drawn(i, j));
+    }
+  }
 
   window.display();
 }
@@ -161,52 +184,59 @@ void Game::integrate_block_to_grid() {
   }
 }
 
-bool Game::generate_new_block() {
+void Game::generate_new_next_block() {
   enum Block { I = 1, J, L, O, S, Z, T };
   int value_new_block = 1 + (std::rand() % 8);
 
   switch (value_new_block) {
   case I:
-    current_block = new Block_I(6, 2);
+    next_block = new Block_I(5, 3);
     break;
   case J:
-    current_block = new Block_J(6, 3);
+    next_block = new Block_J(6, 3);
     break;
   case L:
-    current_block = new Block_L(6, 3);
+    next_block = new Block_L(6, 3);
     break;
   case O:
-    current_block = new Block_O(6, 2);
+    next_block = new Block_O(6, 2);
     break;
   case S:
-    current_block = new Block_S(5, 2);
+    next_block = new Block_S(5, 2);
     break;
   case Z:
-    current_block = new Block_Z(5, 2);
+    next_block = new Block_Z(5, 2);
     break;
   default:
-    current_block = new Block_T(6, 3);
+    next_block = new Block_T(6, 3);
   }
+}
 
+bool Game::is_end_game() {
   // End game condition
   for (size_t k = 0; k < current_block->get_list_squares().size(); k++) {
     int i_ = current_block->get_list_squares()[k].x;
     int j_ = current_block->get_list_squares()[k].y;
     if (grid.get_case_value(i_, j_) != 0) {
-      return false;
+      return true;
     }
   }
-  return true;
-}
+  return false;
+};
 
 void Game::Initialize_game() {
   fps_grid = 1;
 
   grid.clean_grid_with_borders();
   grid.clean_grid();
+  little_grid.clean_grid_with_borders();
+  little_grid.clean_grid();
 
-  generate_new_block();
+  generate_new_next_block();
+  current_block = next_block;
+  generate_new_next_block();
   current_block->display_block(grid);
+  next_block->display_block(little_grid, -3, 0);
 
   clock.restart();
 }

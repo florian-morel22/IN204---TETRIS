@@ -9,7 +9,7 @@ class Block_I : public Block {
 
 public:
   Block_I(int i, int j);
-  void rotate(Grid &);
+  auto rotate(Grid &) -> void;
 };
 
 } // namespace tetris

@@ -1,6 +1,7 @@
 #ifndef GRID_HPP
 #define GRID_HPP
 
+#include <SFML/System/Vector3.hpp>
 #include <vector>
 
 #include <SFML/Graphics.hpp>
@@ -18,6 +19,7 @@ private:
   int **grid_num;
   sf::RectangleShape **grid_drawn;
   std::vector<sf::Color> list_color_block;
+  sf::Color color_empty_square;
 
   template <typename TYPE_GRID> void Free_grid(TYPE_GRID, int);
 
@@ -37,6 +39,7 @@ public:
 
   auto is_empty_case(int, int, const std::vector<sf::Vector2i> &) -> bool;
 
+  auto set_color_empty_block(sf::Color) -> void;
   auto set_color_block(int k, sf::Color c) -> void;
   auto get_color_block(int k) const -> sf::Color;
 

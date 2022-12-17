@@ -11,8 +11,10 @@ void Grid::initialize_grid(int c, int l, sf::Vector2f grid_view_size) {
   sf::Vector2f dim_squares{d * ratio, d};
   sf::Vector2f space_btw_squares{sp * ratio, sp};
   sf::Vector2f pos_first_square{
-      (grid_view_size.x - c * dim_squares.x - (c - 1) * space_btw_squares.x) /2,
-      (grid_view_size.y - l * dim_squares.y - (l - 1) * space_btw_squares.y) /2};
+      (grid_view_size.x - c * dim_squares.x - (c - 1) * space_btw_squares.x) /
+          2,
+      (grid_view_size.y - l * dim_squares.y - (l - 1) * space_btw_squares.y) /
+          2};
 
   nb_lines = l;
   nb_columns = c;
@@ -50,11 +52,11 @@ void Grid::initialize_grid(int c, int l, sf::Vector2f grid_view_size) {
   clean_grid_with_borders();
   clean_grid();
 
-  list_color_block.push_back({255, 255, 255}); // Empty cases colour
-  list_color_block.push_back({180, 167, 214}); // Block_I colour
-  list_color_block.push_back({180, 167, 189}); // ...
-  list_color_block.push_back({213, 166, 189}); // ..
-  list_color_block.push_back({182, 215, 168}); // .
+  list_color_block.push_back(color_empty_square); // Empty cases colour
+  list_color_block.push_back({180, 167, 214});    // Block_I colour
+  list_color_block.push_back({180, 167, 189});    // ...
+  list_color_block.push_back({213, 166, 189});    // ..
+  list_color_block.push_back({182, 215, 168});    // .
   list_color_block.push_back({249, 203, 156});
   list_color_block.push_back({234, 153, 153});
   list_color_block.push_back({38, 202, 107});
@@ -136,6 +138,10 @@ void Grid::draw_grid() {
 void Grid::set_color_block(int i, sf::Color c) { list_color_block[i] = c; }
 
 sf::Color Grid::get_color_block(int k) const { return list_color_block[k]; };
+
+void Grid::set_color_empty_block(sf::Color color) {
+  color_empty_square = color;
+}
 
 sf::RectangleShape Grid::get_case_value_drawn(int i, int j) const {
   return grid_drawn[i][j];

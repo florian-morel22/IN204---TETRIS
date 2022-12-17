@@ -1,4 +1,5 @@
 #include "../../inc/types_block/block_I.hpp"
+#include <SFML/System/Vector2.hpp>
 
 namespace tetris {
 
@@ -7,9 +8,9 @@ Block_I::Block_I(int i, int j) {
   rotate_value = 0;
 
   list_squares.push_back({i, j});
-  list_squares.push_back({i, j + 1});
-  list_squares.push_back({i, j + 2});
-  list_squares.push_back({i, j + 3});
+  list_squares.push_back({i + 1, j});
+  list_squares.push_back({i + 2, j});
+  list_squares.push_back({i + 3, j});
 }
 
 void Block_I::rotate(Grid &g) {
@@ -21,6 +22,17 @@ void Block_I::rotate(Grid &g) {
   switch (rotate_value) {
 
   case 0: {
+    next_i[0] = i + 2;
+    next_i[1] = i + 2;
+    next_i[2] = i + 2;
+    next_i[3] = i + 2;
+    next_j[0] = j - 1;
+    next_j[1] = j;
+    next_j[2] = j + 1;
+    next_j[3] = j + 2;
+  } break;
+
+  case 1: {
     next_i[0] = i + 1;
     next_i[1] = i;
     next_i[2] = i - 1;
@@ -31,7 +43,7 @@ void Block_I::rotate(Grid &g) {
     next_j[3] = j + 2;
   } break;
 
-  case 1: {
+  case 2: {
     next_i[0] = i - 2;
     next_i[1] = i - 2;
     next_i[2] = i - 2;
@@ -42,7 +54,7 @@ void Block_I::rotate(Grid &g) {
     next_j[3] = j - 2;
   } break;
 
-  case 2: {
+  case 3: {
     next_i[0] = i - 1;
     next_i[1] = i;
     next_i[2] = i + 1;
@@ -51,17 +63,6 @@ void Block_I::rotate(Grid &g) {
     next_j[1] = j - 2;
     next_j[2] = j - 2;
     next_j[3] = j - 2;
-  } break;
-
-  case 3: {
-    next_i[0] = i + 2;
-    next_i[1] = i + 2;
-    next_i[2] = i + 2;
-    next_i[3] = i + 2;
-    next_j[0] = j - 1;
-    next_j[1] = j;
-    next_j[2] = j + 1;
-    next_j[3] = j + 2;
   } break;
   }
 
