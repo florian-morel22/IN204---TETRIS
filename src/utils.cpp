@@ -23,6 +23,7 @@ bool find_vector(std::vector<sf::Vector2i> list_vectors, sf::Vector2i vector) {
 
 void setTextCenterPosition(sf::Text &txt, sf::Vector2f center) {
   sf::Vector2f offset;
+  
   offset.x = txt.getPosition().x - txt.getGlobalBounds().left -
              txt.getGlobalBounds().width / 2.;
   offset.y = txt.getPosition().y - txt.getGlobalBounds().top -

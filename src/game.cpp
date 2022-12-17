@@ -33,9 +33,9 @@ Game::Game() {
 
   window.create(sf::VideoMode(WIN_WIDTH, WIN_HEIGHT), "TETRIS",
                 sf::Style::Close);
-  window.setVerticalSyncEnabled(true); // Optimisation de la fenetre
+  window.setVerticalSyncEnabled(true); // Window optimization
 
-  // Création de 2 vues côtes a côte : a gauche la grille, a droite le menu
+  // Creation of two views, game at the left and menu at the right
   grid_view.setViewport(scale_grid_view);
   menu_view.setViewport(scale_menu_view);
 
@@ -47,7 +47,7 @@ Game::Game() {
   blurGrid_.setSize(grid_view.getSize());
   blurGrid_.setFillColor(sf::Color(192, 192, 192, 150));
 
-  // Création et initialisation de la grille
+  // Grid creation and initilisation
   try {
     grid.initialize_grid(10, 20, grid_view.getSize());
   } catch (std::exception const &e) {
@@ -66,7 +66,7 @@ Game::Game() {
                   {grid_view.getCenter().x, grid_view.getCenter().y * 5 / 4},
                   50, "Click to try again", sf::Color(34, 19, 73), {1, 0.7});
 
-  // permet de créer des nombres aléatoires par la suite
+  // initialisation to use random numbers later
   std::srand((unsigned int)time(nullptr));
 
   Initialize_game();
@@ -93,13 +93,13 @@ void Game::Frame() {
   bool hide_try_again =
       end_game && clock.getElapsedTime().asMilliseconds() > 1000;
 
-  // Gestion de des events utilisateurs
+  // user event management
   sf::Event event;
   while (window.pollEvent(event)) {
     InputHandler(event);
   }
 
-  // On affiche tout !
+  // We display everything
 
   if (go_to_next_gameFrame) {
     current_block->hide_block(grid);
@@ -119,7 +119,7 @@ void Game::Frame() {
   window.setView(grid_view);
   window.draw(bgGrid_);
 
-  // a suppr
+  // to delete
   grid.draw_grid();
   for (int i = 0; i < grid.get_size().x; i++) {
     for (int j = 0; j < grid.get_size().y; j++) {
@@ -152,7 +152,7 @@ void Game::set_game_break() { end_game = !end_game; }
 Grid Game::get_grid() const { return grid; }
 
 void Game::integrate_block_to_grid() {
-  // On incorpore le block à la grid avant d'en creer un nouveau.
+  // Adding the block in the grid before generating a new one
 
   for (size_t k = 0; k < current_block->get_list_squares().size(); k++) {
     int i_ = current_block->get_list_squares()[k].x;
@@ -162,33 +162,33 @@ void Game::integrate_block_to_grid() {
 }
 
 bool Game::generate_new_block() {
-  // enum Block {I, J, L, O, S, Z, T};
+  enum Block { I = 1, J, L, O, S, Z, T };
   int value_new_block = 1 + (std::rand() % 8);
 
   switch (value_new_block) {
-  case 1:
+  case I:
     current_block = new Block_I(6, 2);
     break;
-  case 2:
+  case J:
     current_block = new Block_J(6, 3);
     break;
-  case 3:
+  case L:
     current_block = new Block_L(6, 3);
     break;
-  case 4:
+  case O:
     current_block = new Block_O(6, 2);
     break;
-  case 5:
+  case S:
     current_block = new Block_S(5, 2);
     break;
-  case 6:
+  case Z:
     current_block = new Block_Z(5, 2);
     break;
   default:
     current_block = new Block_T(6, 3);
   }
 
-  // Condition for the end of the game
+  // End game condition
   for (size_t k = 0; k < current_block->get_list_squares().size(); k++) {
     int i_ = current_block->get_list_squares()[k].x;
     int j_ = current_block->get_list_squares()[k].y;

@@ -11,15 +11,13 @@ void Grid::initialize_grid(int c, int l, sf::Vector2f grid_view_size) {
   sf::Vector2f dim_squares{d * ratio, d};
   sf::Vector2f space_btw_squares{sp * ratio, sp};
   sf::Vector2f pos_first_square{
-      (grid_view_size.x - c * dim_squares.x - (c - 1) * space_btw_squares.x) /
-          2,
-      (grid_view_size.y - l * dim_squares.y - (l - 1) * space_btw_squares.y) /
-          2};
+      (grid_view_size.x - c * dim_squares.x - (c - 1) * space_btw_squares.x) /2,
+      (grid_view_size.y - l * dim_squares.y - (l - 1) * space_btw_squares.y) /2};
 
   nb_lines = l;
   nb_columns = c;
 
-  // Allocation dynamique de la grille
+  // Dynamic allocation of the grid
   grid_num = new int *[nb_columns + 4];
   if (grid_num == nullptr)
     throw std::runtime_error("Allocation de mémoire pour la grille");
@@ -29,7 +27,7 @@ void Grid::initialize_grid(int c, int l, sf::Vector2f grid_view_size) {
       throw std::runtime_error("Allocation de mémoire pour la grille");
   }
 
-  // Allocation dynamique de la grille_drawn (Grille graphique)
+  // Dynamic allocation of the grid_drawn (the displayed one)
   grid_drawn = new sf::RectangleShape *[nb_columns];
   if (grid_drawn == nullptr)
     throw std::runtime_error("Allocation de mémoire pour la grille_drawn");
@@ -41,7 +39,7 @@ void Grid::initialize_grid(int c, int l, sf::Vector2f grid_view_size) {
 
   for (int i = 0; i < nb_columns; i++) {
     for (int j = 0; j < nb_lines; j++) {
-      // Faire en sorte que les carrés soient carrés. Utiliser des proportions
+      // Set up the square dimension
       grid_drawn[i][j].setSize(dim_squares);
       float i_ = (dim_squares.x + space_btw_squares.x) * i + pos_first_square.x;
       float j_ = (dim_squares.y + space_btw_squares.y) * j + pos_first_square.y;
@@ -52,8 +50,8 @@ void Grid::initialize_grid(int c, int l, sf::Vector2f grid_view_size) {
   clean_grid_with_borders();
   clean_grid();
 
-  list_color_block.push_back({255, 255, 255}); // Couleur des cases vides
-  list_color_block.push_back({180, 167, 214}); // Couleur du block I
+  list_color_block.push_back({255, 255, 255}); // Empty cases colour
+  list_color_block.push_back({180, 167, 214}); // Block_I colour
   list_color_block.push_back({180, 167, 189}); // ...
   list_color_block.push_back({213, 166, 189}); // ..
   list_color_block.push_back({182, 215, 168}); // .
@@ -63,14 +61,14 @@ void Grid::initialize_grid(int c, int l, sf::Vector2f grid_view_size) {
 };
 
 void Grid::clean_grid() {
-  // Reinitialisation de la grille avec des 0
+  // Reset the grid (zeros)
   for (int i = 2; i < nb_columns + 2; ++i)
     for (int j = 2; j < nb_lines + 2; ++j)
       grid_num[i][j] = 0;
 }
 
 void Grid::clean_grid_with_borders() {
-  // Reinitialisation des bords de la grille avec des 0
+  // Reset the grid with its borders (zeros)
   for (int i = 0; i < nb_columns + 4; i++)
     for (int j = 0; j < nb_lines + 4; j++)
       grid_num[i][j] = 1;
