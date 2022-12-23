@@ -1,23 +1,24 @@
 #include "../inc/grid.hpp"
+#include "utils.hpp"
 
 namespace tetris {
 
-void Grid::initialize_grid(int c, int l, sf::Vector2f grid_view_size) {
-
-  float ratio = 1 / (0.5 * WIN_WIDTH) * WIN_HEIGHT;
-  float d = 35;
-  float sp = 10;
-
-  sf::Vector2f dim_squares{d * ratio, d};
-  sf::Vector2f space_btw_squares{sp * ratio, sp};
-  sf::Vector2f pos_first_square{
-      (grid_view_size.x - c * dim_squares.x - (c - 1) * space_btw_squares.x) /
-          2,
-      (grid_view_size.y - l * dim_squares.y - (l - 1) * space_btw_squares.y) /
-          2};
-
+void Grid::initialize_grid(int c, int l, sf::Vector2f grid_view_size,
+                           sf::Vector2f grid_view_pos) {
   nb_lines = l;
   nb_columns = c;
+
+  float ratio_d_sp = 0.15;
+  float d = min(grid_view_size.x / (c + ratio_d_sp * (c - 1)),
+                grid_view_size.y /
+                    (l + ratio_d_sp * (l - 1))); // dimension of squares
+  float sp = ratio_d_sp * d;                     // space_btw_squares
+
+  sf::Vector2f pos_first_square{
+      grid_view_pos.x +
+          (grid_view_size.x - c * d - (c - 1) * ratio_d_sp * d) / 2,
+      grid_view_pos.y +
+          (grid_view_size.y - l * d - (l - 1) * ratio_d_sp * d) / 2};
 
   // Dynamic allocation of the grid
   grid_num = new int *[nb_columns + 4];
@@ -42,9 +43,9 @@ void Grid::initialize_grid(int c, int l, sf::Vector2f grid_view_size) {
   for (int i = 0; i < nb_columns; i++) {
     for (int j = 0; j < nb_lines; j++) {
       // Set up the square dimension
-      grid_drawn[i][j].setSize(dim_squares);
-      float i_ = (dim_squares.x + space_btw_squares.x) * i + pos_first_square.x;
-      float j_ = (dim_squares.y + space_btw_squares.y) * j + pos_first_square.y;
+      grid_drawn[i][j].setSize({d, d});
+      float i_ = (d + sp) * i + pos_first_square.x;
+      float j_ = (d + sp) * j + pos_first_square.y;
       grid_drawn[i][j].setPosition({i_, j_});
     }
   }

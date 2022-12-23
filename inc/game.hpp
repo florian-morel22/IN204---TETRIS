@@ -24,11 +24,15 @@ private:
   bool end_game = false;
 
   sf::RenderWindow window;
-  sf::View grid_view;
-  sf::View menu_view;
+  sf::View WindowView;
 
-  sf::RectangleShape bgGrid_;
-  sf::RectangleShape bgMenu_;
+  std::vector<sf::RectangleShape> list_lines_rect;
+  std::vector<sf::ConvexShape> list_lines_conv;
+
+  sf::Sprite bgSprite;
+  sf::Texture bgTexture;
+  sf::Color ColorBorder;
+
   sf::RectangleShape blurGrid_;
 
   sf::Font main_font_;
@@ -47,6 +51,7 @@ private:
   void Frame();
   void InputHandler(sf::Event);
   void Initialize_game();
+  void Initialize_graphics();
 
 public:
   Game();

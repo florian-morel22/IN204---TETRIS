@@ -24,7 +24,8 @@ private:
   template <typename TYPE_GRID> void Free_grid(TYPE_GRID, int);
 
 public:
-  auto initialize_grid(int l, int c, sf::Vector2f grid_view_size) -> void;
+  auto initialize_grid(int l, int c, sf::Vector2f grid_view_size,
+                       sf::Vector2f grid_view_pos) -> void;
   auto get_size() const -> sf::Vector2i;
 
   auto clean_grid() -> void;

@@ -1,6 +1,3 @@
-#include <SFML/Graphics/Color.hpp>
-#include <SFML/Graphics/Font.hpp>
-
 #include "../inc/utils.hpp"
 
 namespace tetris {
@@ -23,7 +20,7 @@ bool find_vector(std::vector<sf::Vector2i> list_vectors, sf::Vector2i vector) {
 
 void setTextCenterPosition(sf::Text &txt, sf::Vector2f center) {
   sf::Vector2f offset;
-  
+
   offset.x = txt.getPosition().x - txt.getGlobalBounds().left -
              txt.getGlobalBounds().width / 2.;
   offset.y = txt.getPosition().y - txt.getGlobalBounds().top -
@@ -41,6 +38,25 @@ void initialize_text(sf::Text &text, sf::Font &font, sf::Vector2f pos,
   text.setFillColor(color);
   setTextCenterPosition(text, pos);
   text.setScale(scale);
+}
+
+void scaleToMinSize(sf::Sprite &Sprite, float H, float W) {
+  auto bounds = Sprite.getGlobalBounds();
+  float rapport_h = H / bounds.height;
+  float rapport_w = W / bounds.width;
+  if (rapport_h > rapport_w) { // On multiplie par le rapport L/l le plus grand
+    Sprite.setScale(rapport_h,
+                    rapport_h); // On multiplie largeur et longueur par H/h
+  } else {
+    Sprite.setScale(rapport_w, rapport_w);
+  }
+}
+
+float min(float a, float b) {
+  if (a < b)
+    return a;
+  else
+    return b;
 }
 
 } // namespace tetris

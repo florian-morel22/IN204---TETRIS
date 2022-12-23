@@ -13,44 +13,17 @@ void Game::Run() {
 
 Game::Game() {
 
-  /*Scaling different views*/
-  float grid_view_x = 0;
-  float grid_view_y = 0;
-  float grid_view_dx = 0.5;
-  float grid_view_dy = 1;
-
-  float menu_view_x = grid_view_x + grid_view_dx;
-  float menu_view_y = grid_view_y;
-  float menu_view_dx = 1 - grid_view_dx;
-  float menu_view_dy = grid_view_dy;
-
-  sf::FloatRect scale_grid_view = {grid_view_x, grid_view_y, grid_view_dx,
-                                   grid_view_dy};
-  sf::FloatRect scale_menu_view = {menu_view_x, menu_view_y, menu_view_dx,
-                                   menu_view_dy};
-  /* END Scaling different views*/
-
-  window.create(sf::VideoMode(WIN_WIDTH, WIN_HEIGHT), "TETRIS",
+  window.create(sf::VideoMode(WIN_WIDTH * 0.1, WIN_HEIGHT * 0.1), "TETRIS",
                 sf::Style::Close);
   window.setVerticalSyncEnabled(true); // Window optimization
+  WindowView.reset(sf::FloatRect(0, 0, WIN_WIDTH, WIN_HEIGHT));
+  window.setView(WindowView);
 
-  // Creation of two views, game at the left and menu at the right
-  grid_view.setViewport(scale_grid_view);
-  menu_view.setViewport(scale_menu_view);
-
-  bgGrid_.setSize(grid_view.getSize());
-  bgGrid_.setFillColor(sf::Color(238, 238, 238));
-  bgMenu_.setSize(menu_view.getSize());
-  bgMenu_.setFillColor(sf::Color(100, 100, 100));
-  blurGrid_.setSize(grid_view.getSize());
-  blurGrid_.setFillColor(sf::Color(192, 192, 192, 150));
-
-  grid.set_color_empty_block(sf::Color::White);
-  little_grid.set_color_empty_block(sf::Color(0, 0, 0, 0));
-
-  // Grid creation and initilisation
+  /* Grid creation and initilisation */
   try {
-    grid.initialize_grid(10, 20, grid_view.getSize());
+    grid.initialize_grid(10, 20,
+                         {WIN_WIDTH - 4 * e - 2 * L_cases, WIN_HEIGHT - 2 * e},
+                         {2 * e + L_cases, e});
   } catch (std::exception const &e) {
     printf("erreur : %s\n", e.what());
     _running = false;
@@ -59,27 +32,18 @@ Game::Game() {
 
   try {
     little_grid.initialize_grid(
-        4, 3, {bgMenu_.getSize().x / 2, bgMenu_.getSize().y / 2});
+        4, 3, {1000, 1000},
+        {e + thickness + L_cases / 2 - 500, 0.3 * WIN_HEIGHT});
   } catch (std::exception const &e) {
     printf("erreur : %s\n", e.what());
     _running = false;
     return;
   }
 
-  // initialisation of texts
-  if (!main_font_.loadFromFile(
-          "/home/ensta/IN204/project/repository/fonts/Berliner_Wand.ttf")) {
-    printf("error of Berliner_Wand loading\n");
-  }
-  initialize_text(end_msg_, main_font_, grid_view.getCenter(), 100, "TERMINADO",
-                  sf::Color(34, 19, 73), {1, 0.7});
-  initialize_text(try_again_, main_font_,
-                  {grid_view.getCenter().x, grid_view.getCenter().y * 5 / 4},
-                  50, "Click to try again", sf::Color(34, 19, 73), {1, 0.7});
-
   // initialisation to use random numbers later
   std::srand((unsigned int)time(nullptr));
 
+  Initialize_graphics();
   Initialize_game();
 }
 
@@ -113,7 +77,6 @@ void Game::Frame() {
   }
 
   // We display everything
-
   if (go_to_next_gameFrame) {
     current_block->hide_block(grid);
     if (!current_block->go_down(grid)) {
@@ -132,8 +95,14 @@ void Game::Frame() {
 
   window.clear();
 
-  window.setView(grid_view);
-  window.draw(bgGrid_);
+  window.draw(bgSprite);
+
+  for (auto const &line : list_lines_rect) {
+    window.draw(line);
+  }
+  for (auto const &line : list_lines_conv) {
+    window.draw(line);
+  }
 
   // to delete ??
   grid.draw_grid();
@@ -152,9 +121,6 @@ void Game::Frame() {
         clock.restart();
     }
   }
-
-  window.setView(menu_view);
-  window.draw(bgMenu_);
 
   little_grid.draw_grid();
   for (int i = 0; i < little_grid.get_size().x; i++) {
@@ -241,6 +207,159 @@ void Game::Initialize_game() {
   clock.restart();
 }
 
+void Game::Initialize_graphics() {
+
+  /* ---------- INITIALISATION OF TEXTS ---------- */
+
+  if (!main_font_.loadFromFile(MY_PATH +
+                               "/repository/fonts/BigShouldersDisplay.ttf")) {
+    printf("error of Berliner_Wand loading\n");
+  }
+  initialize_text(end_msg_, main_font_, WindowView.getCenter(),
+                  0.2 * (WIN_WIDTH - 4 * e - 2 * L_cases), "TERMINADO",
+                  sf::Color::White, {1, 0.7});
+  initialize_text(try_again_, main_font_,
+                  {WindowView.getCenter().x, WindowView.getCenter().y * 5 / 4},
+                  0.1 * (WIN_WIDTH - 4 * e - 2 * L_cases), "Click to try again",
+                  sf::Color::White, {1, 0.7});
+
+  /* ---------- INITIALISATION OF BACKGROUNDS ---------- */
+
+  float blurGrid_Opacity = 180; // 180/255
+
+  if (!bgTexture.loadFromFile(MY_PATH + "/repository/images/background.png")) {
+    // error...
+  }
+  bgSprite.setTexture(bgTexture);
+  scaleToMinSize(bgSprite, WIN_HEIGHT, WIN_WIDTH);
+
+  grid.set_color_empty_block(sf::Color::Black);
+  little_grid.set_color_empty_block(sf::Color(0, 0, 0, 0));
+
+  blurGrid_.setPosition({2 * e + L_cases, e});
+  blurGrid_.setSize({WIN_WIDTH - 4 * e - 2 * L_cases, WIN_HEIGHT - 2 * e});
+  blurGrid_.setFillColor(sf::Color(0, 0, 0, blurGrid_Opacity));
+
+  /* ---------- INITIALISATION OF LINES ---------- */
+
+  sf::Color ColorBorder = sf::Color(203, 108, 230);
+
+  sf::RectangleShape line11(sf::Vector2f(L_cases, thickness));
+  sf::RectangleShape line12(sf::Vector2f(H_12, thickness));
+  sf::RectangleShape line13(sf::Vector2f(H_13, thickness));
+  sf::ConvexShape line14;
+
+  line11.setFillColor(ColorBorder);
+  line11.setPosition(e, e);
+
+  line12.rotate(90.f);
+  line12.setFillColor(ColorBorder);
+  line12.setPosition(e + thickness, e);
+
+  line13.rotate(90.f);
+  line13.setFillColor(ColorBorder);
+  line13.setPosition(e + L_cases, e);
+
+  line14.setPointCount(4);
+  line14.setPoint(0, sf::Vector2f(e, e + H_12));
+  line14.setPoint(1, sf::Vector2f(e, e + H_12 + thickness));
+  line14.setPoint(2, sf::Vector2f(e + L_cases, e + H_13));
+  line14.setPoint(3, sf::Vector2f(e + L_cases, e + H_13 - thickness));
+  line14.setFillColor(ColorBorder);
+
+  sf::RectangleShape line21(sf::Vector2f(L_cases, thickness));
+  sf::RectangleShape line22(sf::Vector2f(H_22, thickness));
+  sf::RectangleShape line23(sf::Vector2f(H_23, thickness));
+  sf::ConvexShape line24;
+
+  line21.setFillColor(ColorBorder);
+  line21.setPosition(e, WIN_HEIGHT - e - thickness);
+
+  line22.rotate(90.f);
+  line22.setFillColor(ColorBorder);
+  line22.setPosition(e + thickness, WIN_HEIGHT - H_22 - e);
+
+  line23.rotate(90.f);
+  line23.setFillColor(ColorBorder);
+  line23.setPosition(e + L_cases, WIN_HEIGHT - H_23 - e);
+
+  line24.setPointCount(4);
+  line24.setPoint(0, sf::Vector2f(e, WIN_HEIGHT - e - H_22));
+  line24.setPoint(1, sf::Vector2f(e, WIN_HEIGHT - e - H_22 + thickness));
+  line24.setPoint(2, sf::Vector2f(e + L_cases, WIN_HEIGHT - H_23 - e));
+  line24.setPoint(3,
+                  sf::Vector2f(e + L_cases, WIN_HEIGHT - H_23 - e - thickness));
+  line24.setFillColor(ColorBorder);
+
+  sf::RectangleShape line31(sf::Vector2f(L_cases, thickness));
+  sf::RectangleShape line32(sf::Vector2f(H_32, thickness));
+  sf::RectangleShape line33(sf::Vector2f(H_33, thickness));
+  sf::ConvexShape line34;
+
+  line31.setFillColor(ColorBorder);
+  line31.setPosition(WIN_WIDTH - e - L_cases, e);
+
+  line32.rotate(90.f);
+  line32.setFillColor(ColorBorder);
+  line32.setPosition(WIN_WIDTH - e - L_cases + thickness, e);
+
+  line33.rotate(90.f);
+  line33.setFillColor(ColorBorder);
+  line33.setPosition(WIN_WIDTH - e, e);
+
+  line34.setPointCount(4);
+  line34.setPoint(0, sf::Vector2f(WIN_WIDTH - e - L_cases, e + H_32));
+  line34.setPoint(1,
+                  sf::Vector2f(WIN_WIDTH - e - L_cases, e + H_32 + thickness));
+  line34.setPoint(2, sf::Vector2f(WIN_WIDTH - e, e + H_33));
+  line34.setPoint(3, sf::Vector2f(WIN_WIDTH - e, e + H_33 - thickness));
+  line34.setFillColor(ColorBorder);
+
+  sf::RectangleShape line41(sf::Vector2f(L_cases, thickness));
+  sf::RectangleShape line42(sf::Vector2f(H_42, thickness));
+  sf::RectangleShape line43(sf::Vector2f(H_43, thickness));
+  sf::ConvexShape line44;
+
+  line41.setFillColor(ColorBorder);
+  line41.setPosition(WIN_WIDTH - e - L_cases, WIN_HEIGHT - e - thickness);
+
+  line42.rotate(90.f);
+  line42.setFillColor(ColorBorder);
+  line42.setPosition(WIN_WIDTH - e - L_cases + thickness,
+                     WIN_HEIGHT - e - H_42);
+
+  line43.rotate(90.f);
+  line43.setFillColor(ColorBorder);
+  line43.setPosition(WIN_WIDTH - e, WIN_HEIGHT - H_43 - e);
+
+  line44.setPointCount(4);
+  line44.setPoint(0,
+                  sf::Vector2f(WIN_WIDTH - e - L_cases, WIN_HEIGHT - e - H_42));
+  line44.setPoint(1, sf::Vector2f(WIN_WIDTH - e - L_cases,
+                                  WIN_HEIGHT - e - H_42 + thickness));
+  line44.setPoint(2, sf::Vector2f(WIN_WIDTH - e, WIN_HEIGHT - H_43 - e));
+  line44.setPoint(
+      3, sf::Vector2f(WIN_WIDTH - e, WIN_HEIGHT - H_43 - e - thickness));
+  line44.setFillColor(ColorBorder);
+
+  list_lines_rect.push_back(line11);
+  list_lines_rect.push_back(line12);
+  list_lines_rect.push_back(line13);
+  list_lines_rect.push_back(line21);
+  list_lines_rect.push_back(line22);
+  list_lines_rect.push_back(line23);
+  list_lines_rect.push_back(line31);
+  list_lines_rect.push_back(line32);
+  list_lines_rect.push_back(line33);
+  list_lines_rect.push_back(line41);
+  list_lines_rect.push_back(line42);
+  list_lines_rect.push_back(line43);
+  list_lines_conv.push_back(line14);
+  list_lines_conv.push_back(line24);
+  list_lines_conv.push_back(line34);
+  list_lines_conv.push_back(line44);
+}
+
 void Game::InputHandler(sf::Event event) {
 
   if (event.type == sf::Event::Closed)
@@ -271,7 +390,8 @@ void Game::InputHandler(sf::Event event) {
 
   if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
     sf::Vector2i localPosition = sf::Mouse::getPosition(window);
-    if (localPosition.x < 0.5 * WIN_WIDTH && end_game) {
+    if (localPosition.x * 10 > (2 * e + L_cases) &&
+        localPosition.x * 10 < (WIN_WIDTH - 2 * e - L_cases) && end_game) {
       Initialize_game();
       end_game = !end_game;
     }
