@@ -29,15 +29,47 @@ void setTextCenterPosition(sf::Text &txt, sf::Vector2f center) {
   txt.setPosition(center + offset);
 }
 
-void initialize_text(sf::Text &text, sf::Font &font, sf::Vector2f pos,
-                     unsigned int charSize, std::string str, sf::Color color,
-                     sf::Vector2f scale) {
+void setTextCenterTopPosition(sf::Text &txt, sf::Vector2f center) {
+  sf::Vector2f offset;
+
+  offset.x = txt.getPosition().x - txt.getGlobalBounds().left -
+             txt.getGlobalBounds().width / 2.;
+  offset.y = 0;
+
+  txt.setPosition(center + offset);
+}
+
+void setTextCenterBottomPosition(sf::Text &txt, sf::Vector2f center) {
+  sf::Vector2f offset;
+
+  offset.x = txt.getPosition().x - txt.getGlobalBounds().left -
+             txt.getGlobalBounds().width / 2.;
+  offset.y = txt.getPosition().y - txt.getGlobalBounds().top -
+             txt.getGlobalBounds().height;
+
+  txt.setPosition(center + offset);
+}
+
+void initialize_text(sf::Text &text, sf::Font &font, int type_position,
+                     sf::Vector2f pos, unsigned int charSize, std::string str,
+                     sf::Color color, sf::Vector2f scale) {
   text.setFont(font);
   text.setString(str);
   text.setCharacterSize(charSize);
   text.setFillColor(color);
-  setTextCenterPosition(text, pos);
   text.setScale(scale);
+
+  /* From where is calculated the pos : center of text, corner top left,
+  Middle top ?*/
+
+  if (type_position == 1)
+    setTextCenterPosition(text, pos);
+  else if (type_position == 2)
+    setTextCenterTopPosition(text, pos);
+  else if (type_position == 3)
+    setTextCenterBottomPosition(text, pos);
+  else
+    text.setPosition(pos);
 }
 
 void scaleToMinSize(sf::Sprite &Sprite, float H, float W) {

@@ -38,6 +38,9 @@ private:
   sf::Font main_font_;
   sf::Text end_msg_;
   sf::Text try_again_;
+  sf::Text Nexts_;
+  sf::Text Multiplayers_;
+  sf::Text Score_;
 
   Grid grid;
   Grid little_grid;

@@ -1,5 +1,6 @@
 #include "../inc/game.hpp"
 #include "utils.hpp"
+#include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Window/Mouse.hpp>
@@ -20,6 +21,10 @@ Game::Game() {
   window.setView(WindowView);
 
   /* Grid creation and initilisation */
+
+  grid.set_color_empty_block(sf::Color::Black);
+  little_grid.set_color_empty_block(sf::Color(0, 0, 0, 0));
+
   try {
     grid.initialize_grid(10, 20,
                          {WIN_WIDTH - 4 * e - 2 * L_cases, WIN_HEIGHT - 2 * e},
@@ -32,8 +37,8 @@ Game::Game() {
 
   try {
     little_grid.initialize_grid(
-        4, 3, {1000, 1000},
-        {e + thickness + L_cases / 2 - 500, 0.3 * WIN_HEIGHT});
+        4, 3, {L_cases * 0.4f, H_12 * 0.7f},
+        {e + L_cases / 2 - L_cases * 0.2f, 0.2f * H_12});
   } catch (std::exception const &e) {
     printf("erreur : %s\n", e.what());
     _running = false;
@@ -103,6 +108,10 @@ void Game::Frame() {
   for (auto const &line : list_lines_conv) {
     window.draw(line);
   }
+
+  window.draw(Nexts_);
+  window.draw(Multiplayers_);
+  window.draw(Score_);
 
   // to delete ??
   grid.draw_grid();
@@ -211,17 +220,30 @@ void Game::Initialize_graphics() {
 
   /* ---------- INITIALISATION OF TEXTS ---------- */
 
+  float H_Text_Suivants_Multijoueurs = 1.5 * e;
+  sf::Color title_cases_color = sf::Color(255, 222, 89);
+
   if (!main_font_.loadFromFile(MY_PATH +
                                "/repository/fonts/BigShouldersDisplay.ttf")) {
     printf("error of Berliner_Wand loading\n");
   }
-  initialize_text(end_msg_, main_font_, WindowView.getCenter(),
+  initialize_text(end_msg_, main_font_, 1, WindowView.getCenter(),
                   0.2 * (WIN_WIDTH - 4 * e - 2 * L_cases), "TERMINADO",
                   sf::Color::White, {1, 0.7});
-  initialize_text(try_again_, main_font_,
+  initialize_text(try_again_, main_font_, 1,
                   {WindowView.getCenter().x, WindowView.getCenter().y * 5 / 4},
                   0.1 * (WIN_WIDTH - 4 * e - 2 * L_cases), "Click to try again",
                   sf::Color::White, {1, 0.7});
+  initialize_text(Nexts_, main_font_, 2,
+                  {e + L_cases / 2, H_Text_Suivants_Multijoueurs},
+                  0.2 * L_cases, "SUIVANTS", title_cases_color, {1, 0.7});
+  initialize_text(Multiplayers_, main_font_, 2,
+                  {WIN_WIDTH - e - L_cases / 2, H_Text_Suivants_Multijoueurs},
+                  0.2 * L_cases, "MULTIJOUEURS", title_cases_color, {1, 0.7});
+  initialize_text(
+      Score_, main_font_, 3,
+      {e + L_cases / 2, WIN_HEIGHT - H_Text_Suivants_Multijoueurs - 0.2f * e},
+      0.2 * L_cases, "SCORE", title_cases_color, {1, 0.7});
 
   /* ---------- INITIALISATION OF BACKGROUNDS ---------- */
 
@@ -232,9 +254,6 @@ void Game::Initialize_graphics() {
   }
   bgSprite.setTexture(bgTexture);
   scaleToMinSize(bgSprite, WIN_HEIGHT, WIN_WIDTH);
-
-  grid.set_color_empty_block(sf::Color::Black);
-  little_grid.set_color_empty_block(sf::Color(0, 0, 0, 0));
 
   blurGrid_.setPosition({2 * e + L_cases, e});
   blurGrid_.setSize({WIN_WIDTH - 4 * e - 2 * L_cases, WIN_HEIGHT - 2 * e});

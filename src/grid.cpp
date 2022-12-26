@@ -53,8 +53,8 @@ void Grid::initialize_grid(int c, int l, sf::Vector2f grid_view_size,
   clean_grid_with_borders();
   clean_grid();
 
-  list_color_block.push_back(color_empty_square); // Empty cases colour
-  list_color_block.push_back({180, 167, 214});    // Block_I colour
+  list_color_block.push_back(color_empty_square); // Empty cases color
+  list_color_block.push_back({180, 167, 214});    // Block_I color
   list_color_block.push_back({180, 167, 189});    // ...
   list_color_block.push_back({213, 166, 189});    // ..
   list_color_block.push_back({182, 215, 168});    // .

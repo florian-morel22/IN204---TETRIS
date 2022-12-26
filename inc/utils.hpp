@@ -14,8 +14,8 @@ const float e = WIN_WIDTH * 0.02;
 const float thickness = WIN_WIDTH * 0.007;
 const float L_cases = 0.30 * WIN_WIDTH;
 
-const float H_12 = 0.6 * WIN_HEIGHT;
-const float H_13 = 0.5 * WIN_HEIGHT;
+const float H_12 = 0.4 * WIN_HEIGHT;
+const float H_13 = 0.3 * WIN_HEIGHT;
 const float H_22 = WIN_HEIGHT - 3 * e - H_12 - thickness;
 const float H_23 = WIN_HEIGHT - 3 * e - H_13 - thickness;
 
@@ -31,7 +31,7 @@ bool find_vector(std::vector<sf::Vector2i>, sf::Vector2i);
 
 void setTextCenterPosition(sf::Text &, sf::Vector2f);
 
-void initialize_text(sf::Text &text, sf::Font &font,
+void initialize_text(sf::Text &text, sf::Font &font, int type_position,
                      sf::Vector2f pos = {10.f, 10.f},
                      unsigned int charSize = 10, std::string str = "TEXT",
                      sf::Color color = sf::Color(0, 0, 0),
