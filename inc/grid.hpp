@@ -30,6 +30,7 @@ public:
 
   auto clean_grid() -> void;
   auto clean_grid_with_borders() -> void;
+  auto clean_full_lines(const std::vector<sf::Vector2i> &) -> int;
 
   auto display_grid() const -> void;
   auto draw_grid() -> void;

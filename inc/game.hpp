@@ -23,6 +23,8 @@ private:
   bool _running = true;
   bool end_game = false;
 
+  int score;
+
   sf::RenderWindow window;
   sf::View WindowView;
 

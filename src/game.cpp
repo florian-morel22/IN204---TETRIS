@@ -4,6 +4,7 @@
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Window/Mouse.hpp>
+#include <vector>
 
 namespace tetris {
 
@@ -86,6 +87,8 @@ void Game::Frame() {
     current_block->hide_block(grid);
     if (!current_block->go_down(grid)) {
       integrate_block_to_grid();
+      score = score + grid.clean_full_lines(current_block->get_list_squares());
+      printf("score : %d\n", score);
       current_block = next_block;
       generate_new_next_block();
       if (is_end_game())
@@ -201,6 +204,7 @@ bool Game::is_end_game() {
 
 void Game::Initialize_game() {
   fps_grid = 1;
+  score = 0;
 
   grid.clean_grid_with_borders();
   grid.clean_grid();

@@ -77,6 +77,53 @@ void Grid::clean_grid_with_borders() {
       grid_num[i][j] = 1;
 }
 
+int Grid::clean_full_lines(const std::vector<sf::Vector2i> &list_squares) {
+
+  std::vector<int> list_j;
+  std::vector<int> lines_full;
+  int number_of_full_lines;
+
+  /* We get the list of lines on which is current block */
+  for (size_t k = 0; k < list_squares.size(); k++) {
+    bool j_is_in_list_j = std::find(list_j.begin(), list_j.end(),
+                                    list_squares[k].y) != list_j.end();
+    if (!j_is_in_list_j)
+      list_j.push_back(list_squares[k].y);
+  }
+
+  /* We get the full lines */
+  for (auto const &line : list_j) {
+    bool is_line_full = true;
+    for (int col = 0; col < nb_columns; col++) {
+      if (grid_num[col + 2][line] == 0) {
+        is_line_full = false;
+      }
+    }
+    if (is_line_full == true)
+      lines_full.push_back(line);
+  }
+
+  /* For each full lines, we put the value of the square to 0 */
+  for (auto const &line : lines_full) {
+    printf("LINE %d FULL\n", line);
+    for (int col = 0; col < nb_columns; col++) {
+      grid_num[col + 2][line] = 0;
+    }
+  }
+
+  /* All lines above the highest full line has to be lowered */
+  number_of_full_lines = lines_full.size();
+  if (number_of_full_lines > 0) {
+    int lowest_line = *std::max_element(lines_full.begin(), lines_full.end());
+    for (int line = lowest_line; line > 1 + number_of_full_lines; line--) {
+      for (int i = 0; i < nb_columns; i++) {
+        grid_num[i + 2][line] = grid_num[i + 2][line - number_of_full_lines];
+      }
+    }
+  }
+  return number_of_full_lines;
+}
+
 void Grid::set_case_value(int i, int j, int newValue) {
   grid_num[i][j] = newValue;
 };
