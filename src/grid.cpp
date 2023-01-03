@@ -120,8 +120,30 @@ int Grid::clean_full_lines(const std::vector<sf::Vector2i> &list_squares) {
         grid_num[i + 2][line] = grid_num[i + 2][line - number_of_full_lines];
       }
     }
+    /*It is specific for the highest lines. They just have to be change in 0*/
+    for (int line = 1 + number_of_full_lines; line > 1; line--) {
+      for (int i = 0; i < nb_columns; i++) {
+        grid_num[i + 2][line] = 0;
+      }
+    }
   }
-  return number_of_full_lines;
+
+  switch (number_of_full_lines) {
+  case 0:
+    return 0;
+    break;
+  case 1:
+    return 40;
+    break;
+  case 2:
+    return 100;
+    break;
+  case 3:
+    return 300;
+    break;
+  default:
+    return 300;
+  }
 }
 
 void Grid::set_case_value(int i, int j, int newValue) {
