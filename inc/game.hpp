@@ -14,6 +14,7 @@
 #include "./types_block/block_Z.hpp"
 #include "block.hpp"
 #include "grid.hpp"
+#include "network.hpp"
 #include "utils.hpp"
 
 namespace tetris {
@@ -23,7 +24,8 @@ private:
   bool _running = true;
   bool end_game = false;
 
-  int score;
+  int score = 0;
+  int points = 0;
 
   sf::RenderWindow window;
   sf::View WindowView;
@@ -52,6 +54,10 @@ private:
 
   sf::Clock clock;
   float fps_grid;
+
+  Player player;
+
+  Network network;
 
   void Frame();
   void InputHandler(sf::Event);

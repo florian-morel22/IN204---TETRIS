@@ -2,7 +2,9 @@
 #include "utils.hpp"
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/Rect.hpp>
+#include <SFML/Network/IpAddress.hpp>
 #include <SFML/System/Vector2.hpp>
+#include <SFML/Window/Keyboard.hpp>
 #include <SFML/Window/Mouse.hpp>
 #include <vector>
 
@@ -51,6 +53,11 @@ Game::Game() {
 
   Initialize_graphics();
   Initialize_game();
+
+  std::string new_pseudo;
+  std::cout << "Donnez votre pseudo : ";
+  std::cin >> new_pseudo;
+  player.set_pseudo(new_pseudo);
 }
 
 Game::~Game() {
@@ -87,8 +94,11 @@ void Game::Frame() {
     current_block->hide_block(grid);
     if (!current_block->go_down(grid)) {
       integrate_block_to_grid();
-      score = score + grid.clean_full_lines(current_block->get_list_squares());
-      printf("score : %d\n", score);
+      points = grid.clean_full_lines(current_block->get_list_squares());
+      if (points > 0) {
+        player.add_score(points);
+        network.sendInfosToHost(player);
+      }
       current_block = next_block;
       generate_new_next_block();
       if (is_end_game())
@@ -142,6 +152,8 @@ void Game::Frame() {
   }
 
   window.display();
+
+  network.getInfosFromOtherPlayers(player);
 }
 
 void Game::set_running(bool new_running) { _running = new_running; }
@@ -204,7 +216,7 @@ bool Game::is_end_game() {
 
 void Game::Initialize_game() {
   fps_grid = 1;
-  score = 0;
+  player.set_score(0);
 
   grid.clean_grid_with_borders();
   grid.clean_grid();
@@ -404,6 +416,49 @@ void Game::InputHandler(sf::Event event) {
       current_block->hide_block(grid);
       current_block->rotate(grid);
       current_block->display_block(grid);
+    }
+    if (event.key.code == sf::Keyboard::H) {
+      if (!player.isClient() && !player.isHost()) {
+        player.set_Host(true);
+        std::string new_port_string;
+        std::cout << "choisir un port : ";
+        std::cin >> new_port_string;
+
+        unsigned short new_port =
+            (unsigned short)std::stoul(new_port_string, nullptr, 0);
+        network.set_port(new_port);
+
+        network.runHost();
+
+        printf("Vous avez créé un serveur host, vous devez vous y connecté en "
+               "utilisant la touche C.\n");
+      }
+    }
+    if (event.key.code == sf::Keyboard::C) {
+      if (!player.isClient()) {
+        unsigned short port;
+        std::string ip_string;
+
+        /*std::cout << "Adresse ip du serveur : ";
+        std::cin >> ip_string;*/
+        std::cout << "port : ";
+        std::cin >> port;
+
+        // sf::IpAddress ip(ip_string);
+
+        sf::IpAddress ip = network.get_ip();
+        // unsigned short port = network.get_port();
+
+        network.connectAsClient(ip, port, player);
+      }
+    }
+    if (event.key.code == sf::Keyboard::Q) {
+      if (player.isHost()) {
+        network.stop_Host();
+        // if success :
+        player.set_Host(false);
+        player.set_Client(false);
+      }
     }
   }
 

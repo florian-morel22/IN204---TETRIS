@@ -9,8 +9,8 @@
 
 namespace tetris {
 
-const size_t WIN_WIDTH = 15000;
-const size_t WIN_HEIGHT = 10000;
+const size_t WIN_WIDTH = 15000 / 3;
+const size_t WIN_HEIGHT = 10000 / 3;
 const float e = WIN_WIDTH * 0.02;
 const float thickness = WIN_WIDTH * 0.007;
 const float L_cases = 0.30 * WIN_WIDTH;
