@@ -6,6 +6,7 @@
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Window/Keyboard.hpp>
 #include <SFML/Window/Mouse.hpp>
+#include <string>
 #include <vector>
 
 namespace tetris {
@@ -83,6 +84,8 @@ void Game::Frame() {
   bool hide_try_again =
       end_game && clock.getElapsedTime().asMilliseconds() > 1000;
 
+  sf::Vector2f middle_2nd_case = {e + L_cases / 2, WIN_HEIGHT - H_22 / 2};
+
   // user event management
   sf::Event event;
   while (window.pollEvent(event)) {
@@ -97,7 +100,9 @@ void Game::Frame() {
       points = grid.clean_full_lines(current_block->get_list_squares());
       if (points > 0) {
         player.add_score(points);
-        network.sendInfosToHost(player);
+        network.sendScoreToHost(player);
+        player_score.setString(std::to_string(player.get_score()));
+        setTextCenterPosition(player_score, middle_2nd_case);
       }
       current_block = next_block;
       generate_new_next_block();
@@ -125,6 +130,11 @@ void Game::Frame() {
   window.draw(Nexts_);
   window.draw(Multiplayers_);
   window.draw(Score_);
+  window.draw(player_score);
+  for (sf::Text *T : pseudos_others_players)
+    window.draw(*T);
+  for (sf::Text *T : scores_others_players)
+    window.draw(*T);
 
   // to delete ??
   grid.draw_grid();
@@ -153,7 +163,37 @@ void Game::Frame() {
 
   window.display();
 
-  network.getInfosFromOtherPlayers(player);
+  TypeDataFromHost = network.getDataFromHost(player, other_players);
+
+  if (TypeDataFromHost == "add player to other_players") {
+    sf::Text *pseudo_text = new sf::Text();
+    sf::Text *score_text = new sf::Text();
+
+    int n = pseudos_others_players.size();
+    std::string pseudo_ = other_players[other_players.size() - 1]->get_pseudo();
+    std::string score_ =
+        std::to_string(other_players[other_players.size() - 1]->get_score());
+
+    initialize_text(*pseudo_text, main_font_, 0,
+                    {WIN_WIDTH - e - 0.9f * L_cases,
+                     e + thickness + (0.3f + 0.05f * n) * H_32},
+                    0.15 * L_cases, pseudo_, sf::Color::White, {1, 0.7});
+    initialize_text(*score_text, main_font_, 0,
+                    {WIN_WIDTH - e - thickness - 0.05f * L_cases,
+                     e + thickness + (0.3f + 0.05f * n) * H_32},
+                    0.15 * L_cases, score_, sf::Color::White, {1, 0.7});
+
+    pseudos_others_players.push_back(pseudo_text);
+    scores_others_players.push_back(score_text);
+  }
+
+  else if (TypeDataFromHost == "update scores") {
+    printf("update scores\n");
+    for (size_t k = 0; k < other_players.size(); k++) {
+      scores_others_players[k]->setString(
+          std::to_string(other_players[k]->get_score()));
+    }
+  }
 }
 
 void Game::set_running(bool new_running) { _running = new_running; }
@@ -260,6 +300,12 @@ void Game::Initialize_graphics() {
       Score_, main_font_, 3,
       {e + L_cases / 2, WIN_HEIGHT - H_Text_Suivants_Multijoueurs - 0.2f * e},
       0.2 * L_cases, "SCORE", title_cases_color, {1, 0.7});
+
+  initialize_text(
+      player_score, main_font_, 3,
+      {e + L_cases / 2, WIN_HEIGHT - H_Text_Suivants_Multijoueurs - H_22 / 2},
+      0.2 * L_cases, std::to_string(player.get_score()), title_cases_color,
+      {1, 0.7});
 
   /* ---------- INITIALISATION OF BACKGROUNDS ---------- */
 

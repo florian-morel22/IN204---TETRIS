@@ -50,6 +50,16 @@ void setTextCenterBottomPosition(sf::Text &txt, sf::Vector2f center) {
   txt.setPosition(center + offset);
 }
 
+void setTextRightTopPosition(sf::Text &txt, sf::Vector2f center) {
+  sf::Vector2f offset;
+
+  offset.x = txt.getPosition().x - txt.getGlobalBounds().left -
+             txt.getGlobalBounds().width;
+  offset.y = 0;
+
+  txt.setPosition(center + offset);
+}
+
 void initialize_text(sf::Text &text, sf::Font &font, int type_position,
                      sf::Vector2f pos, unsigned int charSize, std::string str,
                      sf::Color color, sf::Vector2f scale) {
@@ -61,13 +71,14 @@ void initialize_text(sf::Text &text, sf::Font &font, int type_position,
 
   /* From where is calculated the pos : center of text, corner top left,
   Middle top ?*/
-
   if (type_position == 1)
     setTextCenterPosition(text, pos);
   else if (type_position == 2)
     setTextCenterTopPosition(text, pos);
   else if (type_position == 3)
     setTextCenterBottomPosition(text, pos);
+  else if (type_position == 4)
+    setTextRightTopPosition(text, pos);
   else
     text.setPosition(pos);
 }

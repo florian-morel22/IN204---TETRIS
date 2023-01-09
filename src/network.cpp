@@ -8,18 +8,17 @@
 namespace tetris {
 
 struct Data {
-  int type;
+  std::string message;
   std::string pseudo;
   int score;
-  std::string message;
 };
 
 sf::Packet &operator<<(sf::Packet &packet, const Data &data) {
-  return packet << data.type << data.pseudo << data.score << data.message;
+  return packet << data.message << data.pseudo << data.score;
 }
 
 sf::Packet &operator>>(sf::Packet &packet, Data &data) {
-  return packet >> data.type >> data.pseudo >> data.score >> data.message;
+  return packet >> data.message >> data.pseudo >> data.score;
 }
 
 Network::Network() {
@@ -59,11 +58,45 @@ void Network::Host() {
         socketsAsHost.push_back(socket);
 
         sf::Packet receivePacket;
+
         if (socket->receive(receivePacket) == sf::Socket::Done) {
+
+          Data data;
           std::string pseudo_;
+
+          /* Host display : pseudo is connected */
           receivePacket >> pseudo_;
-          std::cout << pseudo_ << " vient de se connecter. " << std::endl;
+          std::cout << pseudo_ << " is connected. " << std::endl;
+
+          /* The new player receives the data of all others players */
+
+          std::cout << "size all players : " << all_players.size() << std::endl;
+          data.message = "add player to other_players";
+          for (Player *p : all_players) {
+            data.pseudo = p->get_pseudo();
+            std::cout << "pseudo : " << data.pseudo << std::endl;
+            sf::Packet sendPacket;
+            sendPacket << data;
+            socketsAsHost[socketsAsHost.size() - 1]->send(sendPacket);
+          }
+
+          /* The new player is added on the host */
+          Player *new_player = new Player(pseudo_);
+          all_players.push_back(new_player);
+
+          /* All other players receive data of this new player */
+          sf::Packet sendPacket;
+          data.message = "add player to other_players";
+          data.pseudo = pseudo_;
+          sendPacket << data;
+
+          std::cout << "pseudo to send : " << pseudo_ << std::endl;
+
+          for (size_t j = 0; j < socketsAsHost.size() - 1; j++) {
+            socketsAsHost[j]->send(sendPacket);
+          }
         }
+
       } else {
         for (size_t i = 0; i < socketsAsHost.size(); i++) {
           if (selector.isReady(*socketsAsHost[i])) {
@@ -74,8 +107,8 @@ void Network::Host() {
             if (socketsAsHost[i]->receive(receivePacket) == sf::Socket::Done) {
 
               receivePacket >> data;
-
               sendPacket << data;
+              // To Test : sendPacket = receivePacket
 
               for (size_t j = 0; j < socketsAsHost.size(); j++) {
                 if (j != i) {
@@ -83,11 +116,10 @@ void Network::Host() {
                 }
               }
 
-              if (data.type == 2)
-                if (data.message == "Serveur coupé") {
-                  HostIsRunning = false;
-                  socketsAsHost.clear();
-                }
+              if (data.message == "Serveur coupé") {
+                HostIsRunning = false;
+                socketsAsHost.clear();
+              }
             }
           }
         }
@@ -113,31 +145,58 @@ void Network::connectAsClient(sf::IpAddress ip, short int port,
   }
 }
 
-void Network::getInfosFromOtherPlayers(Player &player) {
+std::string Network::getDataFromHost(Player &player,
+                                     std::vector<Player *> &other_players) {
   sf::Packet receivePacket;
   Data data;
 
   if (socketAsClient.receive(receivePacket) == sf::Socket::Done) {
     receivePacket >> data;
 
-    if (data.type == 1) {
+    if (data.message == "update scores") {
       std::cout << "Joueur : " << data.pseudo << " a le score : " << data.score
                 << std::endl;
-    } else if (data.type == 2) {
+
+      // Change the score of the concerning player in other_players
+      auto it = std::find_if(
+          other_players.begin(), other_players.end(),
+          [data](Player *p) { return p->get_pseudo() == data.pseudo; });
+      int ind = std::distance(other_players.begin(), it);
+      other_players[ind]->set_score(data.score);
+
+      for (Player *p : other_players) {
+        std::cout << "Player : " << p->get_pseudo()
+                  << ", Score : " << std::to_string(p->get_score())
+                  << std::endl;
+      }
+      return data.message;
+    }
+
+    else if (data.message == "Serveur coupé") {
       std::cout << data.message << std::endl;
-      if (data.message == "Serveur coupé")
-        player.set_Client(false);
+      player.set_Client(false);
+      other_players.clear();
+    }
+
+    else if (data.message == "add player to other_players") {
+      Player *newPlayer = new Player(data.pseudo);
+      other_players.push_back(newPlayer);
+      std::cout << "Player " << data.pseudo << " ajouté à other_players"
+                << std::endl;
     }
   }
+  return data.message;
 }
 
-void Network::sendInfosToHost(Player &player) {
+void Network::sendScoreToHost(Player &player) {
   sf::Packet sendPacket;
   Data data;
-  data.type = 1;
+
+  data.message = "update scores";
   data.pseudo = player.get_pseudo();
   data.score = player.get_score();
   sendPacket << data;
+
   socketAsClient.send(sendPacket);
 }
 
@@ -149,7 +208,6 @@ void Network::stop_Host() {
   sf::Packet sendPacket;
   Data data;
 
-  data.type = 2;
   data.message = "Serveur coupé";
   sendPacket << data;
 

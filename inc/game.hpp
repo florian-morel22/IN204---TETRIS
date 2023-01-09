@@ -45,6 +45,9 @@ private:
   sf::Text Nexts_;
   sf::Text Multiplayers_;
   sf::Text Score_;
+  sf::Text player_score;
+  std::vector<sf::Text *> pseudos_others_players;
+  std::vector<sf::Text *> scores_others_players;
 
   Grid grid;
   Grid little_grid;
@@ -56,8 +59,10 @@ private:
   float fps_grid;
 
   Player player;
+  std::vector<Player *> other_players;
 
   Network network;
+  std::string TypeDataFromHost;
 
   void Frame();
   void InputHandler(sf::Event);

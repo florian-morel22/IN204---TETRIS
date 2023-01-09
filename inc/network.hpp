@@ -12,24 +12,29 @@ class Network {
 private:
   unsigned short port;
   sf::IpAddress ip;
+  bool HostIsRunning;
 
+  /* For clients */
+  sf::TcpSocket socketAsClient;
+
+  /* For Host */
   sf::TcpListener listener;
   sf::SocketSelector selector;
 
-  bool HostIsRunning;
+  std::vector<sf::TcpSocket *> socketsAsHost;
+  std::vector<Player *> all_players;
+
   std::thread hostT;
   void Host();
 
-  std::vector<sf::TcpSocket *> socketsAsHost;
-  sf::TcpSocket socketAsClient;
-
 public:
   Network();
+  // TODO : ~Network()
   void runHost();
 
   void connectAsClient(sf::IpAddress ip, short int port, Player &player);
-  void getInfosFromOtherPlayers(Player &);
-  void sendInfosToHost(Player &);
+  std::string getDataFromHost(Player &, std::vector<Player *> &);
+  void sendScoreToHost(Player &);
 
   sf::IpAddress get_ip() const { return ip; }
   unsigned short get_port() const { return port; }

@@ -10,6 +10,12 @@ Player::Player() {
   pseudo_ = "player";
 }
 
+Player::Player(std::string pseudo) : pseudo_(pseudo) {
+  Host_ = false;
+  Client_ = false;
+  score_ = 0;
+}
+
 std::string Player::get_pseudo() const { return pseudo_; };
 
 void Player::set_pseudo(std::string newPseudo) { pseudo_ = newPseudo; }

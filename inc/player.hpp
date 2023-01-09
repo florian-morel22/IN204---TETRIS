@@ -1,4 +1,5 @@
 #include <string>
+#include <vector>
 
 namespace tetris {
 
@@ -12,6 +13,7 @@ private:
 
 public:
   Player();
+  Player(std::string);
 
   auto get_pseudo() const -> std::string;
   auto set_pseudo(std::string) -> void;
