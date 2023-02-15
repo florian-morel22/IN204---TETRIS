@@ -23,7 +23,7 @@ sf::Packet &operator>>(sf::Packet &packet, Data &data) {
 
 Network::Network() {
   port = 3500;
-  ip = sf::IpAddress::getLocalAddress();
+  ip = "147.250.226.160";
 }
 
 void Network::runHost() {
@@ -131,6 +131,7 @@ void Network::Host() {
 void Network::connectAsClient(sf::IpAddress ip, short int port,
                               Player &player) {
 
+  std::cout << "ip : " << ip << ", port : " << port << std::endl;
   if (socketAsClient.connect(ip, port) == sf::Socket::Done) {
     socketAsClient.setBlocking(false);
     std::cout << "Connecté au serveur." << std::endl;
