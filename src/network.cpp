@@ -22,8 +22,8 @@ sf::Packet &operator>>(sf::Packet &packet, Data &data) {
 }
 
 Network::Network() {
-  port = 3500;
-  ip = "147.250.226.160";
+  port = 3300;
+  ip = sf::IpAddress::getLocalAddress();
 }
 
 void Network::runHost() {
@@ -108,7 +108,6 @@ void Network::Host() {
 
               receivePacket >> data;
               sendPacket << data;
-              // To Test : sendPacket = receivePacket
 
               for (size_t j = 0; j < socketsAsHost.size(); j++) {
                 if (j != i) {
@@ -189,14 +188,21 @@ std::string Network::getDataFromHost(Player &player,
   return data.message;
 }
 
-void Network::sendScoreToHost(Player &player) {
+void Network::sendDataToHost(Player &player, std::string message) {
   sf::Packet sendPacket;
   Data data;
 
-  data.message = "update scores";
-  data.pseudo = player.get_pseudo();
-  data.score = player.get_score();
-  sendPacket << data;
+  if (message == "update scores") {
+    data.message = message;
+    data.pseudo = player.get_pseudo();
+    data.score = player.get_score();
+    sendPacket << data;
+
+    socketAsClient.send(sendPacket);
+  } else if (message == "start game") {
+    data.message = message;
+    sendPacket << data;
+  }
 
   socketAsClient.send(sendPacket);
 }

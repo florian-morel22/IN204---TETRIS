@@ -1,3 +1,6 @@
+#ifndef PLAYER_HPP
+#define PLAYER_HPP
+
 #include <string>
 #include <vector>
 
@@ -30,3 +33,5 @@ public:
 };
 
 } // namespace tetris
+
+#endif // !GAME_HPP

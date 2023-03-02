@@ -2,8 +2,12 @@
 #define GAME_HPP
 
 #include <SFML/Graphics.hpp>
+#include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
+#include <chrono>
+#include <string>
+#include <thread>
 
 #include "./types_block/block_I.hpp"
 #include "./types_block/block_J.hpp"
@@ -22,6 +26,7 @@ namespace tetris {
 class Game {
 private:
   bool _running = true;
+  int screen = 1;
   bool end_game = false;
 
   int score = 0;
@@ -39,6 +44,18 @@ private:
 
   sf::RectangleShape blurGrid_;
 
+  sf::RectangleShape soloButton;
+  sf::RectangleShape multiButton;
+  sf::RectangleShape pseudoBox;
+  sf::RectangleShape HostButton;
+  sf::RectangleShape ClientButton;
+  sf::RectangleShape BackButton;
+  sf::RectangleShape PlayButton;
+  sf::RectangleShape ipBox;
+  sf::RectangleShape portBox;
+  bool HostButton_Selected = true;
+  bool ipBox_focused = true;
+
   sf::Font main_font_;
   sf::Text end_msg_;
   sf::Text try_again_;
@@ -46,6 +63,29 @@ private:
   sf::Text Multiplayers_;
   sf::Text Score_;
   sf::Text player_score;
+
+  sf::Text Title_game;
+  sf::Text pickYourName;
+  std::string playerInput;
+  sf::Text playerText;
+
+  sf::Text Create_server;
+  sf::Text Join_server;
+  sf::Text GoBack_;
+  sf::Text Play_;
+  sf::Text ip_;
+  sf::Text ipInput;
+  std::string ipString;
+  sf::Text portInput;
+  sf::Text port_;
+  std::string portString;
+
+  sf::Text Title_waiting;
+
+  sf::Text Solo_Button_;
+  sf::Text Multi_Button_;
+
+  sf::Text pseudo_this_player;
   std::vector<sf::Text *> pseudos_others_players;
   std::vector<sf::Text *> scores_others_players;
 
@@ -64,7 +104,10 @@ private:
   Network network;
   std::string TypeDataFromHost;
 
-  void Frame();
+  void GameScreen();
+  void HomeScreen();
+  void MultiPlayerScreen();
+  void WaitingScreen();
   void InputHandler(sf::Event);
   void Initialize_game();
   void Initialize_graphics();

@@ -1,3 +1,6 @@
+#ifndef NETWORK_HPP
+#define NETWORK_HPP
+
 #include "block.hpp"
 #include "player.hpp"
 #include "utils.hpp"
@@ -21,6 +24,8 @@ private:
   sf::TcpListener listener;
   sf::SocketSelector selector;
 
+  // std::map<int, Block *> listBlocks;
+
   std::vector<sf::TcpSocket *> socketsAsHost;
   std::vector<Player *> all_players;
 
@@ -34,7 +39,7 @@ public:
 
   void connectAsClient(sf::IpAddress ip, short int port, Player &player);
   std::string getDataFromHost(Player &, std::vector<Player *> &);
-  void sendScoreToHost(Player &);
+  void sendDataToHost(Player &, std::string);
 
   sf::IpAddress get_ip() const { return ip; }
   unsigned short get_port() const { return port; }
@@ -44,3 +49,5 @@ public:
 };
 
 }; // namespace tetris
+
+#endif // !NETWORK_HPP

@@ -1,4 +1,5 @@
 #include "../inc/game.hpp"
+#include "player.hpp"
 #include "utils.hpp"
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/Rect.hpp>
@@ -13,7 +14,14 @@ namespace tetris {
 
 void Game::Run() {
   while (_running)
-    Frame();
+    if (screen == 1)
+      HomeScreen();
+    else if (screen == 2)
+      MultiPlayerScreen();
+    else if (screen == 3)
+      WaitingScreen();
+    else
+      GameScreen();
 }
 
 Game::Game() {
@@ -49,16 +57,11 @@ Game::Game() {
     return;
   }
 
-  // initialisation to use random numbers later
+  // initialization to use random numbers later
   std::srand((unsigned int)time(nullptr));
 
   Initialize_graphics();
   Initialize_game();
-
-  std::string new_pseudo;
-  std::cout << "Donnez votre pseudo : ";
-  std::cin >> new_pseudo;
-  player.set_pseudo(new_pseudo);
 }
 
 Game::~Game() {
@@ -75,7 +78,259 @@ Game::~Game() {
   printf("Fermeture\n");
 }
 
-void Game::Frame() {
+void Game::HomeScreen() {
+
+  sf::Event event;
+  while (window.pollEvent(event)) {
+    if (event.type == sf::Event::Closed)
+      set_running(false);
+
+    if (event.type == sf::Event::TextEntered) {
+
+      if (event.text.unicode == 8 && playerInput.length() > 0) {
+        playerInput.pop_back();
+        playerText.setString(playerInput);
+      }
+
+      else if (event.text.unicode > 96 && event.text.unicode < 123 &&
+               playerInput.length() < 15) {
+        playerInput += event.text.unicode;
+        playerText.setString(playerInput);
+      }
+
+      float offset_x = playerText.getPosition().x -
+                       playerText.getGlobalBounds().left -
+                       playerText.getGlobalBounds().width / 2.;
+      playerText.setPosition(
+          sf::Vector2f{WIN_WIDTH / 2.f + offset_x, playerText.getPosition().y});
+    }
+
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+      sf::Vector2i localPosition = sf::Mouse::getPosition(window);
+      if (localPosition.x * 10 > soloButton.getPosition().x &&
+          localPosition.x * 10 <
+              soloButton.getPosition().x + soloButton.getSize().x &&
+          localPosition.y * 10 > soloButton.getPosition().y &&
+          localPosition.y * 10 <
+              soloButton.getPosition().y + soloButton.getSize().y)
+
+      {
+        if (playerInput.length() > 0) {
+          player.set_pseudo(playerInput);
+          screen = 0;
+        }
+      }
+      if (localPosition.x * 10 > multiButton.getPosition().x &&
+          localPosition.x * 10 <
+              multiButton.getPosition().x + multiButton.getSize().x &&
+          localPosition.y * 10 > multiButton.getPosition().y &&
+          localPosition.y * 10 <
+              multiButton.getPosition().y + multiButton.getSize().y)
+
+      {
+        if (playerInput.length() > 0) {
+          player.set_pseudo(playerInput);
+          screen = 2;
+        }
+      }
+    }
+  }
+
+  window.clear();
+  window.draw(bgSprite);
+  window.draw(Title_game);
+  window.draw(pickYourName);
+  window.draw(playerText);
+  window.draw(soloButton);
+  window.draw(Solo_Button_);
+  window.draw(multiButton);
+  window.draw(Multi_Button_);
+  window.draw(pseudoBox);
+  window.display();
+}
+
+void Game::MultiPlayerScreen() {
+
+  sf::Event event;
+  while (window.pollEvent(event)) {
+    if (event.type == sf::Event::Closed)
+      set_running(false);
+
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+      sf::Vector2i localPosition = sf::Mouse::getPosition(window);
+      if (localPosition.x * 10 > BackButton.getPosition().x &&
+          localPosition.x * 10 <
+              BackButton.getPosition().x + BackButton.getSize().x &&
+          localPosition.y * 10 > BackButton.getPosition().y &&
+          localPosition.y * 10 <
+              BackButton.getPosition().y + BackButton.getSize().y) {
+        screen = 1;
+      }
+      if (localPosition.x * 10 > ClientButton.getPosition().x &&
+          localPosition.x * 10 <
+              ClientButton.getPosition().x + ClientButton.getSize().x &&
+          localPosition.y * 10 > ClientButton.getPosition().y &&
+          localPosition.y * 10 <
+              ClientButton.getPosition().y + ClientButton.getSize().y &&
+          HostButton_Selected) {
+
+        ClientButton.setFillColor(sf::Color(203, 108, 230));
+        HostButton.setFillColor(sf::Color::Transparent);
+
+        ipString = "";
+        portString = "";
+        ipInput.setString(ipString);
+        portInput.setString(portString);
+
+        Play_.setString("Rejoindre");
+        sf::Vector2f pos_PlayButton = {
+            PlayButton.getPosition().x + PlayButton.getSize().x / 2,
+            PlayButton.getPosition().y + PlayButton.getSize().y / 2};
+        setTextCenterPosition(Play_, pos_PlayButton);
+
+        ipBox.setOutlineThickness(WIN_WIDTH / 100.f);
+
+        HostButton_Selected = false;
+      }
+      if (localPosition.x * 10 > HostButton.getPosition().x &&
+          localPosition.x * 10 <
+              HostButton.getPosition().x + HostButton.getSize().x &&
+          localPosition.y * 10 > HostButton.getPosition().y &&
+          localPosition.y * 10 <
+              HostButton.getPosition().y + HostButton.getSize().y) {
+
+        HostButton.setFillColor(sf::Color(203, 108, 230));
+        ClientButton.setFillColor(sf::Color::Transparent);
+
+        ipString = network.get_ip().toString();
+        portString = std::to_string(network.get_port());
+        ipInput.setString(ipString);
+        portInput.setString(portString);
+
+        Play_.setString("Creer");
+        sf::Vector2f pos_PlayButton = {
+            PlayButton.getPosition().x + PlayButton.getSize().x / 2,
+            PlayButton.getPosition().y + PlayButton.getSize().y / 2};
+        setTextCenterPosition(Play_, pos_PlayButton);
+
+        ipBox.setOutlineThickness(WIN_WIDTH / 1000.f);
+        portBox.setOutlineThickness(WIN_WIDTH / 1000.f);
+
+        HostButton_Selected = true;
+      }
+      if (localPosition.x * 10 > ipBox.getPosition().x &&
+          localPosition.x * 10 < ipBox.getPosition().x + ipBox.getSize().x &&
+          localPosition.y * 10 > ipBox.getPosition().y &&
+          localPosition.y * 10 < ipBox.getPosition().y + ipBox.getSize().y &&
+          !HostButton_Selected) {
+
+        ipBox.setOutlineThickness(WIN_WIDTH / 100.f);
+        portBox.setOutlineThickness(WIN_WIDTH / 1000.f);
+
+        ipBox_focused = true;
+      }
+      if (localPosition.x * 10 > portBox.getPosition().x &&
+          localPosition.x * 10 <
+              portBox.getPosition().x + portBox.getSize().x &&
+          localPosition.y * 10 > portBox.getPosition().y &&
+          localPosition.y * 10 <
+              portBox.getPosition().y + portBox.getSize().y &&
+          !HostButton_Selected) {
+
+        ipBox.setOutlineThickness(WIN_WIDTH / 1000.f);
+        portBox.setOutlineThickness(WIN_WIDTH / 100.f);
+
+        ipBox_focused = false;
+      }
+      if (localPosition.x * 10 > PlayButton.getPosition().x &&
+          localPosition.x * 10 <
+              PlayButton.getPosition().x + PlayButton.getSize().x &&
+          localPosition.y * 10 > PlayButton.getPosition().y &&
+          localPosition.y * 10 <
+              PlayButton.getPosition().y + PlayButton.getSize().y) {
+        if (HostButton_Selected) {
+          player.set_Host(true);
+          network.runHost();
+
+          std::this_thread::sleep_for(std::chrono::milliseconds(500));
+
+          sf::IpAddress ip(ipString);
+          unsigned short port =
+              (unsigned short)std::stoul(portString, nullptr, 0);
+          network.connectAsClient(ip, port, player);
+
+          Play_.setString("Jouer");
+          PlayButton.setPosition({WIN_WIDTH * 0.5f - PlayButton.getSize().x / 2,
+                                  WIN_HEIGHT * 0.85f});
+
+          sf::Vector2f pos_PlayButton = {
+              PlayButton.getPosition().x + PlayButton.getSize().x / 2,
+              PlayButton.getPosition().y + PlayButton.getSize().y / 2};
+          setTextCenterPosition(Play_, pos_PlayButton);
+
+          screen = 3;
+
+        } else {
+          sf::IpAddress ip(ipString);
+          unsigned short port =
+              (unsigned short)std::stoul(portString, nullptr, 0);
+          network.connectAsClient(ip, port, player);
+
+          screen = 3;
+        }
+      }
+    }
+
+    if (event.type == sf::Event::TextEntered && !HostButton_Selected) {
+      if (ipBox_focused) {
+        if (event.text.unicode == 8 && ipString.length() > 0) {
+          ipString.pop_back();
+          ipInput.setString(ipString);
+        }
+
+        else if (((event.text.unicode > 47 && event.text.unicode < 58) ||
+                  event.text.unicode == 46) &&
+                 ipString.length() < 15) {
+          ipString += event.text.unicode;
+          ipInput.setString(ipString);
+        }
+      } else {
+        if (event.text.unicode == 8 && portString.length() > 0) {
+          portString.pop_back();
+          portInput.setString(portString);
+        }
+
+        else if (((event.text.unicode > 47 && event.text.unicode < 58) ||
+                  event.text.unicode == 46) &&
+                 portString.length() < 4) {
+          portString += event.text.unicode;
+          portInput.setString(portString);
+        }
+      }
+    }
+  }
+
+  window.clear();
+  window.draw(bgSprite);
+  window.draw(HostButton);
+  window.draw(ClientButton);
+  window.draw(Create_server);
+  window.draw(Join_server);
+  window.draw(PlayButton);
+  window.draw(BackButton);
+  window.draw(GoBack_);
+  window.draw(Play_);
+  window.draw(ip_);
+  window.draw(port_);
+  window.draw(ipBox);
+  window.draw(portBox);
+  window.draw(ipInput);
+  window.draw(portInput);
+
+  window.display();
+}
+
+void Game::GameScreen() {
 
   bool go_to_next_gameFrame =
       !end_game && clock.getElapsedTime().asMilliseconds() > (1000 / fps_grid);
@@ -100,7 +355,7 @@ void Game::Frame() {
       points = grid.clean_full_lines(current_block->get_list_squares());
       if (points > 0) {
         player.add_score(points);
-        network.sendScoreToHost(player);
+        network.sendDataToHost(player, "update scores");
         player_score.setString(std::to_string(player.get_score()));
         setTextCenterPosition(player_score, middle_2nd_case);
       }
@@ -165,19 +420,67 @@ void Game::Frame() {
 
   TypeDataFromHost = network.getDataFromHost(player, other_players);
 
+  if (TypeDataFromHost == "update scores") {
+    printf("update scores\n");
+    for (size_t k = 0; k < other_players.size(); k++) {
+      scores_others_players[k]->setString(
+          std::to_string(other_players[k]->get_score()));
+    }
+  }
+}
+
+void Game::WaitingScreen() {
+
+  sf::Event event;
+  while (window.pollEvent(event)) {
+
+    if (event.type == sf::Event::Closed)
+      set_running(false);
+
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+      sf::Vector2i localPosition = sf::Mouse::getPosition(window);
+      if (player.isHost() &&
+          localPosition.x * 10 > PlayButton.getPosition().x &&
+          localPosition.x * 10 <
+              PlayButton.getPosition().x + PlayButton.getSize().x &&
+          localPosition.y * 10 > BackButton.getPosition().y &&
+          localPosition.y * 10 <
+              PlayButton.getPosition().y + PlayButton.getSize().y) {
+
+        network.sendDataToHost(player, "start game");
+
+        int n = 0;
+        for (sf::Text *T : pseudos_others_players) {
+          initialize_text(*T, main_font_, 0,
+                          {WIN_WIDTH - e - 0.9f * L_cases,
+                           e + thickness + (0.3f + 0.05f * n) * H_32},
+                          0.15 * L_cases, T->getString(), sf::Color::White,
+                          {1, 0.7});
+          n += 1;
+        }
+        screen = 0;
+      }
+    }
+  }
+
+  TypeDataFromHost = network.getDataFromHost(player, other_players);
+
   if (TypeDataFromHost == "add player to other_players") {
     sf::Text *pseudo_text = new sf::Text();
     sf::Text *score_text = new sf::Text();
 
     int n = pseudos_others_players.size();
+
     std::string pseudo_ = other_players[other_players.size() - 1]->get_pseudo();
     std::string score_ =
         std::to_string(other_players[other_players.size() - 1]->get_score());
 
-    initialize_text(*pseudo_text, main_font_, 0,
-                    {WIN_WIDTH - e - 0.9f * L_cases,
-                     e + thickness + (0.3f + 0.05f * n) * H_32},
-                    0.15 * L_cases, pseudo_, sf::Color::White, {1, 0.7});
+    initialize_text(
+        *pseudo_text, main_font_, 1,
+        {WIN_WIDTH * 0.5f, WIN_HEIGHT * 0.4f + n * 0.08f * WIN_HEIGHT},
+        0.07f * WIN_HEIGHT, pseudo_, sf::Color::White, {1, 0.7});
+
+    // This text is initialized for the next screen
     initialize_text(*score_text, main_font_, 0,
                     {WIN_WIDTH - e - thickness - 0.05f * L_cases,
                      e + thickness + (0.3f + 0.05f * n) * H_32},
@@ -187,13 +490,33 @@ void Game::Frame() {
     scores_others_players.push_back(score_text);
   }
 
-  else if (TypeDataFromHost == "update scores") {
-    printf("update scores\n");
-    for (size_t k = 0; k < other_players.size(); k++) {
-      scores_others_players[k]->setString(
-          std::to_string(other_players[k]->get_score()));
+  if (TypeDataFromHost == "start game") {
+
+    int n = 0;
+    for (sf::Text *T : pseudos_others_players) {
+      initialize_text(*T, main_font_, 0,
+                      {WIN_WIDTH - e - 0.9f * L_cases,
+                       e + thickness + (0.3f + 0.05f * n) * H_32},
+                      0.15 * L_cases, T->getString(), sf::Color::White,
+                      {1, 0.7});
+      n += 1;
     }
+    screen = 0;
   }
+
+  window.clear();
+  window.draw(bgSprite);
+  window.draw(Title_waiting);
+
+  if (player.isHost()) {
+    window.draw(PlayButton);
+    window.draw(Play_);
+  }
+
+  for (sf::Text *T : pseudos_others_players) {
+    window.draw(*T);
+  }
+  window.display();
 }
 
 void Game::set_running(bool new_running) { _running = new_running; }
@@ -274,7 +597,84 @@ void Game::Initialize_game() {
 
 void Game::Initialize_graphics() {
 
-  /* ---------- INITIALISATION OF TEXTS ---------- */
+  sf::Color ColorBorder = sf::Color(203, 108, 230);
+
+  /* ---------- INITIALIZATION OF HOMESCREEN---------- */
+
+  soloButton.setSize({WIN_WIDTH / 5.f, WIN_HEIGHT / 10.f});
+  multiButton.setSize({WIN_WIDTH / 5.f, WIN_HEIGHT / 10.f});
+
+  soloButton.setPosition(
+      {WIN_WIDTH / 3.f - soloButton.getSize().x / 2, WIN_HEIGHT * 4 / 5.f});
+  multiButton.setPosition({WIN_WIDTH * 2 / 3.f - multiButton.getSize().x / 2,
+                           WIN_HEIGHT * 4 / 5.f});
+
+  soloButton.setOutlineThickness(WIN_WIDTH / 100.f);
+  soloButton.setOutlineColor(ColorBorder);
+  soloButton.setFillColor(sf::Color::Transparent);
+
+  multiButton.setOutlineThickness(WIN_WIDTH / 100.f);
+  multiButton.setOutlineColor(ColorBorder);
+  multiButton.setFillColor(sf::Color::Transparent);
+
+  pseudoBox.setSize({WIN_WIDTH * 0.6f, WIN_HEIGHT / 10.f});
+  pseudoBox.setPosition(
+      {WIN_WIDTH * 0.5f - pseudoBox.getSize().x / 2, WIN_HEIGHT * 6 / 10.f});
+  pseudoBox.setOutlineThickness(WIN_WIDTH / 500.f);
+  pseudoBox.setOutlineColor(sf::Color::White);
+  pseudoBox.setFillColor(sf::Color::Transparent);
+
+  /* ---------- INITIALIZATION OF MULTIPLAYERSCREEN---------- */
+
+  HostButton.setSize({WIN_WIDTH * 0.3f, WIN_HEIGHT * 0.1f});
+  ClientButton.setSize({WIN_WIDTH * 0.3f, WIN_HEIGHT * 0.1f});
+
+  HostButton.setPosition(
+      {WIN_WIDTH / 3.f - HostButton.getSize().x / 2, WIN_HEIGHT * 0.15f});
+  ClientButton.setPosition(
+      {WIN_WIDTH * 2 / 3.f - ClientButton.getSize().x / 2, WIN_HEIGHT * 0.15f});
+
+  HostButton.setOutlineThickness(WIN_WIDTH / 500.f);
+  HostButton.setOutlineColor(ColorBorder);
+  HostButton.setFillColor(ColorBorder);
+
+  ClientButton.setOutlineThickness(WIN_WIDTH / 500.f);
+  ClientButton.setOutlineColor(ColorBorder);
+  ClientButton.setFillColor(sf::Color::Transparent);
+
+  BackButton.setSize({WIN_WIDTH * 0.15f, WIN_HEIGHT * 0.1f});
+  PlayButton.setSize({WIN_WIDTH * 0.15f, WIN_HEIGHT * 0.1f});
+
+  BackButton.setPosition(
+      {WIN_WIDTH * 0.4f - BackButton.getSize().x / 2, WIN_HEIGHT * 0.85f});
+  PlayButton.setPosition(
+      {WIN_WIDTH * 0.6f - PlayButton.getSize().x / 2, WIN_HEIGHT * 0.85f});
+
+  BackButton.setOutlineThickness(WIN_WIDTH / 500.f);
+  BackButton.setOutlineColor(sf::Color::White);
+  BackButton.setFillColor(sf::Color::Transparent);
+
+  PlayButton.setOutlineThickness(WIN_WIDTH / 500.f);
+  PlayButton.setOutlineColor(ColorBorder);
+  PlayButton.setFillColor(sf::Color::Transparent);
+
+  ipBox.setSize({WIN_WIDTH * 0.4f, WIN_HEIGHT * 0.1f});
+  portBox.setSize({WIN_WIDTH * 0.4f, WIN_HEIGHT * 0.1f});
+
+  ipBox.setPosition(
+      {WIN_WIDTH * 0.5f - ipBox.getSize().x / 2, WIN_HEIGHT * 0.4f});
+  portBox.setPosition(
+      {WIN_WIDTH * 0.5f - portBox.getSize().x / 2, WIN_HEIGHT * 0.6f});
+
+  ipBox.setOutlineThickness(WIN_WIDTH / 1000.f);
+  ipBox.setOutlineColor(sf::Color::White);
+  ipBox.setFillColor(sf::Color::Transparent);
+
+  portBox.setOutlineThickness(WIN_WIDTH / 1000.f);
+  portBox.setOutlineColor(sf::Color::White);
+  portBox.setFillColor(sf::Color::Transparent);
+
+  /* ---------- INITIALIZATION OF TEXTS ---------- */
 
   float H_Text_Suivants_Multijoueurs = 1.5 * e;
   sf::Color title_cases_color = sf::Color(255, 222, 89);
@@ -307,9 +707,89 @@ void Game::Initialize_graphics() {
       0.2 * L_cases, std::to_string(player.get_score()), title_cases_color,
       {1, 0.7});
 
-  /* ---------- INITIALISATION OF BACKGROUNDS ---------- */
+  initialize_text(Title_game, main_font_, 1,
+                  {WIN_WIDTH / 2.f, WIN_HEIGHT / 3.f}, 0.2 * WIN_HEIGHT,
+                  "TETRIS", title_cases_color, {1, 0.7});
 
-  float blurGrid_Opacity = 180; // 180/255
+  initialize_text(pickYourName, main_font_, 1,
+                  {WIN_WIDTH / 2.f, WIN_HEIGHT / 2.f}, 0.1 * WIN_HEIGHT,
+                  "Saisissez votre pseudo", title_cases_color, {1, 0.7});
+
+  initialize_text(playerText, main_font_, 1,
+                  {WIN_WIDTH / 2.f, WIN_HEIGHT * 6 / 10.f}, 0.1 * WIN_HEIGHT,
+                  playerInput, sf::Color::Cyan, {1, 0.7});
+
+  sf::Vector2f pos_Solo_Button = {
+      soloButton.getPosition().x + soloButton.getSize().x / 2,
+      soloButton.getPosition().y + soloButton.getSize().y / 2};
+
+  initialize_text(Solo_Button_, main_font_, 1, pos_Solo_Button,
+                  0.1 * WIN_HEIGHT, "SOLO", title_cases_color, {1, 0.7});
+
+  sf::Vector2f pos_Multi_Button = {
+      multiButton.getPosition().x + multiButton.getSize().x / 2,
+      multiButton.getPosition().y + multiButton.getSize().y / 2};
+
+  initialize_text(Multi_Button_, main_font_, 1, pos_Multi_Button,
+                  0.1 * WIN_HEIGHT, "MULTI", title_cases_color, {1, 0.7});
+
+  sf::Vector2f pos_HostButton = {
+      HostButton.getPosition().x + HostButton.getSize().x / 2,
+      HostButton.getPosition().y + HostButton.getSize().y / 2};
+  initialize_text(Create_server, main_font_, 1, pos_HostButton,
+                  0.05 * WIN_HEIGHT, "Creer un serveur", title_cases_color,
+                  {1, 0.7});
+
+  sf::Vector2f pos_ClientButton = {
+      ClientButton.getPosition().x + ClientButton.getSize().x / 2,
+      ClientButton.getPosition().y + ClientButton.getSize().y / 2};
+  initialize_text(Join_server, main_font_, 1, pos_ClientButton,
+                  0.05 * WIN_HEIGHT, "Rejoindre un serveur", title_cases_color,
+                  {1, 0.7});
+
+  sf::Vector2f pos_BackButton = {
+      BackButton.getPosition().x + BackButton.getSize().x / 2,
+      BackButton.getPosition().y + BackButton.getSize().y / 2};
+  initialize_text(GoBack_, main_font_, 1, pos_BackButton, 0.05 * WIN_HEIGHT,
+                  "Annuler", sf::Color::White, {1, 0.7});
+
+  sf::Vector2f pos_PlayButton = {
+      PlayButton.getPosition().x + PlayButton.getSize().x / 2,
+      PlayButton.getPosition().y + PlayButton.getSize().y / 2};
+  initialize_text(Play_, main_font_, 1, pos_PlayButton, 0.05 * WIN_HEIGHT,
+                  "Creer", title_cases_color, {1, 0.7});
+
+  initialize_text(ip_, main_font_, 6,
+                  {ipBox.getPosition().x - 0.02f * WIN_HEIGHT,
+                   ipBox.getPosition().y + ipBox.getSize().y / 2},
+                  0.05 * WIN_HEIGHT, "ip serveur : ", sf::Color::White,
+                  {1, 0.7});
+
+  initialize_text(port_, main_font_, 6,
+                  {portBox.getPosition().x - 0.02f * WIN_HEIGHT,
+                   portBox.getPosition().y + portBox.getSize().y / 2},
+                  0.05 * WIN_HEIGHT, "Mot de passe : ", sf::Color::White,
+                  {1, 0.7});
+
+  ipString = network.get_ip().toString();
+  initialize_text(ipInput, main_font_, 5,
+                  {ipBox.getPosition().x + 0.05f * WIN_WIDTH,
+                   ipBox.getPosition().y + ipBox.getSize().y * 0.5f},
+                  0.05 * WIN_HEIGHT, ipString, sf::Color::White, {1, 0.7});
+
+  portString = std::to_string(network.get_port());
+  initialize_text(portInput, main_font_, 5,
+                  {portBox.getPosition().x + 0.05f * WIN_WIDTH,
+                   portBox.getPosition().y + portBox.getSize().y * 0.5f},
+                  0.05 * WIN_HEIGHT, portString, sf::Color::White, {1, 0.7});
+
+  initialize_text(Title_waiting, main_font_, 1,
+                  {WIN_WIDTH * 0.5f, WIN_HEIGHT * 0.2f}, 0.08 * WIN_WIDTH,
+                  "En attente des autres joueurs", title_cases_color, {1, 0.7});
+
+  /* ---------- INITIALIZATION OF BACKGROUNDS ---------- */
+
+  float blurGrid_Opacity = 180;
 
   if (!bgTexture.loadFromFile(MY_PATH + "/repository/images/background.png")) {
     // error...
@@ -321,9 +801,7 @@ void Game::Initialize_graphics() {
   blurGrid_.setSize({WIN_WIDTH - 4 * e - 2 * L_cases, WIN_HEIGHT - 2 * e});
   blurGrid_.setFillColor(sf::Color(0, 0, 0, blurGrid_Opacity));
 
-  /* ---------- INITIALISATION OF LINES ---------- */
-
-  sf::Color ColorBorder = sf::Color(203, 108, 230);
+  /* ---------- INITIALIZATION OF LINES ---------- */
 
   sf::RectangleShape line11(sf::Vector2f(L_cases, thickness));
   sf::RectangleShape line12(sf::Vector2f(H_12, thickness));
@@ -463,41 +941,7 @@ void Game::InputHandler(sf::Event event) {
       current_block->rotate(grid);
       current_block->display_block(grid);
     }
-    if (event.key.code == sf::Keyboard::H) {
-      if (!player.isClient() && !player.isHost()) {
-        player.set_Host(true);
-        std::string new_port_string;
-        std::cout << "choisir un port : ";
-        std::cin >> new_port_string;
 
-        unsigned short new_port =
-            (unsigned short)std::stoul(new_port_string, nullptr, 0);
-        network.set_port(new_port);
-
-        network.runHost();
-
-        printf("Vous avez créé un serveur host, vous devez vous y connecté en "
-               "utilisant la touche C.\n");
-      }
-    }
-    if (event.key.code == sf::Keyboard::C) {
-      if (!player.isClient()) {
-        unsigned short port;
-        std::string ip_string;
-
-        /*std::cout << "Adresse ip du serveur : ";
-        std::cin >> ip_string;*/
-        std::cout << "port : ";
-        std::cin >> port;
-
-        // sf::IpAddress ip(ip_string);
-
-        sf::IpAddress ip = network.get_ip();
-        // unsigned short port = network.get_port();
-
-        network.connectAsClient(ip, port, player);
-      }
-    }
     if (event.key.code == sf::Keyboard::Q) {
       if (player.isHost()) {
         network.stop_Host();
