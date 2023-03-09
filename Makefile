@@ -1,6 +1,9 @@
-CXX= g++ 
-CXXFLAGS= -Wall -Werror -Wfatal-errors
-LIB_SFML= -lsfml-graphics -lsfml-window -lsfml-system -lsfml-network -pthread
+# include à modifier selon sa configuration
+#include make_msys.inc 
+#include make_linux.inc
+include make_osx.inc
+
+CXX = g++
 
 SRC_DIR =./src
 INC_DIR = ./inc
@@ -19,7 +22,8 @@ Objdoss/%.o: %.cpp
 
 .PHONY: clean
 clean:
-	rm -f *.o
+	rm src/*.o
+	rm src/types_block/*.o
 
 .PHONY: mrproper
 mrproper: clean
@@ -29,7 +33,4 @@ mrproper: clean
 	@makedepend -f- -- $(SRC) > .depend
 
   
-
-# Il suffit ensuite d'inclure cette liste de dépendance.
-
 include .depend
