@@ -1,5 +1,5 @@
 #include "../inc/grid.hpp"
-#include "utils.hpp"
+#include "../inc/utils.hpp"
 
 namespace tetris {
 

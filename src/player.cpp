@@ -1,5 +1,5 @@
-#include "player.hpp"
-#include "utils.hpp"
+#include "../inc/player.hpp"
+#include "../inc/utils.hpp"
 
 namespace tetris {
 

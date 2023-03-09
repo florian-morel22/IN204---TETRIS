@@ -1,6 +1,6 @@
 #include "../inc/game.hpp"
-#include "player.hpp"
-#include "utils.hpp"
+#include "../inc/player.hpp"
+#include "../inc/utils.hpp"
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/Network/IpAddress.hpp>
@@ -791,7 +791,7 @@ void Game::Initialize_graphics() {
   sf::Color title_cases_color = sf::Color(255, 222, 89);
 
   if (!main_font_.loadFromFile(MY_PATH +
-                               "/repository/fonts/BigShouldersDisplay.ttf")) {
+                               "/fonts/BigShouldersDisplay.ttf")) {
     printf("error of Berliner_Wand loading\n");
   }
   initialize_text(end_msg_, main_font_, 1, WindowView.getCenter(),
@@ -912,7 +912,7 @@ void Game::Initialize_graphics() {
 
   float blurGrid_Opacity = 180;
 
-  if (!bgTexture.loadFromFile(MY_PATH + "/repository/images/background.png")) {
+  if (!bgTexture.loadFromFile(MY_PATH + "/images/background.png")) {
     // error...
   }
   bgSprite.setTexture(bgTexture);
