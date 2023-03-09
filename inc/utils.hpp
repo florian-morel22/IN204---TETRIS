@@ -24,7 +24,6 @@ const float H_32 = 0.8 * WIN_HEIGHT;
 const float H_33 = 0.7 * WIN_HEIGHT;
 const float H_42 = WIN_HEIGHT - 3 * e - H_32 - thickness;
 const float H_43 = WIN_HEIGHT - 3 * e - H_33 - thickness;
-const std::string MY_PATH = "/home/ensta/IN204/project";
 
 void transpose(std::vector<sf::Vector2i> &);
 

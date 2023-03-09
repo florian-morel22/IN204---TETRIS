@@ -790,7 +790,7 @@ void Game::Initialize_graphics() {
   float H_Text_Suivants_Multijoueurs = 1.5 * e;
   sf::Color title_cases_color = sf::Color(255, 222, 89);
 
-  if (!main_font_.loadFromFile(MY_PATH +
+  if (!main_font_.loadFromFile(std::string(MY_PATH) +
                                "/fonts/BigShouldersDisplay.ttf")) {
     printf("error of Berliner_Wand loading\n");
   }
@@ -912,7 +912,7 @@ void Game::Initialize_graphics() {
 
   float blurGrid_Opacity = 180;
 
-  if (!bgTexture.loadFromFile(MY_PATH + "/images/background.png")) {
+  if (!bgTexture.loadFromFile(std::string(MY_PATH) + "/images/background.png")) {
     // error...
   }
   bgSprite.setTexture(bgTexture);

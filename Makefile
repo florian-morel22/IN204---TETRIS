@@ -3,7 +3,10 @@
 #include make_linux.inc
 include make_osx.inc
 
+
+MY_PATH = /Users/clembastaert/Desktop/Code/deuxiemeAnnee/IN204_Tetris
 CXX = g++
+CXXFLAGS += -DMY_PATH='"$(MY_PATH)"'
 
 SRC_DIR =./src
 INC_DIR = ./inc
