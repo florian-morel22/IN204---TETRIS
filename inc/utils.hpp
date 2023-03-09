@@ -32,6 +32,8 @@ bool find_vector(std::vector<sf::Vector2i>, sf::Vector2i);
 
 void setTextCenterPosition(sf::Text &, sf::Vector2f);
 
+void setTextRightCenterPosition(sf::Text &, sf::Vector2f);
+
 void initialize_text(sf::Text &text, sf::Font &font, int type_position,
                      sf::Vector2f pos = {10.f, 10.f},
                      unsigned int charSize = 10, std::string str = "TEXT",

@@ -8,6 +8,7 @@ Player::Player() {
   Client_ = false;
   score_ = 0;
   pseudo_ = "player";
+  numBlock = 0;
 }
 
 Player::Player(std::string pseudo) : pseudo_(pseudo) {
@@ -30,4 +31,9 @@ void Player::set_Host(bool host) { Host_ = host; }
 
 bool Player::isClient() const { return Client_; }
 void Player::set_Client(bool client) { Client_ = client; }
+
+int Player::get_numBlock() const { return numBlock; }
+void Player::add_numBlock() { numBlock += 1; }
+void Player::reset_numBlock() { numBlock = 0; }
+
 }; // namespace tetris

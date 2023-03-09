@@ -50,9 +50,10 @@ private:
   sf::RectangleShape HostButton;
   sf::RectangleShape ClientButton;
   sf::RectangleShape BackButton;
-  sf::RectangleShape PlayButton;
+  sf::RectangleShape CreateButton;
   sf::RectangleShape ipBox;
   sf::RectangleShape portBox;
+  sf::RectangleShape PlayButton;
   bool HostButton_Selected = true;
   bool ipBox_focused = true;
 
@@ -72,15 +73,16 @@ private:
   sf::Text Create_server;
   sf::Text Join_server;
   sf::Text GoBack_;
-  sf::Text Play_;
+  sf::Text Create_;
   sf::Text ip_;
   sf::Text ipInput;
   std::string ipString;
   sf::Text portInput;
   sf::Text port_;
   std::string portString;
-
+  sf::Text Quitting_;
   sf::Text Title_waiting;
+  sf::Text Play_;
 
   sf::Text Solo_Button_;
   sf::Text Multi_Button_;
@@ -108,6 +110,7 @@ private:
   void HomeScreen();
   void MultiPlayerScreen();
   void WaitingScreen();
+  void QuittingScreen();
   void InputHandler(sf::Event);
   void Initialize_game();
   void Initialize_graphics();

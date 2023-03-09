@@ -11,19 +11,68 @@ struct Data {
   std::string message;
   std::string pseudo;
   int score;
+  int num_block;
+  int type_block; // between 1 and 7
 };
 
 sf::Packet &operator<<(sf::Packet &packet, const Data &data) {
-  return packet << data.message << data.pseudo << data.score;
+  return packet << data.message << data.pseudo << data.score << data.num_block
+                << data.type_block;
 }
 
 sf::Packet &operator>>(sf::Packet &packet, Data &data) {
-  return packet >> data.message >> data.pseudo >> data.score;
+  return packet >> data.message >> data.pseudo >> data.score >>
+         data.num_block >> data.type_block;
 }
 
 Network::Network() {
-  port = 3300;
+
+  // initialization to use random numbers
+  std::srand((unsigned int)time(nullptr));
+
+  port = 3001 + (std::rand() % 1000);
   ip = sf::IpAddress::getLocalAddress();
+  numBlock = 0;
+}
+
+Network::~Network() {}
+
+void Network::reset_IP_port() {
+  ip = sf::IpAddress::getLocalAddress();
+  int old_port = port;
+  while (old_port == port) {
+    port = 3001 + (std::rand() % 1000);
+  }
+};
+
+void Network::add_new_Block_to_listBlocks(int num, int block) {
+  enum b { I = 1, J, L, O, S, Z, T };
+
+  Block *newBlock;
+
+  switch (block) {
+  case I:
+    newBlock = new Block_I(5, 3);
+    break;
+  case J:
+    newBlock = new Block_J(6, 3);
+    break;
+  case L:
+    newBlock = new Block_L(6, 3);
+    break;
+  case O:
+    newBlock = new Block_O(6, 2);
+    break;
+  case S:
+    newBlock = new Block_S(5, 2);
+    break;
+  case Z:
+    newBlock = new Block_Z(5, 2);
+    break;
+  default:
+    newBlock = new Block_T(6, 3);
+  }
+  listBlocks.insert({num, newBlock});
 }
 
 void Network::runHost() {
@@ -38,17 +87,14 @@ void Network::Host() {
   listener.listen(port);
   selector.add(listener);
 
-  if (listener.listen(port) == sf::Socket::Done) {
-    std::cout << "Serveur correctement lancé" << std::endl;
-  } else {
+  if (listener.listen(port) != sf::Socket::Done) {
     exit(0);
   }
 
   while (HostIsRunning) {
-
     if (selector.wait()) {
       /*Si le selecteur est prêt a écouter le listener, il l'ecoute.
-       *On li cette partie du code lorsque que qqch a été envoyé par un client
+       *On lit cette partie du code lorsque que qqch a été envoyé par un client
        *mais on ne le connait pas.
        */
       if (selector.isReady(listener)) {
@@ -66,16 +112,15 @@ void Network::Host() {
 
           /* Host display : pseudo is connected */
           receivePacket >> pseudo_;
-          std::cout << pseudo_ << " is connected. " << std::endl;
 
           /* The new player receives the data of all others players */
 
-          std::cout << "size all players : " << all_players.size() << std::endl;
           data.message = "add player to other_players";
           for (Player *p : all_players) {
-            data.pseudo = p->get_pseudo();
-            std::cout << "pseudo : " << data.pseudo << std::endl;
             sf::Packet sendPacket;
+
+            data.pseudo = p->get_pseudo();
+
             sendPacket << data;
             socketsAsHost[socketsAsHost.size() - 1]->send(sendPacket);
           }
@@ -89,8 +134,6 @@ void Network::Host() {
           data.message = "add player to other_players";
           data.pseudo = pseudo_;
           sendPacket << data;
-
-          std::cout << "pseudo to send : " << pseudo_ << std::endl;
 
           for (size_t j = 0; j < socketsAsHost.size() - 1; j++) {
             socketsAsHost[j]->send(sendPacket);
@@ -107,15 +150,30 @@ void Network::Host() {
             if (socketsAsHost[i]->receive(receivePacket) == sf::Socket::Done) {
 
               receivePacket >> data;
+
+              if (data.message == "generate new block") {
+                data.num_block = numBlock;
+                data.type_block = 1 + (std::rand() % 8);
+
+                numBlock += 1;
+              }
+
               sendPacket << data;
 
-              for (size_t j = 0; j < socketsAsHost.size(); j++) {
-                if (j != i) {
+              if (data.message == "generate new block" ||
+                  data.message == "play") {
+                for (size_t j = 0; j < socketsAsHost.size(); j++) {
                   socketsAsHost[j]->send(sendPacket);
+                }
+              } else {
+                for (size_t j = 0; j < socketsAsHost.size(); j++) {
+                  if (j != i) {
+                    socketsAsHost[j]->send(sendPacket);
+                  }
                 }
               }
 
-              if (data.message == "Serveur coupé") {
+              if (data.message == "server down") {
                 HostIsRunning = false;
                 socketsAsHost.clear();
               }
@@ -130,10 +188,8 @@ void Network::Host() {
 void Network::connectAsClient(sf::IpAddress ip, short int port,
                               Player &player) {
 
-  std::cout << "ip : " << ip << ", port : " << port << std::endl;
   if (socketAsClient.connect(ip, port) == sf::Socket::Done) {
     socketAsClient.setBlocking(false);
-    std::cout << "Connecté au serveur." << std::endl;
 
     sf::Packet sendPacket;
     sendPacket << player.get_pseudo();
@@ -154,8 +210,6 @@ std::string Network::getDataFromHost(Player &player,
     receivePacket >> data;
 
     if (data.message == "update scores") {
-      std::cout << "Joueur : " << data.pseudo << " a le score : " << data.score
-                << std::endl;
 
       // Change the score of the concerning player in other_players
       auto it = std::find_if(
@@ -164,15 +218,10 @@ std::string Network::getDataFromHost(Player &player,
       int ind = std::distance(other_players.begin(), it);
       other_players[ind]->set_score(data.score);
 
-      for (Player *p : other_players) {
-        std::cout << "Player : " << p->get_pseudo()
-                  << ", Score : " << std::to_string(p->get_score())
-                  << std::endl;
-      }
       return data.message;
     }
 
-    else if (data.message == "Serveur coupé") {
+    else if (data.message == "server down") {
       std::cout << data.message << std::endl;
       player.set_Client(false);
       other_players.clear();
@@ -181,8 +230,12 @@ std::string Network::getDataFromHost(Player &player,
     else if (data.message == "add player to other_players") {
       Player *newPlayer = new Player(data.pseudo);
       other_players.push_back(newPlayer);
-      std::cout << "Player " << data.pseudo << " ajouté à other_players"
-                << std::endl;
+    }
+
+    else if (data.message == "generate new block") {
+      printf("data.num_block : %d, data.type_block : %d\n", data.num_block,
+             data.type_block);
+      add_new_Block_to_listBlocks(data.num_block, data.type_block);
     }
   }
   return data.message;
@@ -193,29 +246,11 @@ void Network::sendDataToHost(Player &player, std::string message) {
   Data data;
 
   if (message == "update scores") {
-    data.message = message;
     data.pseudo = player.get_pseudo();
     data.score = player.get_score();
-    sendPacket << data;
-
-    socketAsClient.send(sendPacket);
-  } else if (message == "start game") {
-    data.message = message;
-    sendPacket << data;
   }
 
-  socketAsClient.send(sendPacket);
-}
-
-void Network::stop_Host() {
-
-  printf("Serveur arreté.\n");
-
-  // Prévenir chaque client que le serveur est coupé.
-  sf::Packet sendPacket;
-  Data data;
-
-  data.message = "Serveur coupé";
+  data.message = message;
   sendPacket << data;
 
   socketAsClient.send(sendPacket);

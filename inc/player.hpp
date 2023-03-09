@@ -14,6 +14,8 @@ private:
   bool Host_;
   bool Client_;
 
+  int numBlock;
+
 public:
   Player();
   Player(std::string);
@@ -30,6 +32,10 @@ public:
 
   auto isClient() const -> bool;
   auto set_Client(bool) -> void;
+
+  auto get_numBlock() const -> int;
+  auto add_numBlock() -> void;
+  auto reset_numBlock() -> void;
 };
 
 } // namespace tetris

@@ -20,6 +20,8 @@ void Game::Run() {
       MultiPlayerScreen();
     else if (screen == 3)
       WaitingScreen();
+    else if (screen == 4)
+      QuittingScreen();
     else
       GameScreen();
 }
@@ -61,7 +63,6 @@ Game::Game() {
   std::srand((unsigned int)time(nullptr));
 
   Initialize_graphics();
-  Initialize_game();
 }
 
 Game::~Game() {
@@ -74,6 +75,10 @@ Game::~Game() {
     printf("erreur : %s\n", e.what());
   }
   // delete current_block; // => core dumped ?????????????????????
+  if (player.isHost()) {
+    network.sendDataToHost(player, "server down");
+  }
+
   window.close();
   printf("Fermeture\n");
 }
@@ -93,7 +98,7 @@ void Game::HomeScreen() {
       }
 
       else if (event.text.unicode > 96 && event.text.unicode < 123 &&
-               playerInput.length() < 15) {
+               playerInput.length() < 7) {
         playerInput += event.text.unicode;
         playerText.setString(playerInput);
       }
@@ -104,7 +109,6 @@ void Game::HomeScreen() {
       playerText.setPosition(
           sf::Vector2f{WIN_WIDTH / 2.f + offset_x, playerText.getPosition().y});
     }
-
     if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
       sf::Vector2i localPosition = sf::Mouse::getPosition(window);
       if (localPosition.x * 10 > soloButton.getPosition().x &&
@@ -117,6 +121,7 @@ void Game::HomeScreen() {
       {
         if (playerInput.length() > 0) {
           player.set_pseudo(playerInput);
+          Initialize_game();
           screen = 0;
         }
       }
@@ -131,6 +136,9 @@ void Game::HomeScreen() {
         if (playerInput.length() > 0) {
           player.set_pseudo(playerInput);
           screen = 2;
+
+          // To avoid a double click with a bad sensitivity of the mouse
+          std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
       }
     }
@@ -165,6 +173,9 @@ void Game::MultiPlayerScreen() {
           localPosition.y * 10 <
               BackButton.getPosition().y + BackButton.getSize().y) {
         screen = 1;
+
+        // To avoid a double click with a bad sensitivity of the mouse
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
       }
       if (localPosition.x * 10 > ClientButton.getPosition().x &&
           localPosition.x * 10 <
@@ -182,11 +193,11 @@ void Game::MultiPlayerScreen() {
         ipInput.setString(ipString);
         portInput.setString(portString);
 
-        Play_.setString("Rejoindre");
+        Create_.setString("Rejoindre");
         sf::Vector2f pos_PlayButton = {
-            PlayButton.getPosition().x + PlayButton.getSize().x / 2,
-            PlayButton.getPosition().y + PlayButton.getSize().y / 2};
-        setTextCenterPosition(Play_, pos_PlayButton);
+            CreateButton.getPosition().x + CreateButton.getSize().x / 2,
+            CreateButton.getPosition().y + CreateButton.getSize().y / 2};
+        setTextCenterPosition(Create_, pos_PlayButton);
 
         ipBox.setOutlineThickness(WIN_WIDTH / 100.f);
 
@@ -207,11 +218,11 @@ void Game::MultiPlayerScreen() {
         ipInput.setString(ipString);
         portInput.setString(portString);
 
-        Play_.setString("Creer");
+        Create_.setString("Creer");
         sf::Vector2f pos_PlayButton = {
-            PlayButton.getPosition().x + PlayButton.getSize().x / 2,
-            PlayButton.getPosition().y + PlayButton.getSize().y / 2};
-        setTextCenterPosition(Play_, pos_PlayButton);
+            CreateButton.getPosition().x + CreateButton.getSize().x / 2,
+            CreateButton.getPosition().y + CreateButton.getSize().y / 2};
+        setTextCenterPosition(Create_, pos_PlayButton);
 
         ipBox.setOutlineThickness(WIN_WIDTH / 1000.f);
         portBox.setOutlineThickness(WIN_WIDTH / 1000.f);
@@ -242,12 +253,12 @@ void Game::MultiPlayerScreen() {
 
         ipBox_focused = false;
       }
-      if (localPosition.x * 10 > PlayButton.getPosition().x &&
+      if (localPosition.x * 10 > CreateButton.getPosition().x &&
           localPosition.x * 10 <
-              PlayButton.getPosition().x + PlayButton.getSize().x &&
-          localPosition.y * 10 > PlayButton.getPosition().y &&
+              CreateButton.getPosition().x + CreateButton.getSize().x &&
+          localPosition.y * 10 > CreateButton.getPosition().y &&
           localPosition.y * 10 <
-              PlayButton.getPosition().y + PlayButton.getSize().y) {
+              CreateButton.getPosition().y + CreateButton.getSize().y) {
         if (HostButton_Selected) {
           player.set_Host(true);
           network.runHost();
@@ -316,10 +327,10 @@ void Game::MultiPlayerScreen() {
   window.draw(ClientButton);
   window.draw(Create_server);
   window.draw(Join_server);
-  window.draw(PlayButton);
+  window.draw(CreateButton);
   window.draw(BackButton);
   window.draw(GoBack_);
-  window.draw(Play_);
+  window.draw(Create_);
   window.draw(ip_);
   window.draw(port_);
   window.draw(ipBox);
@@ -327,6 +338,136 @@ void Game::MultiPlayerScreen() {
   window.draw(ipInput);
   window.draw(portInput);
 
+  window.display();
+}
+
+void Game::WaitingScreen() {
+
+  sf::Event event;
+  while (window.pollEvent(event)) {
+
+    if (event.type == sf::Event::Closed)
+      set_running(false);
+
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+      sf::Vector2i localPosition = sf::Mouse::getPosition(window);
+      if (player.isHost() &&
+          localPosition.x * 10 > PlayButton.getPosition().x &&
+          localPosition.x * 10 <
+              PlayButton.getPosition().x + PlayButton.getSize().x &&
+          localPosition.y * 10 > BackButton.getPosition().y &&
+          localPosition.y * 10 <
+              PlayButton.getPosition().y + PlayButton.getSize().y) {
+
+        network.sendDataToHost(player, "play");
+      }
+    }
+
+    if (event.type == sf::Event::KeyPressed) {
+      if (event.key.code == sf::Keyboard::Q) {
+        if (player.isHost()) {
+          network.sendDataToHost(player, "server down");
+          // if success :
+          screen = 1;
+          player.set_Host(false);
+          player.set_Client(false);
+        }
+      }
+    }
+  }
+
+  TypeDataFromHost = network.getDataFromHost(player, other_players);
+
+  if (TypeDataFromHost == "add player to other_players") {
+    sf::Text *pseudo_text = new sf::Text();
+    sf::Text *score_text = new sf::Text();
+
+    int n = pseudos_others_players.size();
+
+    std::string pseudo_ = other_players[other_players.size() - 1]->get_pseudo();
+    std::string score_ =
+        std::to_string(other_players[other_players.size() - 1]->get_score());
+
+    initialize_text(
+        *pseudo_text, main_font_, 1,
+        {WIN_WIDTH * 0.5f, WIN_HEIGHT * 0.4f + n * 0.08f * WIN_HEIGHT},
+        0.07f * WIN_HEIGHT, pseudo_, sf::Color::White, {1, 0.7});
+
+    // This text is initialized for the next screen
+    initialize_text(*score_text, main_font_, 6,
+                    {WIN_WIDTH - e - thickness - 0.05f * L_cases,
+                     e + thickness + (0.2f + 0.08f * n) * H_32},
+                    0.15 * L_cases, score_, sf::Color::White, {1, 0.7});
+
+    pseudos_others_players.push_back(pseudo_text);
+    scores_others_players.push_back(score_text);
+  }
+
+  if (TypeDataFromHost == "play") {
+
+    int n = 0;
+    for (sf::Text *T : pseudos_others_players) {
+      initialize_text(*T, main_font_, 5,
+                      {WIN_WIDTH - e - 0.9f * L_cases,
+                       e + thickness + (0.2f + 0.08f * n) * H_32},
+                      0.15 * L_cases, T->getString(), sf::Color::White,
+                      {1, 0.7});
+      n += 1;
+    }
+
+    Initialize_game();
+    screen = 0;
+  }
+
+  if (TypeDataFromHost == "server down") {
+    Play_.setString("Fermer");
+    sf::Vector2f pos_PlayButton = {
+        PlayButton.getPosition().x + PlayButton.getSize().x / 2,
+        PlayButton.getPosition().y + PlayButton.getSize().y / 2};
+    setTextCenterPosition(Play_, pos_PlayButton);
+    screen = 4;
+  }
+
+  window.clear();
+  window.draw(bgSprite);
+  window.draw(Title_waiting);
+
+  if (player.isHost()) {
+    window.draw(PlayButton);
+    window.draw(Play_);
+  }
+
+  for (sf::Text *T : pseudos_others_players) {
+    window.draw(*T);
+  }
+  window.display();
+}
+
+void Game::QuittingScreen() {
+  sf::Event event;
+  while (window.pollEvent(event)) {
+
+    if (event.type == sf::Event::Closed)
+      set_running(false);
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+      sf::Vector2i localPosition = sf::Mouse::getPosition(window);
+      if (localPosition.x * 10 > PlayButton.getPosition().x &&
+          localPosition.x * 10 <
+              PlayButton.getPosition().x + PlayButton.getSize().x &&
+          localPosition.y * 10 > PlayButton.getPosition().y &&
+          localPosition.y * 10 <
+              PlayButton.getPosition().y + PlayButton.getSize().y) {
+
+        set_running(false);
+      }
+    }
+  }
+
+  window.clear();
+  window.draw(bgSprite);
+  window.draw(PlayButton);
+  window.draw(Quitting_);
+  window.draw(Play_);
   window.display();
 }
 
@@ -361,9 +502,14 @@ void Game::GameScreen() {
       }
       current_block = next_block;
       generate_new_next_block();
-      if (is_end_game())
+      if (is_end_game()) {
         end_game = !end_game;
+        if (player.isClient()) {
+          screen = 3;
+        }
+      }
     }
+
     current_block->display_block(grid);
     little_grid.clean_grid();
     next_block->display_block(little_grid, -3, 0);
@@ -421,102 +567,23 @@ void Game::GameScreen() {
   TypeDataFromHost = network.getDataFromHost(player, other_players);
 
   if (TypeDataFromHost == "update scores") {
-    printf("update scores\n");
     for (size_t k = 0; k < other_players.size(); k++) {
       scores_others_players[k]->setString(
           std::to_string(other_players[k]->get_score()));
+      setTextRightCenterPosition(*scores_others_players[k],
+                                 {WIN_WIDTH - e - thickness - 0.05f * L_cases,
+                                  e + thickness + (0.2f + 0.08f * k) * H_32});
     }
   }
-}
+  if (TypeDataFromHost == "server down") {
+    Play_.setString("Fermer");
+    sf::Vector2f pos_PlayButton = {
+        PlayButton.getPosition().x + PlayButton.getSize().x / 2,
+        PlayButton.getPosition().y + PlayButton.getSize().y / 2};
+    setTextCenterPosition(Play_, pos_PlayButton);
 
-void Game::WaitingScreen() {
-
-  sf::Event event;
-  while (window.pollEvent(event)) {
-
-    if (event.type == sf::Event::Closed)
-      set_running(false);
-
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-      sf::Vector2i localPosition = sf::Mouse::getPosition(window);
-      if (player.isHost() &&
-          localPosition.x * 10 > PlayButton.getPosition().x &&
-          localPosition.x * 10 <
-              PlayButton.getPosition().x + PlayButton.getSize().x &&
-          localPosition.y * 10 > BackButton.getPosition().y &&
-          localPosition.y * 10 <
-              PlayButton.getPosition().y + PlayButton.getSize().y) {
-
-        network.sendDataToHost(player, "start game");
-
-        int n = 0;
-        for (sf::Text *T : pseudos_others_players) {
-          initialize_text(*T, main_font_, 0,
-                          {WIN_WIDTH - e - 0.9f * L_cases,
-                           e + thickness + (0.3f + 0.05f * n) * H_32},
-                          0.15 * L_cases, T->getString(), sf::Color::White,
-                          {1, 0.7});
-          n += 1;
-        }
-        screen = 0;
-      }
-    }
+    screen = 4;
   }
-
-  TypeDataFromHost = network.getDataFromHost(player, other_players);
-
-  if (TypeDataFromHost == "add player to other_players") {
-    sf::Text *pseudo_text = new sf::Text();
-    sf::Text *score_text = new sf::Text();
-
-    int n = pseudos_others_players.size();
-
-    std::string pseudo_ = other_players[other_players.size() - 1]->get_pseudo();
-    std::string score_ =
-        std::to_string(other_players[other_players.size() - 1]->get_score());
-
-    initialize_text(
-        *pseudo_text, main_font_, 1,
-        {WIN_WIDTH * 0.5f, WIN_HEIGHT * 0.4f + n * 0.08f * WIN_HEIGHT},
-        0.07f * WIN_HEIGHT, pseudo_, sf::Color::White, {1, 0.7});
-
-    // This text is initialized for the next screen
-    initialize_text(*score_text, main_font_, 0,
-                    {WIN_WIDTH - e - thickness - 0.05f * L_cases,
-                     e + thickness + (0.3f + 0.05f * n) * H_32},
-                    0.15 * L_cases, score_, sf::Color::White, {1, 0.7});
-
-    pseudos_others_players.push_back(pseudo_text);
-    scores_others_players.push_back(score_text);
-  }
-
-  if (TypeDataFromHost == "start game") {
-
-    int n = 0;
-    for (sf::Text *T : pseudos_others_players) {
-      initialize_text(*T, main_font_, 0,
-                      {WIN_WIDTH - e - 0.9f * L_cases,
-                       e + thickness + (0.3f + 0.05f * n) * H_32},
-                      0.15 * L_cases, T->getString(), sf::Color::White,
-                      {1, 0.7});
-      n += 1;
-    }
-    screen = 0;
-  }
-
-  window.clear();
-  window.draw(bgSprite);
-  window.draw(Title_waiting);
-
-  if (player.isHost()) {
-    window.draw(PlayButton);
-    window.draw(Play_);
-  }
-
-  for (sf::Text *T : pseudos_others_players) {
-    window.draw(*T);
-  }
-  window.display();
 }
 
 void Game::set_running(bool new_running) { _running = new_running; }
@@ -538,30 +605,46 @@ void Game::integrate_block_to_grid() {
 }
 
 void Game::generate_new_next_block() {
-  enum Block { I = 1, J, L, O, S, Z, T };
-  int value_new_block = 1 + (std::rand() % 8);
 
-  switch (value_new_block) {
-  case I:
-    next_block = new Block_I(5, 3);
-    break;
-  case J:
-    next_block = new Block_J(6, 3);
-    break;
-  case L:
-    next_block = new Block_L(6, 3);
-    break;
-  case O:
-    next_block = new Block_O(6, 2);
-    break;
-  case S:
-    next_block = new Block_S(5, 2);
-    break;
-  case Z:
-    next_block = new Block_Z(5, 2);
-    break;
-  default:
-    next_block = new Block_T(6, 3);
+  // if multiplayer mode
+  if (player.isClient()) {
+
+    next_block = network.listBlocks[player.get_numBlock()];
+    player.add_numBlock();
+
+    // if next block is the last of listBlocks, we send a signal to the host
+    if (network.listBlocks.find(player.get_numBlock()) ==
+        network.listBlocks.end()) {
+      network.sendDataToHost(player, "generate new block");
+    }
+  }
+  // if solo mode
+  else {
+    enum Block { I = 1, J, L, O, S, Z, T };
+    int value_new_block = 1 + (std::rand() % 8);
+
+    switch (value_new_block) {
+    case I:
+      next_block = new Block_I(5, 3);
+      break;
+    case J:
+      next_block = new Block_J(6, 3);
+      break;
+    case L:
+      next_block = new Block_L(6, 3);
+      break;
+    case O:
+      next_block = new Block_O(6, 2);
+      break;
+    case S:
+      next_block = new Block_S(5, 2);
+      break;
+    case Z:
+      next_block = new Block_Z(5, 2);
+      break;
+    default:
+      next_block = new Block_T(6, 3);
+    }
   }
 }
 
@@ -585,6 +668,25 @@ void Game::Initialize_game() {
   grid.clean_grid();
   little_grid.clean_grid_with_borders();
   little_grid.clean_grid();
+
+  if (player.isHost()) {
+    network.sendDataToHost(player, "generate new block");
+    network.sendDataToHost(player, "generate new block");
+    network.sendDataToHost(player, "generate new block");
+    network.sendDataToHost(player, "play");
+  }
+
+  if (player.isClient()) {
+
+    TypeDataFromHost = "";
+    while (TypeDataFromHost != "play") {
+      TypeDataFromHost = network.getDataFromHost(player, other_players);
+    }
+    current_block = network.listBlocks[0];
+    next_block = network.listBlocks[1];
+
+    end_game = false;
+  }
 
   generate_new_next_block();
   current_block = next_block;
@@ -643,20 +745,20 @@ void Game::Initialize_graphics() {
   ClientButton.setFillColor(sf::Color::Transparent);
 
   BackButton.setSize({WIN_WIDTH * 0.15f, WIN_HEIGHT * 0.1f});
-  PlayButton.setSize({WIN_WIDTH * 0.15f, WIN_HEIGHT * 0.1f});
+  CreateButton.setSize({WIN_WIDTH * 0.15f, WIN_HEIGHT * 0.1f});
 
   BackButton.setPosition(
       {WIN_WIDTH * 0.4f - BackButton.getSize().x / 2, WIN_HEIGHT * 0.85f});
-  PlayButton.setPosition(
-      {WIN_WIDTH * 0.6f - PlayButton.getSize().x / 2, WIN_HEIGHT * 0.85f});
+  CreateButton.setPosition(
+      {WIN_WIDTH * 0.6f - CreateButton.getSize().x / 2, WIN_HEIGHT * 0.85f});
 
   BackButton.setOutlineThickness(WIN_WIDTH / 500.f);
   BackButton.setOutlineColor(sf::Color::White);
   BackButton.setFillColor(sf::Color::Transparent);
 
-  PlayButton.setOutlineThickness(WIN_WIDTH / 500.f);
-  PlayButton.setOutlineColor(ColorBorder);
-  PlayButton.setFillColor(sf::Color::Transparent);
+  CreateButton.setOutlineThickness(WIN_WIDTH / 500.f);
+  CreateButton.setOutlineColor(ColorBorder);
+  CreateButton.setFillColor(sf::Color::Transparent);
 
   ipBox.setSize({WIN_WIDTH * 0.4f, WIN_HEIGHT * 0.1f});
   portBox.setSize({WIN_WIDTH * 0.4f, WIN_HEIGHT * 0.1f});
@@ -673,6 +775,15 @@ void Game::Initialize_graphics() {
   portBox.setOutlineThickness(WIN_WIDTH / 1000.f);
   portBox.setOutlineColor(sf::Color::White);
   portBox.setFillColor(sf::Color::Transparent);
+
+  /* ---------- INITIALIZATION OF WAITINGSCREEN---------- */
+
+  PlayButton.setSize({WIN_WIDTH * 0.15f, WIN_HEIGHT * 0.1f});
+  PlayButton.setPosition(
+      {WIN_WIDTH * 0.5f - PlayButton.getSize().x / 2, WIN_HEIGHT * 0.85f});
+  PlayButton.setOutlineThickness(WIN_WIDTH / 500.f);
+  PlayButton.setOutlineColor(ColorBorder);
+  PlayButton.setFillColor(sf::Color::Transparent);
 
   /* ---------- INITIALIZATION OF TEXTS ---------- */
 
@@ -753,10 +864,10 @@ void Game::Initialize_graphics() {
   initialize_text(GoBack_, main_font_, 1, pos_BackButton, 0.05 * WIN_HEIGHT,
                   "Annuler", sf::Color::White, {1, 0.7});
 
-  sf::Vector2f pos_PlayButton = {
-      PlayButton.getPosition().x + PlayButton.getSize().x / 2,
-      PlayButton.getPosition().y + PlayButton.getSize().y / 2};
-  initialize_text(Play_, main_font_, 1, pos_PlayButton, 0.05 * WIN_HEIGHT,
+  sf::Vector2f pos_CreateButton = {
+      CreateButton.getPosition().x + CreateButton.getSize().x / 2,
+      CreateButton.getPosition().y + CreateButton.getSize().y / 2};
+  initialize_text(Create_, main_font_, 1, pos_CreateButton, 0.05 * WIN_HEIGHT,
                   "Creer", title_cases_color, {1, 0.7});
 
   initialize_text(ip_, main_font_, 6,
@@ -786,6 +897,16 @@ void Game::Initialize_graphics() {
   initialize_text(Title_waiting, main_font_, 1,
                   {WIN_WIDTH * 0.5f, WIN_HEIGHT * 0.2f}, 0.08 * WIN_WIDTH,
                   "En attente des autres joueurs", title_cases_color, {1, 0.7});
+
+  sf::Vector2f pos_PlayButton = {
+      PlayButton.getPosition().x + PlayButton.getSize().x / 2,
+      PlayButton.getPosition().y + PlayButton.getSize().y / 2};
+  initialize_text(Play_, main_font_, 1, pos_PlayButton, 0.05 * WIN_HEIGHT,
+                  "Creer", title_cases_color, {1, 0.7});
+
+  initialize_text(Quitting_, main_font_, 1,
+                  {WIN_WIDTH * 0.5f, WIN_HEIGHT * 0.5f}, 0.05 * WIN_WIDTH,
+                  "Serveur coupe", title_cases_color, {1, 0.7});
 
   /* ---------- INITIALIZATION OF BACKGROUNDS ---------- */
 
@@ -944,8 +1065,9 @@ void Game::InputHandler(sf::Event event) {
 
     if (event.key.code == sf::Keyboard::Q) {
       if (player.isHost()) {
-        network.stop_Host();
+        network.sendDataToHost(player, "server down");
         // if success :
+        screen = 1;
         player.set_Host(false);
         player.set_Client(false);
       }

@@ -1,6 +1,13 @@
 #ifndef NETWORK_HPP
 #define NETWORK_HPP
 
+#include "./types_block/block_I.hpp"
+#include "./types_block/block_J.hpp"
+#include "./types_block/block_L.hpp"
+#include "./types_block/block_O.hpp"
+#include "./types_block/block_S.hpp"
+#include "./types_block/block_T.hpp"
+#include "./types_block/block_Z.hpp"
 #include "block.hpp"
 #include "player.hpp"
 #include "utils.hpp"
@@ -24,7 +31,7 @@ private:
   sf::TcpListener listener;
   sf::SocketSelector selector;
 
-  // std::map<int, Block *> listBlocks;
+  int numBlock;
 
   std::vector<sf::TcpSocket *> socketsAsHost;
   std::vector<Player *> all_players;
@@ -32,9 +39,14 @@ private:
   std::thread hostT;
   void Host();
 
+  void generate_new_Block();
+  void add_new_Block_to_listBlocks(int, int);
+
 public:
+  std::map<int, Block *> listBlocks;
+
   Network();
-  // TODO : ~Network()
+  ~Network();
   void runHost();
 
   void connectAsClient(sf::IpAddress ip, short int port, Player &player);
@@ -44,6 +56,8 @@ public:
   sf::IpAddress get_ip() const { return ip; }
   unsigned short get_port() const { return port; }
   void set_port(unsigned short new_port) { port = new_port; }
+
+  void reset_IP_port();
 
   void stop_Host();
 };
