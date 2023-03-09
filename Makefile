@@ -4,7 +4,7 @@
 include make_osx.inc
 
 
-MY_PATH = /Users/clembastaert/Desktop/Code/deuxiemeAnnee/IN204_Tetris
+MY_PATH := $(shell pwd)
 CXX = g++
 CXXFLAGS += -DMY_PATH='"$(MY_PATH)"'
 
