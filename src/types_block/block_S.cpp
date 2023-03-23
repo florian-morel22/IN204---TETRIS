@@ -46,7 +46,7 @@ void Block_S::rotate(Grid &g) {
     next_i[0] = i;
     next_i[1] = i;
     next_i[2] = i - 1;
-    next_i[3] = i;
+    next_i[3] = i - 1;
     next_j[0] = j + 2;
     next_j[1] = j + 1;
     next_j[2] = j + 1;
