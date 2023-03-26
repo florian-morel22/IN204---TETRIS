@@ -7,6 +7,7 @@
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Window/Keyboard.hpp>
 #include <SFML/Window/Mouse.hpp>
+#include <math.h>
 #include <string>
 #include <vector>
 
@@ -26,7 +27,7 @@ void Game::Run() {
       GameScreen();
 }
 
-Game::Game() {
+Game::Game() : fps_grid_init(1.f) {
 
   window.create(sf::VideoMode(WIN_WIDTH * 0.1, WIN_HEIGHT * 0.1), "TETRIS",
                 sf::Style::Close);
@@ -526,8 +527,10 @@ void Game::GameScreen() {
   bool hide_try_again =
       end_game && clock.getElapsedTime().asMilliseconds() > 1000;
 
-  sf::Vector2f middle_2nd_case = {e + L_cases / 2,
-                                  WIN_HEIGHT - 1.5f * e - H_22 / 2.f};
+  sf::Vector2f pos_score = {e + L_cases / 2,
+                            WIN_HEIGHT - e - thickness - 0.1f * H_22};
+  sf::Vector2f pos_level = {e + L_cases / 2,
+                            WIN_HEIGHT - e - thickness - 0.6f * H_22};
 
   // user event management
   sf::Event event;
@@ -542,10 +545,21 @@ void Game::GameScreen() {
       integrate_block_to_grid();
       points = grid.clean_full_lines(current_block->get_list_squares());
       if (points > 0) {
-        player.add_score(points);
+        player.add_score(points * (player.get_level() + 1)); // f(p,n) = p*(n+1)
         network.sendDataToHost(player, "update scores");
         player_score.setString(std::to_string(player.get_score()));
-        setTextCenterBottomPosition(player_score, middle_2nd_case);
+        setTextCenterBottomPosition(player_score, pos_score);
+
+        if (player.get_score() >= player.get_level() * 1000 &&
+            player.get_level() < 15) {
+
+          // several levels can be reached at once
+          int new_level = int(min(15, float(player.get_score()) / 1000 + 1));
+          player.set_level(new_level);
+          player_level.setString(std::to_string(player.get_level()));
+          setTextCenterBottomPosition(player_level, pos_level);
+          fps_grid = fps_grid_init * new_level * 1.f;
+        }
       }
       current_block = next_block;
       generate_new_next_block();
@@ -579,6 +593,8 @@ void Game::GameScreen() {
   window.draw(Multiplayers_);
   window.draw(Score_);
   window.draw(player_score);
+  window.draw(Level_);
+  window.draw(player_level);
   for (sf::Text *T : pseudos_others_players)
     window.draw(*T);
   for (sf::Text *T : scores_others_players)
@@ -708,11 +724,17 @@ bool Game::is_end_game() {
 };
 
 void Game::Initialize_game() {
-  fps_grid = 1;
+  fps_grid = fps_grid_init;
   player.set_score(0);
+  player.reset_level();
   player_score.setString("0");
+  player_level.setString("1");
   setTextCenterBottomPosition(
-      player_score, {e + L_cases / 2, WIN_HEIGHT - 1.5f * e - H_22 / 2.f});
+      player_score,
+      {e + L_cases / 2, WIN_HEIGHT - e - thickness - 0.1f * H_22});
+  setTextCenterBottomPosition(
+      player_level,
+      {e + L_cases / 2, WIN_HEIGHT - e - thickness - 0.6f * H_22});
 
   grid.clean_grid_with_borders();
   grid.clean_grid();
@@ -857,16 +879,23 @@ void Game::Initialize_graphics() {
   initialize_text(Multiplayers_, main_font_, 2,
                   {WIN_WIDTH - e - L_cases / 2, H_Text_Suivants_Multijoueurs},
                   0.2 * L_cases, "MULTIJOUEURS", title_cases_color, {1, 0.7});
-  initialize_text(
-      Score_, main_font_, 3,
-      {e + L_cases / 2, WIN_HEIGHT - H_Text_Suivants_Multijoueurs - 0.2f * e},
-      0.2 * L_cases, "SCORE", title_cases_color, {1, 0.7});
+  initialize_text(Score_, main_font_, 3,
+                  {e + L_cases / 2, WIN_HEIGHT - e - thickness - 0.3f * H_22},
+                  0.2 * L_cases, "SCORE", title_cases_color, {1, 0.7});
 
-  initialize_text(
-      player_score, main_font_, 3,
-      {e + L_cases / 2, WIN_HEIGHT - H_Text_Suivants_Multijoueurs - H_22 / 2},
-      0.2 * L_cases, std::to_string(player.get_score()), title_cases_color,
-      {1, 0.7});
+  initialize_text(player_score, main_font_, 3,
+                  {e + L_cases / 2, WIN_HEIGHT - e - thickness - 0.1f * H_22},
+                  0.2 * L_cases, std::to_string(player.get_score()),
+                  title_cases_color, {1, 0.7});
+
+  initialize_text(Level_, main_font_, 3,
+                  {e + L_cases / 2, WIN_HEIGHT - e - thickness - 0.8f * H_22},
+                  0.2 * L_cases, "NIVEAU", title_cases_color, {1, 0.7});
+
+  initialize_text(player_level, main_font_, 3,
+                  {e + L_cases / 2, WIN_HEIGHT - e - thickness - 0.6f * H_22},
+                  0.2 * L_cases, std::to_string(player.get_level()),
+                  title_cases_color, {1, 0.7});
 
   initialize_text(Title_game, main_font_, 1,
                   {WIN_WIDTH / 2.f, WIN_HEIGHT / 3.f}, 0.2 * WIN_HEIGHT,
@@ -1127,7 +1156,7 @@ void Game::InputHandler(sf::Event event) {
 
   if (event.type == sf::Event::KeyReleased)
     if (!end_game && event.key.code == sf::Keyboard::Down)
-      set_fps_grid(1);
+      set_fps_grid(fps_grid_init * player.get_level());
 
   if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
     sf::Vector2i localPosition = sf::Mouse::getPosition(window);

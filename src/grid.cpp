@@ -128,9 +128,6 @@ int Grid::clean_full_lines(const std::vector<sf::Vector2i> &list_squares) {
   }
 
   switch (number_of_full_lines) {
-  case 0:
-    return 0;
-    break;
   case 1:
     return 40;
     break;
@@ -140,8 +137,11 @@ int Grid::clean_full_lines(const std::vector<sf::Vector2i> &list_squares) {
   case 3:
     return 300;
     break;
+  case 4:
+    return 1200;
+    break;
   default:
-    return 300;
+    return 0;
   }
 }
 

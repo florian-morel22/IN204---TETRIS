@@ -64,6 +64,8 @@ private:
   sf::Text Multiplayers_;
   sf::Text Score_;
   sf::Text player_score;
+  sf::Text Level_;
+  sf::Text player_level;
 
   sf::Text Title_game;
   sf::Text pickYourName;
@@ -99,6 +101,7 @@ private:
 
   sf::Clock clock;
   float fps_grid;
+  const float fps_grid_init;
 
   Player player;
   std::vector<Player *> other_players;

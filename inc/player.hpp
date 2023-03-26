@@ -10,6 +10,7 @@ class Player {
 private:
   std::string pseudo_;
   int score_;
+  int level_;
 
   bool Host_;
   bool Client_;
@@ -26,6 +27,10 @@ public:
   auto get_score() const -> int;
   auto add_score(int) -> void;
   auto set_score(int) -> void;
+
+  auto reset_level() -> void;
+  auto set_level(int) -> void;
+  auto get_level() const -> int;
 
   auto isHost() const -> bool;
   auto set_Host(bool) -> void;
