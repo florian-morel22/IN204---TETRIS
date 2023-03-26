@@ -23,6 +23,7 @@ void setTextCenterPosition(sf::Text &txt, sf::Vector2f center) {
 
   offset.x = txt.getPosition().x - txt.getGlobalBounds().left -
              txt.getGlobalBounds().width / 2.;
+
   offset.y = txt.getPosition().y - txt.getGlobalBounds().top -
              txt.getGlobalBounds().height / 2.;
 
