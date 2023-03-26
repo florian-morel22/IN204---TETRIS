@@ -26,7 +26,7 @@ int Player::get_score() const { return score_; }
 void Player::add_score(int points) { score_ = score_ + points; }
 void Player::set_score(int new_score) { score_ = new_score; };
 
-void Player::reset_level() { level_ = 0; }
+void Player::reset_level() { level_ = 1; }
 void Player::set_level(int new_level) { level_ = new_level; }
 int Player::get_level() const { return level_; }
 
