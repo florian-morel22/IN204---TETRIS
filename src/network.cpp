@@ -1,4 +1,4 @@
-#include "network.hpp"
+#include "../inc/network.hpp"
 
 #include <SFML/Network/IpAddress.hpp>
 #include <SFML/Network/Packet.hpp>
@@ -185,7 +185,7 @@ void Network::Host() {
   }
 }
 
-void Network::connectAsClient(sf::IpAddress ip, short int port,
+bool Network::connectAsClient(sf::IpAddress ip, short int port,
                               Player &player) {
 
   if (socketAsClient.connect(ip, port) == sf::Socket::Done) {
@@ -196,8 +196,10 @@ void Network::connectAsClient(sf::IpAddress ip, short int port,
     socketAsClient.send(sendPacket);
 
     player.set_Client(true);
+
+    return true;
   } else {
-    std::cout << "Serveur down." << std::endl;
+    return false;
   }
 }
 

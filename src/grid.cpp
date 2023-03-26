@@ -105,7 +105,6 @@ int Grid::clean_full_lines(const std::vector<sf::Vector2i> &list_squares) {
 
   /* For each full lines, we put the value of the square to 0 */
   for (auto const &line : lines_full) {
-    printf("LINE %d FULL\n", line);
     for (int col = 0; col < nb_columns; col++) {
       grid_num[col + 2][line] = 0;
     }

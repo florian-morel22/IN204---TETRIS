@@ -106,6 +106,8 @@ private:
   Network network;
   std::string TypeDataFromHost;
 
+  bool targetButton(double, double, int);
+
   void GameScreen();
   void HomeScreen();
   void MultiPlayerScreen();

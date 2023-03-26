@@ -74,7 +74,6 @@ Game::~Game() {
   } catch (std::exception &e) {
     printf("erreur : %s\n", e.what());
   }
-  // delete current_block; // => core dumped ?????????????????????
   if (player.isHost()) {
     network.sendDataToHost(player, "server down");
   }
@@ -111,28 +110,15 @@ void Game::HomeScreen() {
     }
     if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
       sf::Vector2i localPosition = sf::Mouse::getPosition(window);
-      if (localPosition.x * 10 > soloButton.getPosition().x &&
-          localPosition.x * 10 <
-              soloButton.getPosition().x + soloButton.getSize().x &&
-          localPosition.y * 10 > soloButton.getPosition().y &&
-          localPosition.y * 10 <
-              soloButton.getPosition().y + soloButton.getSize().y)
 
-      {
+      if (targetButton(localPosition.x, localPosition.y, 1)) {
         if (playerInput.length() > 0) {
           player.set_pseudo(playerInput);
           Initialize_game();
           screen = 0;
         }
       }
-      if (localPosition.x * 10 > multiButton.getPosition().x &&
-          localPosition.x * 10 <
-              multiButton.getPosition().x + multiButton.getSize().x &&
-          localPosition.y * 10 > multiButton.getPosition().y &&
-          localPosition.y * 10 <
-              multiButton.getPosition().y + multiButton.getSize().y)
-
-      {
+      if (targetButton(localPosition.x, localPosition.y, 2)) {
         if (playerInput.length() > 0) {
           player.set_pseudo(playerInput);
           screen = 2;
@@ -166,23 +152,16 @@ void Game::MultiPlayerScreen() {
 
     if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
       sf::Vector2i localPosition = sf::Mouse::getPosition(window);
-      if (localPosition.x * 10 > BackButton.getPosition().x &&
-          localPosition.x * 10 <
-              BackButton.getPosition().x + BackButton.getSize().x &&
-          localPosition.y * 10 > BackButton.getPosition().y &&
-          localPosition.y * 10 <
-              BackButton.getPosition().y + BackButton.getSize().y) {
+
+      // Button to go back to the previous screen
+      if (targetButton(localPosition.x, localPosition.y, 3)) {
         screen = 1;
 
         // To avoid a double click with a bad sensitivity of the mouse
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
       }
-      if (localPosition.x * 10 > ClientButton.getPosition().x &&
-          localPosition.x * 10 <
-              ClientButton.getPosition().x + ClientButton.getSize().x &&
-          localPosition.y * 10 > ClientButton.getPosition().y &&
-          localPosition.y * 10 <
-              ClientButton.getPosition().y + ClientButton.getSize().y &&
+      // Button to select the client mode
+      if (targetButton(localPosition.x, localPosition.y, 4) &&
           HostButton_Selected) {
 
         ClientButton.setFillColor(sf::Color(203, 108, 230));
@@ -203,12 +182,9 @@ void Game::MultiPlayerScreen() {
 
         HostButton_Selected = false;
       }
-      if (localPosition.x * 10 > HostButton.getPosition().x &&
-          localPosition.x * 10 <
-              HostButton.getPosition().x + HostButton.getSize().x &&
-          localPosition.y * 10 > HostButton.getPosition().y &&
-          localPosition.y * 10 <
-              HostButton.getPosition().y + HostButton.getSize().y) {
+      // Button to select the host mode
+      if (targetButton(localPosition.x, localPosition.y, 5) &&
+          !HostButton_Selected) {
 
         HostButton.setFillColor(sf::Color(203, 108, 230));
         ClientButton.setFillColor(sf::Color::Transparent);
@@ -229,10 +205,8 @@ void Game::MultiPlayerScreen() {
 
         HostButton_Selected = true;
       }
-      if (localPosition.x * 10 > ipBox.getPosition().x &&
-          localPosition.x * 10 < ipBox.getPosition().x + ipBox.getSize().x &&
-          localPosition.y * 10 > ipBox.getPosition().y &&
-          localPosition.y * 10 < ipBox.getPosition().y + ipBox.getSize().y &&
+      // Button to select the ip field
+      if (targetButton(localPosition.x, localPosition.y, 6) &&
           !HostButton_Selected) {
 
         ipBox.setOutlineThickness(WIN_WIDTH / 100.f);
@@ -240,12 +214,8 @@ void Game::MultiPlayerScreen() {
 
         ipBox_focused = true;
       }
-      if (localPosition.x * 10 > portBox.getPosition().x &&
-          localPosition.x * 10 <
-              portBox.getPosition().x + portBox.getSize().x &&
-          localPosition.y * 10 > portBox.getPosition().y &&
-          localPosition.y * 10 <
-              portBox.getPosition().y + portBox.getSize().y &&
+      // Button to select the password fild
+      if (targetButton(localPosition.x, localPosition.y, 7) &&
           !HostButton_Selected) {
 
         ipBox.setOutlineThickness(WIN_WIDTH / 1000.f);
@@ -253,12 +223,8 @@ void Game::MultiPlayerScreen() {
 
         ipBox_focused = false;
       }
-      if (localPosition.x * 10 > CreateButton.getPosition().x &&
-          localPosition.x * 10 <
-              CreateButton.getPosition().x + CreateButton.getSize().x &&
-          localPosition.y * 10 > CreateButton.getPosition().y &&
-          localPosition.y * 10 <
-              CreateButton.getPosition().y + CreateButton.getSize().y) {
+      // Button to create/join a server
+      if (targetButton(localPosition.x, localPosition.y, 8)) {
         if (HostButton_Selected) {
           player.set_Host(true);
           network.runHost();
@@ -283,11 +249,16 @@ void Game::MultiPlayerScreen() {
 
         } else {
           sf::IpAddress ip(ipString);
+
+          if (portString == "")
+            portString = "0";
+
           unsigned short port =
               (unsigned short)std::stoul(portString, nullptr, 0);
-          network.connectAsClient(ip, port, player);
+          bool connected = network.connectAsClient(ip, port, player);
 
-          screen = 3;
+          if (connected)
+            screen = 3;
         }
       }
     }
@@ -352,12 +323,7 @@ void Game::WaitingScreen() {
     if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
       sf::Vector2i localPosition = sf::Mouse::getPosition(window);
       if (player.isHost() &&
-          localPosition.x * 10 > PlayButton.getPosition().x &&
-          localPosition.x * 10 <
-              PlayButton.getPosition().x + PlayButton.getSize().x &&
-          localPosition.y * 10 > BackButton.getPosition().y &&
-          localPosition.y * 10 <
-              PlayButton.getPosition().y + PlayButton.getSize().y) {
+          targetButton(localPosition.x, localPosition.y, 9)) {
 
         network.sendDataToHost(player, "play");
       }
@@ -451,12 +417,7 @@ void Game::QuittingScreen() {
       set_running(false);
     if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
       sf::Vector2i localPosition = sf::Mouse::getPosition(window);
-      if (localPosition.x * 10 > PlayButton.getPosition().x &&
-          localPosition.x * 10 <
-              PlayButton.getPosition().x + PlayButton.getSize().x &&
-          localPosition.y * 10 > PlayButton.getPosition().y &&
-          localPosition.y * 10 <
-              PlayButton.getPosition().y + PlayButton.getSize().y) {
+      if (targetButton(localPosition.x, localPosition.y, 10)) {
 
         set_running(false);
       }
@@ -471,6 +432,91 @@ void Game::QuittingScreen() {
   window.display();
 }
 
+bool Game::targetButton(double x, double y, int idButton) {
+  enum Block {
+    Solo = 1,
+    Multi,
+    GoBack,
+    JoinServ,
+    CreateServ,
+    ipServ,
+    MdpServ,
+    Create_Join,
+    Play,
+    Quit
+  };
+
+  bool isClicked = false;
+
+  switch (idButton) {
+  case Solo:
+    isClicked = x * 10 > soloButton.getPosition().x &&
+                x * 10 < soloButton.getPosition().x + soloButton.getSize().x &&
+                y * 10 > soloButton.getPosition().y &&
+                y * 10 < soloButton.getPosition().y + soloButton.getSize().y;
+    break;
+  case Multi:
+    isClicked =
+        x * 10 > multiButton.getPosition().x &&
+        x * 10 < multiButton.getPosition().x + multiButton.getSize().x &&
+        y * 10 > multiButton.getPosition().y &&
+        y * 10 < multiButton.getPosition().y + multiButton.getSize().y;
+    break;
+  case GoBack:
+    isClicked = x * 10 > BackButton.getPosition().x &&
+                x * 10 < BackButton.getPosition().x + BackButton.getSize().x &&
+                y * 10 > BackButton.getPosition().y &&
+                y * 10 < BackButton.getPosition().y + BackButton.getSize().y;
+    break;
+  case JoinServ:
+    isClicked =
+        x * 10 > ClientButton.getPosition().x &&
+        x * 10 < ClientButton.getPosition().x + ClientButton.getSize().x &&
+        y * 10 > ClientButton.getPosition().y &&
+        y * 10 < ClientButton.getPosition().y + ClientButton.getSize().y;
+    break;
+  case CreateServ:
+    isClicked = x * 10 > HostButton.getPosition().x &&
+                x * 10 < HostButton.getPosition().x + HostButton.getSize().x &&
+                y * 10 > HostButton.getPosition().y &&
+                y * 10 < HostButton.getPosition().y + HostButton.getSize().y;
+    break;
+  case ipServ:
+    isClicked = x * 10 > ipBox.getPosition().x &&
+                x * 10 < ipBox.getPosition().x + ipBox.getSize().x &&
+                y * 10 > ipBox.getPosition().y &&
+                y * 10 < ipBox.getPosition().y + ipBox.getSize().y;
+    break;
+  case MdpServ:
+    isClicked = x * 10 > portBox.getPosition().x &&
+                x * 10 < portBox.getPosition().x + portBox.getSize().x &&
+                y * 10 > portBox.getPosition().y &&
+                y * 10 < portBox.getPosition().y + portBox.getSize().y;
+    break;
+  case Create_Join:
+    isClicked =
+        x * 10 > CreateButton.getPosition().x &&
+        x * 10 < CreateButton.getPosition().x + CreateButton.getSize().x &&
+        y * 10 > CreateButton.getPosition().y &&
+        y * 10 < CreateButton.getPosition().y + CreateButton.getSize().y;
+    break;
+  case Play:
+    isClicked = x * 10 > PlayButton.getPosition().x &&
+                x * 10 < PlayButton.getPosition().x + PlayButton.getSize().x &&
+                y * 10 > BackButton.getPosition().y &&
+                y * 10 < PlayButton.getPosition().y + PlayButton.getSize().y;
+    break;
+  case Quit:
+    isClicked = x * 10 > PlayButton.getPosition().x &&
+                x * 10 < PlayButton.getPosition().x + PlayButton.getSize().x &&
+                y * 10 > PlayButton.getPosition().y &&
+                y * 10 < PlayButton.getPosition().y + PlayButton.getSize().y;
+    break;
+  }
+
+  return isClicked;
+}
+
 void Game::GameScreen() {
 
   bool go_to_next_gameFrame =
@@ -480,7 +526,8 @@ void Game::GameScreen() {
   bool hide_try_again =
       end_game && clock.getElapsedTime().asMilliseconds() > 1000;
 
-  sf::Vector2f middle_2nd_case = {e + L_cases / 2, WIN_HEIGHT - H_22 / 2};
+  sf::Vector2f middle_2nd_case = {e + L_cases / 2,
+                                  WIN_HEIGHT - 1.5f * e - H_22 / 2.f};
 
   // user event management
   sf::Event event;
@@ -498,7 +545,7 @@ void Game::GameScreen() {
         player.add_score(points);
         network.sendDataToHost(player, "update scores");
         player_score.setString(std::to_string(player.get_score()));
-        setTextCenterPosition(player_score, middle_2nd_case);
+        setTextCenterBottomPosition(player_score, middle_2nd_case);
       }
       current_block = next_block;
       generate_new_next_block();
@@ -663,6 +710,9 @@ bool Game::is_end_game() {
 void Game::Initialize_game() {
   fps_grid = 1;
   player.set_score(0);
+  player_score.setString("0");
+  setTextCenterBottomPosition(
+      player_score, {e + L_cases / 2, WIN_HEIGHT - 1.5f * e - H_22 / 2.f});
 
   grid.clean_grid_with_borders();
   grid.clean_grid();
@@ -912,7 +962,8 @@ void Game::Initialize_graphics() {
 
   float blurGrid_Opacity = 180;
 
-  if (!bgTexture.loadFromFile(std::string(MY_PATH) + "/images/background.png")) {
+  if (!bgTexture.loadFromFile(std::string(MY_PATH) +
+                              "/images/background.png")) {
     // error...
   }
   bgSprite.setTexture(bgTexture);

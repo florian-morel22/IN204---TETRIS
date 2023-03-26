@@ -31,6 +31,8 @@ bool find_vector(std::vector<sf::Vector2i>, sf::Vector2i);
 
 void setTextCenterPosition(sf::Text &, sf::Vector2f);
 
+void setTextCenterBottomPosition(sf::Text &, sf::Vector2f);
+
 void setTextRightCenterPosition(sf::Text &, sf::Vector2f);
 
 void initialize_text(sf::Text &text, sf::Font &font, int type_position,

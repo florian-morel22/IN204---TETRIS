@@ -49,7 +49,7 @@ public:
   ~Network();
   void runHost();
 
-  void connectAsClient(sf::IpAddress ip, short int port, Player &player);
+  bool connectAsClient(sf::IpAddress ip, short int port, Player &player);
   std::string getDataFromHost(Player &, std::vector<Player *> &);
   void sendDataToHost(Player &, std::string);
 
