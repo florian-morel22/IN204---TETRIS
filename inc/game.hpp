@@ -57,6 +57,8 @@ private:
   bool HostButton_Selected = true;
   bool ipBox_focused = true;
 
+  /*---- Texts ----*/
+
   sf::Font main_font_;
   sf::Text end_msg_;
   sf::Text try_again_;
@@ -92,6 +94,8 @@ private:
   sf::Text pseudo_this_player;
   std::vector<sf::Text *> pseudos_others_players;
   std::vector<sf::Text *> scores_others_players;
+
+  /*---- Game grid and next block grid ----*/
 
   Grid grid;
   Grid little_grid;
