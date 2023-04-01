@@ -25,7 +25,7 @@ namespace tetris
         WaitingScreen();
       else if (screen == 4)
         QuittingScreen();
-      else
+      else if (screen == 0)
         GameScreen();
   }
 

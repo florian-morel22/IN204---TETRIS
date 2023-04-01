@@ -124,20 +124,18 @@ private:
   void Initialize_game();
   void Initialize_graphics();
 
-public:
-  Game();
-  ~Game();
-  void Run();
-
   void set_running(bool new_running);
   void set_fps_grid(float new_fps_grid);
   void set_game_break();
 
-  Grid get_grid() const;
-
   void integrate_block_to_grid();
   void generate_new_next_block();
   bool is_end_game();
+
+public:
+  Game();
+  ~Game();
+  void Run();
 };
 
 void InputHandler(sf::Event, Game &, Block &, Grid &);
