@@ -172,14 +172,11 @@ void Grid::Free_grid(TYPE_GRID _grid, int _nb_col) {
   for (int i = 0; i < _nb_col; i++) {
     if (_grid[i] == nullptr) {
       delete[] _grid;
-      printf("Grille libérée\n");
       throw(std::runtime_error("Liberation grille"));
     }
     delete[] _grid[i];
-    printf("colonne %d de la grille libérée\n", i + 1);
   }
   delete[] _grid;
-  printf("Grille libérée\n");
 }
 
 template void Grid::Free_grid<int **>(int **, int);
@@ -189,11 +186,8 @@ template void Grid::Free_grid<sf::RectangleShape **>(sf::RectangleShape **,
 void Grid::display_grid() const {
   for (int i = 0; i < nb_columns + 4; ++i) {
     for (int j = 0; j < nb_lines + 4; ++j) {
-      printf("%d ", grid_num[i][j]);
     }
-    printf("\n");
   }
-  printf("----------\n");
 };
 
 void Grid::draw_grid() {

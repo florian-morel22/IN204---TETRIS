@@ -224,7 +224,6 @@ std::string Network::getDataFromHost(Player &player,
     }
 
     else if (data.message == "server down") {
-      std::cout << data.message << std::endl;
       player.set_Client(false);
       other_players.clear();
     }
@@ -235,8 +234,6 @@ std::string Network::getDataFromHost(Player &player,
     }
 
     else if (data.message == "generate new block") {
-      printf("data.num_block : %d, data.type_block : %d\n", data.num_block,
-             data.type_block);
       add_new_Block_to_listBlocks(data.num_block, data.type_block);
     }
   }
